@@ -1,0 +1,100 @@
+@font-face {
+  font-family: 'Eurostile';
+  src: url("../src/assets/fonts/Eurostile.TTF");
+}
+@font-face {
+  font-family: 'Rawgly';
+  src: url("../src/assets/fonts/Rawgly.otf");
+}
+@font-face {
+  font-family: 'Rebaston';
+  src: url("../src/assets/fonts/Rebaston.otf");
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url("../src/assets/fonts/Poppins-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Helvetica-Light';
+  src: url("../src/assets/fonts/Helvetica/Helvetica-Light.ttf");
+}
+
+@font-face {
+  font-family: 'Helvetica-Bold';
+  src: url("../src/assets/fonts/Helvetica/Helvetica-Bold.ttf");
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  src: url("../src/assets/fonts/Helvetica/Helvetica.ttf");
+}
+
+@font-face {
+  font-family: 'Poppins-Light';
+  src: url("../src/assets/fonts/Poppins-Light.ttf");
+}
+
+
+
+.def-text-color{
+  color: #ffffff;
+}
+
+.font-eurostile{
+  font-family: 'Eurostile', sans-serif;
+}
+
+.font-rawgly{
+  font-family: 'Rawgly', sans-serif;
+}
+
+.font-rebaston{
+  font-family: 'Rebaston', sans-serif;
+}
+.font-poppins{
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-poppins-light{
+  font-family: 'Poppins-Light', sans-serif;
+}
+
+.font-helvetica-light{
+  font-family: 'Helvetica-Light', sans-serif;
+}
+
+.font-helvetica-bold{
+  font-family: 'Helvetica-Bold', sans-serif;
+}
+
+.font-helvetica{
+  font-family: 'Helvetica', sans-serif;
+}
+
+.def-bg-color{
+  background-color: #000000;
+}
+
+.def-border{
+  border: 2px solid #727272;
+}
+
+.def-btn{
+  background-color: #ffffff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+::placeholder {
+  font-family: 'Poppins', sans-serif;
+}
+
+::-webkit-scrollbar{
+  width: 0px;
+}

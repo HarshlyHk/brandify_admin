@@ -1,0 +1,160 @@
+
+.btn,
+p {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.btn {
+  position: relative;
+  width: 240px;
+  height: 60px;
+  margin: 10px;
+}
+
+.btn p {
+  width: 100%;
+  height: 100%;
+}
+
+.btn a {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+.btn span {
+  display: block;
+  width: 100%;
+  height: 60px;
+  padding-top: 23px;
+}
+
+/*  ------ HOVER EFFECT ----- */
+
+/* the top and bottom innter lines */
+.btn p::before {
+  content: "";
+  position: absolute;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  top: -1px;
+  left: -7px;
+  right: -7px;
+  bottom: -1px;
+}
+
+.btn p::after {
+  content: "";
+  position: absolute;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  top: -9px;
+  bottom: -9px;
+  left: -1px;
+  right: -1px;
+}
+
+.btn:hover p::before,
+.btn:hover p::after {
+  border: none;
+}
+
+/* the hover state for the inner button */
+.btn a {
+  background: inherit;
+  color: inherit;
+  transition-property: background, color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-out;
+}
+
+.btn:hover a {
+  background: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+}
+
+/* the inset border on hover */
+.btn a::before {
+  content: "";
+  position: absolute;
+  border: 5px solid black;
+  left: 1px;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  transition-property: opacity, background, color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
+  opacity: 0;
+}
+
+.btn:hover a::before {
+  opacity: 1;
+}
+
+/* the shrinking outer edges */
+.btn::before {
+  content: "";
+  height: 1px;
+  position: absolute;
+  background: gray;
+  bottom: 68px;
+  left: 0;
+  right: 0;
+  transition-property: left, right;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+.btn::after {
+  content: "";
+  height: 1px;
+  position: absolute;
+  background: gray;
+  top: 68px;
+  left: 0;
+  right: 0;
+  transition-property: left, right;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+.btn:hover::before,
+.btn:hover::after {
+  left: 50%;
+  right: 50%;
+}
+
+.btn span::before {
+  content: "";
+  width: 1px;
+  position: absolute;
+  background: gray;
+  top: 0;
+  bottom: 0;
+  left: -7px;
+  right: 0;
+  transition-property: top, bottom;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+.btn span::after {
+  content: "";
+  width: 1px;
+  position: absolute;
+  background: gray;
+  top: 0;
+  bottom: 0;
+  right: -7px;
+  transition-property: top, bottom;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+.btn:hover span::before,
+.btn:hover span::after {
+  top: 50%;
+  bottom: 50%;
+}
