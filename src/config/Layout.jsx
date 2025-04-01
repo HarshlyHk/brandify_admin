@@ -7,11 +7,11 @@ const Layout = () => {
   useAuthHook();
   return (
     <div>
-      <div className=" min-h-screen flex justify-between">
-        <div className=" w-[240px] h-screen">
+      <div className=" max-h-screen flex justify-between">
+        <div className=" w-[240px]">
           <Navbar />
         </div>
-        <div>
+        <div className="flex-1 p-4 overflow-auto">
         <Outlet />
         </div>
       </div>
