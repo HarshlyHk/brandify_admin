@@ -1,16 +1,207 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
+import { Button } from "../ui/button";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getProducts, deleteProduct } from "@/features/productSlice";
+import { Label } from "../ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 const Products = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.user);
-  const [loading, setLoading] = useState(true);
+  const { products, totalProducts, totalPages, loading } = useSelector(
+    (state) => state.product
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  useEffect(() => {
+    dispatch(getProducts({ page: currentPage, items: itemsPerPage }));
+  }, [dispatch, currentPage, itemsPerPage]);
+
+  const handleDelete = (productId) => {
+      dispatch(deleteProduct(productId));
+  };
+
   return (
-    <div>
-      <Link to="/products/add" className="">
-        Add Product
-      </Link>
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Products</h2>
+        <h4>
+          <span className="text-sm text-gray-500">
+            Total Products: {totalProducts}
+          </span>
+        </h4>
+        <div className="flex gap-4">
+          <Link to="/products/add">
+            <Button>Add Product</Button>
+          </Link>
+          <Link to="/categories/manage">
+            <Button>Manage Categories</Button>
+          </Link>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <Label htmlFor="items-per-page" className=" mb-2">
+          Items per page:
+        </Label>
+        <Select
+          onValueChange={(value) => setItemsPerPage(Number(value))}
+          defaultValue={itemsPerPage.toString()}
+        >
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Items per page" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Table>
+        <TableCaption>Manage your products</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Categories</TableHead>
+            <TableHead>Org. Price</TableHead>
+            <TableHead>Disc. Price</TableHead>
+            <TableHead>Reviews</TableHead>
+            <TableHead>Rating</TableHead>
+            <TableHead>Out of Stock</TableHead>
+            <TableHead>Popularity</TableHead>
+            <TableHead className=" text-center">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={9} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : products.length > 0 ? (
+            products.map((product) => (
+              <TableRow key={product._id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell className="uppercase">{product.category.map((cat) => cat).join(", ")}</TableCell>
+                
+                <TableCell>₹{product.originalPrice}</TableCell>
+
+                <TableCell>
+                  {product.discountedPrice
+                    ? `₹${product.discountedPrice}`
+                    : "N/A"}
+                </TableCell>
+                <TableCell>{product.reviews.length}</TableCell>
+                <TableCell>{product.ratings}</TableCell>
+                <TableCell>{product.outOfStock ? "Yes" : "No"}</TableCell>
+                <TableCell>{product.popularity}</TableCell>
+
+                <TableCell className=" text-end">
+                  <div className="flex gap-2 justify-end">
+                    <Button
+                      className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
+                      onClick={() => navigate(`/products/edit/${product._id}`)}
+                    >
+                      Show
+                    </Button>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="bg-red-500 text-white hover:bg-red-700 cursor-pointer">
+                          Delete
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Delete Product</DialogTitle>
+                          <DialogDescription>
+                            Are you sure you want to delete this product? This action cannot be undone. The Images used in this product will be removed from the database.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button
+                            className="bg-red-500 text-white hover:bg-red-700 cursor-pointer"
+                            variant="secondary"
+                            onClick={() => handleDelete(product._id)}
+                          >
+                            Confirm
+                          </Button>
+                          <Button variant="ghost">Cancel</Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={9} className="text-center">
+                No products found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={9}>
+              <div className="flex justify-between items-center">
+                <Button
+                  className={" cursor-pointer"}
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                >
+                  Previous
+                </Button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  className=" cursor-pointer"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     </div>
   );
 };

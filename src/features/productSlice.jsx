@@ -5,6 +5,8 @@ import { toast } from "sonner";
 const initialState = {
   products: [],
   totalProducts: 0,
+  totalPages: 0,
+  currentPage: 1,
   loading: false,
   error: null,
 };
@@ -36,14 +38,31 @@ export const createProduct = createAsyncThunk(
 // Get Products
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async ({ page = 1, items = 10 }, { rejectWithValue }) => {
+  async ({ page = 1, items = 12 }, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get(
-        `/product/admin/get-product?page=${page}&items=${items}`
+        `/product/get-product?page=${page}&items=${items}`
       );
       return data;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to fetch products.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+// get single product
+
+export const getSingleProduct = createAsyncThunk(
+  "product/getSingleProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get(
+        `/product/get-product/${productId}`
+      );
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to fetch product.");
       return rejectWithValue(err.response?.data);
     }
   }
@@ -82,6 +101,26 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+// Duplicate Product
+
+export const duplicateProduct = createAsyncThunk(
+  "product/duplicateProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post(`/product/admin/duplicate`, {
+        productId,
+      });
+      toast.success("Product duplicated successfully!");
+      return data;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to duplicate product."
+      );
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -95,7 +134,7 @@ const productSlice = createSlice({
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products.push(action.payload.data);
+        state.products.push(action.payload.data.product);
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -110,7 +149,9 @@ const productSlice = createSlice({
       .addCase(getProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.products = action.payload.data.products;
-        state.totalProducts = action.payload.data.total;
+        state.totalProducts = action.payload.data.pagination.totalProducts;
+        state.currentPage = action.payload.data.pagination.currentPage;
+        state.totalPages = action.payload.data.pagination.totalPages;
       })
       .addCase(getProducts.rejected, (state, action) => {
         state.loading = false;
@@ -148,6 +189,38 @@ const productSlice = createSlice({
         }
       })
       .addCase(updateProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(duplicateProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(duplicateProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products.push(action.payload.data.product);
+      })
+      .addCase(duplicateProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Get Single Product
+      .addCase(getSingleProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getSingleProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.products.findIndex(
+          (product) => product._id === action.payload.data.product._id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload.data.product;
+        } else {
+          state.products.push(action.payload.data.product);
+        }
+      })
+      .addCase(getSingleProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -16,7 +16,7 @@ import { Textarea } from "../ui/textarea";
 import { MdDelete } from "react-icons/md";
 import { createProduct } from "@/features/productSlice";
 import { useDispatch, useSelector } from "react-redux";
-
+import MultiSelect from "react-select";
 const categories = [
   { value: "oversizeTees", label: "Oversize Tees" },
   { value: "vest", label: "Vest" },
@@ -35,11 +35,16 @@ const AddProduct = () => {
       description: "",
       originalPrice: "",
       discountedPrice: "",
-      category: "",
+      category: [],
       sku: "",
       gender: "",
       tags: "",
-      sizeVariations: "",
+      sizeVariations: JSON.stringify([
+        { size: "S", stock: "10" },
+        { size: "M", stock: "10" },
+        { size: "L", stock: "10" },
+      ]),
+      outOfStock: false,
       colorVariations: "",
       images: null,
     },
@@ -51,10 +56,12 @@ const AddProduct = () => {
       discountedPrice: Yup.number()
         .positive("Discounted price must be positive")
         .nullable(),
-      category: Yup.string().required("Category is required"),
+      category: Yup.array()
+        .min(1, "At least one category is required")
+        .required("Category is required"),
+
       gender: Yup.string().required("Gender is required"),
       tags: Yup.string().required("Tags are required"),
-      sizeVariations: Yup.string().required("Size variations are required"),
       images: Yup.mixed().required("At least one image is required"),
     }),
     onSubmit: (values) => {
@@ -65,7 +72,7 @@ const AddProduct = () => {
       formData.append("description", values.description);
       formData.append("originalPrice", values.originalPrice);
       formData.append("discountedPrice", values.discountedPrice || "");
-      formData.append("category", values.category);
+      formData.append("category", values.category.join(","));
       formData.append("sku", values.sku);
       formData.append("gender", values.gender);
       formData.append("tags", values.tags);
@@ -86,11 +93,11 @@ const AddProduct = () => {
     },
   });
 
-const [sizeVariations, setSizeVariations] = useState([
-  { size: "S", stock: "10" },
-  { size: "M", stock: "10" },
-  { size: "L", stock: "10" },
-]);
+  const [sizeVariations, setSizeVariations] = useState([
+    { size: "S", stock: "10" },
+    { size: "M", stock: "10" },
+    { size: "L", stock: "10" },
+  ]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleSizeChange = (index, field, value) => {
@@ -144,7 +151,7 @@ const [sizeVariations, setSizeVariations] = useState([
             <Input
               type="text"
               name="name"
-                 className="w-60"
+              className="w-60"
               placeholder="Enter product name"
               value={formik.values.name}
               onChange={formik.handleChange}
@@ -194,29 +201,20 @@ const [sizeVariations, setSizeVariations] = useState([
                 </p>
               )}
           </div>
-          {/* Category */}
+          {/* SKU */}
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Category</label>
-            <Select
-              name="gender"
-              onValueChange={(value) => formik.setFieldValue("category", value)}
-            >
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Category</SelectLabel>
-                  {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {formik.touched.category && formik.errors.category && (
-              <p className="text-red-500 text-sm">{formik.errors.category}</p>
+            <label className="block text-sm font-medium mb-1">SKU</label>
+            <Input
+              type="text"
+              name="sku"
+              placeholder="Enter SKU"
+              className="w-48"
+              value={formik.values.sku}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.sku && formik.errors.sku && (
+              <p className="text-red-500 text-sm">{formik.errors.sku}</p>
             )}
           </div>
           {/* Gender */}
@@ -264,25 +262,24 @@ const [sizeVariations, setSizeVariations] = useState([
 
         <div className="flex items-center justify-between mb-4 gap-4"></div>
         <div className="flex gap-10">
-          {/* SKU */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">SKU</label>
-            <Input
-              type="text"
-              name="sku"
-              placeholder="Enter SKU"
-                 className="w-96"
-              value={formik.values.sku}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.sku && formik.errors.sku && (
-              <p className="text-red-500 text-sm">{formik.errors.sku}</p>
-            )}
-          </div>
-
-          {/* Tags */}
           <div className="mb-4 w-full">
+            <label className="block text-sm font-medium mb-1">Category</label>
+            <MultiSelect
+              isMulti
+              name="category"
+              options={categories}
+              className="basic-multi-select w-full"
+              classNamePrefix="select"
+              onChange={(selectedOptions) =>
+                formik.setFieldValue(
+                  "category",
+                  selectedOptions.map((option) => option.value)
+                )
+              }
+            />
+          </div>
+          {/* Tags */}
+          <div className=" w-full">
             <label className="block text-sm font-medium mb-1">Tags</label>
             <Input
               type="text"
@@ -334,11 +331,6 @@ const [sizeVariations, setSizeVariations] = useState([
           <Button type="button" onClick={addSizeVariation}>
             Add Size Variation
           </Button>
-          { formik.errors.sizeVariations && (
-            <p className="text-red-500 text-sm ml-10">
-              {formik.errors.sizeVariations}
-            </p>
-          )}
         </div>
 
         {/* Color Variations */}
