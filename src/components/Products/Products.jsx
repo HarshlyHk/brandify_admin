@@ -20,7 +20,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getProducts, deleteProduct } from "@/features/productSlice";
+import {
+  getProducts,
+  deleteProduct,
+  duplicateProduct,
+} from "@/features/productSlice";
 import { Label } from "../ui/label";
 import {
   Dialog,
@@ -31,7 +35,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
+import { SlOptionsVertical } from "react-icons/sl";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,8 +56,12 @@ const Products = () => {
   }, [dispatch, currentPage, itemsPerPage]);
 
   const handleDelete = (productId) => {
-      dispatch(deleteProduct(productId));
+    dispatch(deleteProduct(productId));
   };
+
+  const sortedProducts = [...products].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   return (
     <div className="p-6">
@@ -63,7 +76,7 @@ const Products = () => {
           <Link to="/products/add">
             <Button>Add Product</Button>
           </Link>
-          <Link to="/categories/manage">
+          <Link to="/category">
             <Button>Manage Categories</Button>
           </Link>
         </div>
@@ -113,11 +126,13 @@ const Products = () => {
               </TableCell>
             </TableRow>
           ) : products.length > 0 ? (
-            products.map((product) => (
+            sortedProducts.map((product) => (
               <TableRow key={product._id}>
                 <TableCell>{product.name}</TableCell>
-                <TableCell className="uppercase">{product.category.map((cat) => cat).join(", ")}</TableCell>
-                
+                <TableCell className="uppercase">
+                  {product.category.map((cat) => cat).join(", ")}
+                </TableCell>
+
                 <TableCell>₹{product.originalPrice}</TableCell>
 
                 <TableCell>
@@ -131,39 +146,68 @@ const Products = () => {
                 <TableCell>{product.popularity}</TableCell>
 
                 <TableCell className=" text-end">
-                  <div className="flex gap-2 justify-end">
+                  <div className="flex gap-2 justify-center items-center">
                     <Button
                       className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
                       onClick={() => navigate(`/products/edit/${product._id}`)}
                     >
-                      Show
+                      Edit
                     </Button>
-
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button className="bg-red-500 text-white hover:bg-red-700 cursor-pointer">
-                          Delete
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Delete Product</DialogTitle>
-                          <DialogDescription>
-                            Are you sure you want to delete this product? This action cannot be undone. The Images used in this product will be removed from the database.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
+                    <Popover>
+                      <PopoverTrigger asChild className="cursor-pointer">
+                        <SlOptionsVertical className="text-gray-700" />
+                      </PopoverTrigger>
+                      <PopoverContent className="w-48">
+                        <div className="flex flex-col gap-2">
                           <Button
-                            className="bg-red-500 text-white hover:bg-red-700 cursor-pointer"
-                            variant="secondary"
-                            onClick={() => handleDelete(product._id)}
+                            className="cursor-pointer hover:bg-green-700 bg-green-500 text-white"
+                            onClick={() =>
+                              navigate(dispatch(duplicateProduct(product._id)))
+                            }
                           >
-                            Confirm
+                            Duplicate
                           </Button>
-                          <Button variant="ghost">Cancel</Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
+
+                          <Button
+                            className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
+                            onClick={() =>
+                              navigate(`/products/edit/${product._id}`)
+                            }
+                          >
+                            Edit
+                          </Button>
+
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button className="bg-red-500 text-white hover:bg-red-700 cursor-pointer">
+                                Delete
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Delete Product</DialogTitle>
+                                <DialogDescription>
+                                  Are you sure you want to delete this product?
+                                  This action cannot be undone. The Images used
+                                  in this product will be removed from the
+                                  database.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                <Button
+                                  className="bg-red-500 text-white hover:bg-red-700 cursor-pointer"
+                                  variant="secondary"
+                                  onClick={() => handleDelete(product._id)}
+                                >
+                                  Confirm
+                                </Button>
+                                <Button variant="ghost">Cancel</Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </TableCell>
               </TableRow>

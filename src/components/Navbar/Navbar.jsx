@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { Home, Settings, Users, LogOut , Package} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Home, Settings, Users, LogOut, Package } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/userSlice";
+import { getCategories } from "@/features/categorySlics";
+import { getTags } from "@/features/tagSlice";
 
 const Sidebar = () => {
   const [active, setActive] = useState("Dashboard");
@@ -20,6 +22,11 @@ const Sidebar = () => {
     localStorage.removeItem("drip_access_token");
     navigate("/login");
   };
+  // Fetch categories
+  useEffect(() => {
+    dispatch(getCategories());
+    dispatch(getTags());
+  }, []);
 
   return (
     <div className="h-screen w-64 bg-gray-900 text-white flex flex-col p-5 shadow-lg">

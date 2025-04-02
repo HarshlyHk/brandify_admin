@@ -17,17 +17,13 @@ import { MdDelete } from "react-icons/md";
 import { createProduct } from "@/features/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import MultiSelect from "react-select";
-const categories = [
-  { value: "oversizeTees", label: "Oversize Tees" },
-  { value: "vest", label: "Vest" },
-  { value: "hoodies", label: "Hoodies" },
-  { value: "bottoms", label: "Bottoms" },
-  { value: "blanks", label: "Blanks" },
-  { value: "dripcult", label: "Dripcult" },
-];
+import { Label } from "../ui/label";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.category);
+  const { tags } = useSelector((state) => state.tags);
+
   const { loading } = useSelector((state) => state.product);
   const formik = useFormik({
     initialValues: {
@@ -38,7 +34,7 @@ const AddProduct = () => {
       category: [],
       sku: "",
       gender: "",
-      tags: "",
+      tags: [],
       sizeVariations: JSON.stringify([
         { size: "S", stock: "10" },
         { size: "M", stock: "10" },
@@ -47,6 +43,8 @@ const AddProduct = () => {
       outOfStock: false,
       colorVariations: "",
       images: null,
+      unlist: false,
+      careGuide: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Product name is required"),
@@ -61,7 +59,7 @@ const AddProduct = () => {
         .required("Category is required"),
 
       gender: Yup.string().required("Gender is required"),
-      tags: Yup.string().required("Tags are required"),
+      tags: Yup.array().required("Tags are required"),
       images: Yup.mixed().required("At least one image is required"),
     }),
     onSubmit: (values) => {
@@ -75,9 +73,12 @@ const AddProduct = () => {
       formData.append("category", values.category.join(","));
       formData.append("sku", values.sku);
       formData.append("gender", values.gender);
-      formData.append("tags", values.tags);
+      formData.append("tags", values.tags.join(","));
       formData.append("sizeVariations", values.sizeVariations);
       formData.append("colorVariations", values.colorVariations || "");
+      formData.append("careGuide", values.careGuide || "");
+      formData.append("unlist", values.unlist);
+      
 
       // Append images to FormData
       if (values.images) {
@@ -281,14 +282,20 @@ const AddProduct = () => {
           {/* Tags */}
           <div className=" w-full">
             <label className="block text-sm font-medium mb-1">Tags</label>
-            <Input
-              type="text"
+            <MultiSelect
+              isMulti
               name="tags"
-              placeholder="Enter tags (comma-separated)"
-              value={formik.values.tags}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              options={tags}
+              className="basic-multi-select w-full"
+              classNamePrefix="select"
+              onChange={(selectedOptions) =>
+                formik.setFieldValue(
+                  "tags",
+                  selectedOptions.map((option) => option.value)
+                )
+              }
             />
+
             {formik.touched.tags && formik.errors.tags && (
               <p className="text-red-500 text-sm">{formik.errors.tags}</p>
             )}
@@ -391,20 +398,55 @@ const AddProduct = () => {
           ))}
         </div>
 
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          className="w-full cursor-pointer"
-          disabled={loading}
-        >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              Adding Product...
-            </div>
-          ) : (
-            "Add Product"
+        {/* Care Guide */}
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Care Guide</label>
+          <Textarea
+            type="text"
+            name="careGuide"
+            placeholder="Enter care guide ( comma separated values)"
+            value={formik.values.careGuide}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.careGuide && formik.errors.careGuide && (
+            <p className="text-red-500 text-sm">{formik.errors.careGuide}</p>
           )}
-        </Button>
+        </div>
+
+        <div className="flex gap-4 mb-4 items-end">
+          <div>
+            <Label className="block text-sm font-medium mb-1">Unlist</Label>
+            <Select>
+              <SelectTrigger className="min-w-60">
+                <SelectValue placeholder="Unlist" className="min-w-60" />
+              </SelectTrigger>
+              <SelectContent className="min-w-60">
+                <SelectGroup className="min-w-60">
+                  <SelectLabel>Unlist</SelectLabel>
+                  <SelectItem value="true">True</SelectItem>
+                  <SelectItem value="false">False</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button
+            type="submit"
+            className="w cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center">
+                Adding Product...
+              </div>
+            ) : (
+              "Add Product"
+            )}
+          </Button>
+        </div>
+
+        {/* Submit Button */}
       </form>
     </div>
   );

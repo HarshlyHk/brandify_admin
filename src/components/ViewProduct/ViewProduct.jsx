@@ -19,22 +19,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const categories = [
-  { value: "oversizeTees", label: "Oversize Tees" },
-  { value: "vest", label: "Vest" },
-  { value: "hoodies", label: "Hoodies" },
-  { value: "bottoms", label: "Bottoms" },
-  { value: "blanks", label: "Blanks" },
-  { value: "dripcult", label: "Dripcult" },
-];
-
 const ViewProduct = () => {
   const { id } = useParams(); // Fetch product ID from route
   const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.product);
   const [imagesToDelete, setImagesToDelete] = useState([]);
   const [newImages, setNewImages] = useState([]);
-
+  const { categories } = useSelector((state) => state.category);
+  const { tags } = useSelector((state) => state.tags);
   const product = products.find((p) => p._id === id);
 
   useEffect(() => {
@@ -58,7 +50,9 @@ const ViewProduct = () => {
       sku: product?.sku || "",
       gender: product?.gender || "",
       category: product?.category || [],
-      outOfStock: product?.outOfStock || false,
+      outOfStock: product?.outOfStock,
+      careGuide: product?.careGuide || "",
+      unlist: product?.unlist,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -77,6 +71,8 @@ const ViewProduct = () => {
       formData.append("sku", values.sku);
       formData.append("gender", values.gender);
       formData.append("outOfStock", values.outOfStock);
+      formData.append("careGuide", values.careGuide);
+      formData.append("unlist", values.unlist);
 
       // Convert arrays to JSON format
       values.category.forEach((cat) => formData.append("category[]", cat));
@@ -120,13 +116,12 @@ const ViewProduct = () => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="p-6 w-full mx-auto bg-white rounded-md shadow-md"
+      className="p-6 w-full mx-auto bg-white rounded-md"
     >
-     <div className=" flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">{product?.name}</h1>
-      <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
-
-     </div>
+      <div className=" flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">{product?.name}</h1>
+        <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
+      </div>
       {/* Product Name */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Product Name</label>
@@ -141,6 +136,168 @@ const ViewProduct = () => {
           <p className="text-red-500 text-sm">{formik.errors.name}</p>
         )}
       </div>
+      <div className="flex gap-4 mb-4">
+        <div className="">
+          <label className="block text-sm font-medium mb-1">
+            Original Price
+          </label>
+          <Input
+            type="number"
+            name="originalPrice"
+            value={formik.values.originalPrice}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.originalPrice && formik.errors.originalPrice && (
+            <p className="text-red-500 text-sm">
+              {formik.errors.originalPrice}
+            </p>
+          )}
+        </div>
+        <div className="">
+          <label className="block text-sm font-medium mb-1">
+            Discounted Price
+          </label>
+          <Input
+            type="number"
+            name="discountedPrice"
+            value={formik.values.discountedPrice}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.discountedPrice && formik.errors.discountedPrice && (
+            <p className="text-red-500 text-sm">
+              {formik.errors.discountedPrice}
+            </p>
+          )}
+        </div>
+
+        <div className="w-60">
+          <label className="block text-sm font-medium mb-1">Out of Stock</label>
+          {formik?.values?.outOfStock != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("outOfStock", value == "true")
+              }
+              value={formik?.values?.outOfStock ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
+        {/* unlist */}
+
+        <div className="w-60">
+          <label className="block text-sm font-medium mb-1">UnList Item</label>
+          {formik?.values?.unlist != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("unlist", value == "true")
+              }
+              value={formik?.values?.unlist ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+        <div className="w-60">
+          <label className="block text-sm font-medium mb-1">Gender</label>
+          {formik?.values?.gender !== "" && (
+            <Select
+              value={formik?.values?.gender}
+              onValueChange={(value) => formik.setFieldValue("gender", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="Men">Men</SelectItem>
+                  <SelectItem value="Women">Women</SelectItem>
+                  <SelectItem value="Unisex">Unisex</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      </div>
+
+      {/* SKU */}
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">SKU</label>
+        <Input
+          type="text"
+          name="sku"
+          value={formik.values.sku}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.sku && formik.errors.sku && (
+          <p className="text-red-500 text-sm">{formik.errors.sku}</p>
+        )}
+      </div>
+
+      {/* Tags */}
+      <div className="mb-4 flex flex-row-reverse gap-4">
+        <div className=" w-1/2">
+          <label className="block text-sm font-medium mb-1">Tags</label>
+          <MultiSelect
+            isMulti
+            value={formik.values.tags.map((tag) => ({
+              label: tag,
+              value: tag,
+            }))}
+            onChange={(selected) =>
+              formik.setFieldValue(
+                "tags",
+                selected.map((item) => item.value)
+              )
+            }
+            options={tags.map((tag) => ({
+              label: tag.label,
+              value: tag.value,
+            }))}
+            className="basic-multi-select"
+          />
+        </div>
+
+        <div className=" w-1/2">
+          <label className="block text-sm font-medium mb-1">Categories</label>
+          <MultiSelect
+            isMulti
+            value={formik.values.category.map((cat) => ({
+              label: cat,
+              value: cat,
+            }))}
+            onChange={(selected) =>
+              formik.setFieldValue(
+                "category",
+                selected.map((item) => item.value)
+              )
+            }
+            options={categories}
+          />
+        </div>
+      </div>
+
       {/* Description */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Description</label>
@@ -151,6 +308,62 @@ const ViewProduct = () => {
           onBlur={formik.handleBlur}
         />
       </div>
+
+      {/* Size Variations */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">
+          Size Variations
+        </label>
+        <ul>
+          {formik.values.sizeVariations.map((variation, index) => (
+            <li key={index} className="flex gap-4 items-center mt-2">
+              <Input
+                type="text"
+                name={`sizeVariations[${index}].size`}
+                value={variation.size}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <Input
+                type="number"
+                name={`sizeVariations[${index}].stock`}
+                value={variation.stock}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <Button
+                type="button"
+                className={
+                  "bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-md"
+                }
+                onClick={() =>
+                  formik.setFieldValue(
+                    "sizeVariations",
+                    formik.values.sizeVariations.filter((_, i) => i !== index)
+                  )
+                }
+              >
+                <MdDelete className="text-white" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+        <Button
+          type="button"
+          className="mt-2"
+          onClick={() =>
+            formik.setFieldValue("sizeVariations", [
+              ...formik.values.sizeVariations,
+              { size: "", stock: 0 },
+            ])
+          }
+        >
+          Add Variation
+        </Button>
+      </div>
+
+      {/* Images */}
+
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Images</label>
         <div className="flex gap-4 flex-wrap">
@@ -164,9 +377,9 @@ const ViewProduct = () => {
               <Button
                 type="button"
                 onClick={() => handleDeleteImage(image)}
-                className="mt-2"
+                className="mt-2 bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-md"
               >
-                <MdDelete className="text-red-500" />
+                <MdDelete className="text-white" />
               </Button>
             </div>
           ))}
@@ -183,9 +396,9 @@ const ViewProduct = () => {
                 onClick={() =>
                   setNewImages((prev) => prev.filter((_, i) => i !== index))
                 }
-                className="mt-2"
+                className="mt-2 bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-md"
               >
-                <MdDelete className="text-red-500" />
+                <MdDelete className="text-white" />
               </Button>
             </div>
           ))}
@@ -219,143 +432,25 @@ const ViewProduct = () => {
           />
         </div>
       </div>
-      {/* Size Variations */}
+
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">
-          Size Variations
-        </label>
-        <ul>
-          {formik.values.sizeVariations.map((variation, index) => (
-            <li key={index} className="flex gap-4 items-center mt-2">
-              <Input
-                type="text"
-                name={`sizeVariations[${index}].size`}
-                value={variation.size}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              <Input
-                type="number"
-                name={`sizeVariations[${index}].stock`}
-                value={variation.stock}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              <Button
-                type="button"
-                onClick={() =>
-                  formik.setFieldValue(
-                    "sizeVariations",
-                    formik.values.sizeVariations.filter((_, i) => i !== index)
-                  )
-                }
-              >
-                Remove
-              </Button>
-            </li>
-          ))}
-        </ul>
+        <label className="block text-sm font-medium mb-1">Care Guide</label>
+        <Textarea
+          type="text"
+          name="careGuide"
+          placeholder="Enter care guide ( comma separated values)"
+          value={formik.values.careGuide}
+          onChange={formik.handleChange}
+        />
+        {formik.touched.careGuide && formik.errors.careGuide && (
+          <p className="text-red-500 text-sm">{formik.errors.careGuide}</p>
+        )}
+      </div>
+      <div className="flex gap-4 justify-end">
         <Button
-          type="button"
-          className="mt-2"
-          onClick={() =>
-            formik.setFieldValue("sizeVariations", [
-              ...formik.values.sizeVariations,
-              { size: "", stock: 0 },
-            ])
-          }
+          type="submit"
+          className="w-40 bg-blue-600 hover:bg-blue-700 text-white"
         >
-          Add Variation
-        </Button>
-      </div>
-      {/* Tags */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Tags</label>
-        <MultiSelect
-          isMulti
-          value={formik.values.tags.map((tag) => ({ label: tag, value: tag }))}
-          onChange={(selected) =>
-            formik.setFieldValue(
-              "tags",
-              selected.map((item) => item.value)
-            )
-          }
-          options={formik.values.tags.map((tag) => ({
-            label: tag,
-            value: tag,
-          }))}
-        />
-      </div>
-      {/* Prices */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Original Price</label>
-        <Input
-          type="number"
-          name="originalPrice"
-          value={formik.values.originalPrice}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-        {formik.touched.originalPrice && formik.errors.originalPrice && (
-          <p className="text-red-500 text-sm">{formik.errors.originalPrice}</p>
-        )}
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">
-          Discounted Price
-        </label>
-        <Input
-          type="number"
-          name="discountedPrice"
-          value={formik.values.discountedPrice}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-        {formik.touched.discountedPrice && formik.errors.discountedPrice && (
-          <p className="text-red-500 text-sm">
-            {formik.errors.discountedPrice}
-          </p>
-        )}
-      </div>
-      {/* Categories */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Categories</label>
-        <MultiSelect
-          isMulti
-          value={formik.values.category.map((cat) => ({
-            label: cat,
-            value: cat,
-          }))}
-          onChange={(selected) =>
-            formik.setFieldValue(
-              "category",
-              selected.map((item) => item.value)
-            )
-          }
-          options={categories}
-        />
-      </div>
-      {/* Out of Stock */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Out of Stock</label>
-        <Select
-          onValueChange={(value) => formik.setFieldValue("outOfStock", value)}
-          defaultValue={formik.values.outOfStock ? "true" : "false"}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="true">Yes</SelectItem>
-              <SelectItem value="false">No</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      {/* Buttons */}
-      <div className="flex gap-4">
-        <Button type="submit" className="w-40">
           Save Changes
         </Button>
       </div>

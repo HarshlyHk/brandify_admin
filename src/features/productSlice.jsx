@@ -8,6 +8,7 @@ const initialState = {
   totalPages: 0,
   currentPage: 1,
   loading: false,
+  taskLoading: false,
   error: null,
 };
 
@@ -17,6 +18,7 @@ const initialState = {
 export const createProduct = createAsyncThunk(
   "product/createProduct",
   async (productData, { rejectWithValue }) => {
+    toast.info("Creating product...");
     try {
       const { data } = await axiosInstance.post(
         "/product/admin/add",
@@ -56,6 +58,7 @@ export const getProducts = createAsyncThunk(
 export const getSingleProduct = createAsyncThunk(
   "product/getSingleProduct",
   async (productId, { rejectWithValue }) => {
+    toast.info("Fetching product...");
     try {
       const { data } = await axiosInstance.get(
         `/product/get-product/${productId}`
@@ -72,6 +75,7 @@ export const getSingleProduct = createAsyncThunk(
 export const deleteProduct = createAsyncThunk(
   "product/deleteProduct",
   async (productId, { rejectWithValue }) => {
+    toast.info("Deleting product...");
     try {
       await axiosInstance.delete(`/product/admin/delete/${productId}`);
       toast.success("Product deleted successfully!");
@@ -87,6 +91,7 @@ export const deleteProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   "product/updateProduct",
   async ({ productId, updatedData }, { rejectWithValue }) => {
+    toast.info("Updating product...");
     try {
       const { data } = await axiosInstance.put(
         `/product/admin/update/${productId}`,
@@ -106,9 +111,10 @@ export const updateProduct = createAsyncThunk(
 export const duplicateProduct = createAsyncThunk(
   "product/duplicateProduct",
   async (productId, { rejectWithValue }) => {
+    toast.info("Duplicating product...");
     try {
       const { data } = await axiosInstance.post(`/product/admin/duplicate`, {
-        productId,
+        _id : productId,
       });
       toast.success("Product duplicated successfully!");
       return data;
@@ -160,27 +166,27 @@ const productSlice = createSlice({
 
       // Delete Product
       .addCase(deleteProduct.pending, (state) => {
-        state.loading = true;
+        state.taskLoading = true;
         state.error = null;
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.loading = false;
+        state.taskLoading = false;
         state.products = state.products.filter(
           (product) => product._id !== action.payload
         );
       })
       .addCase(deleteProduct.rejected, (state, action) => {
-        state.loading = false;
+        state.taskLoading = false;
         state.error = action.payload;
       })
 
       // Update Product
       .addCase(updateProduct.pending, (state) => {
-        state.loading = true;
+        state.taskLoading = true;
         state.error = null;
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        state.loading = false;
+        state.taskLoading = false;
         const index = state.products.findIndex(
           (product) => product._id === action.payload.data._id
         );
@@ -189,19 +195,19 @@ const productSlice = createSlice({
         }
       })
       .addCase(updateProduct.rejected, (state, action) => {
-        state.loading = false;
+        state.taskLoading = false;
         state.error = action.payload;
       })
       .addCase(duplicateProduct.pending, (state) => {
-        state.loading = true;
+        state.taskLoading = true;
         state.error = null;
       })
       .addCase(duplicateProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.products.push(action.payload.data.product);
+        state.taskLoading = false;
+        state.products.push(action.payload.data.duplicatedProduct);
       })
       .addCase(duplicateProduct.rejected, (state, action) => {
-        state.loading = false;
+        state.taskLoading = false;
         state.error = action.payload;
       })
       // Get Single Product
