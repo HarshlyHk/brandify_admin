@@ -82,7 +82,6 @@ const AddProduct = () => {
       formData.append("careGuide", values.careGuide || "");
       formData.append("coreFeatures", values.coreFeatures || "");
       formData.append("unlist", values.unlist);
-      formData.append("coreFeatures", values.coreFeatures || "");
       formData.append("shortDescription", values.shortDescription || "");
       formData.append("outOfStock", values.outOfStock);
       formData.append("onSale", values.onSale || false);
