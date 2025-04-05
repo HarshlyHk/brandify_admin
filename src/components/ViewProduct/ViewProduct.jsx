@@ -382,7 +382,6 @@ const ViewProduct = () => {
       </div>
 
       {/* Images */}
-
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Images</label>
         <div className="flex gap-4 flex-wrap">
@@ -393,6 +392,7 @@ const ViewProduct = () => {
                 alt={`Product Image ${index + 1}`}
                 className="w-28 h-28 object-cover rounded-md shadow-md"
               />
+              <span className="text-sm text-gray-500 mt-1">#{index + 1}</span>
               <Button
                 type="button"
                 onClick={() => handleDeleteImage(image)}
@@ -410,6 +410,9 @@ const ViewProduct = () => {
                 alt={`New Image ${index + 1}`}
                 className="w-28 h-28 object-cover rounded-md shadow-md"
               />
+              <span className="text-sm text-gray-500 mt-1">
+                #{formik.values.images.length + index + 1}
+              </span>
               <Button
                 type="button"
                 onClick={() =>
@@ -451,7 +454,6 @@ const ViewProduct = () => {
           />
         </div>
       </div>
-
       {/* Description */}
 
       {/* Description */}
@@ -464,18 +466,22 @@ const ViewProduct = () => {
           />
         )}
       </div>
-      
+
       {/* Short Description */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Short Description</label>
+        <label className="block text-sm font-medium mb-1">
+          Short Description
+        </label>
         {formik.values.shortDescription !== undefined && (
           <DraftViewer
             value={formik.values.shortDescription}
-            onChange={(value) => formik.setFieldValue("shortDescription", value)}
+            onChange={(value) =>
+              formik.setFieldValue("shortDescription", value)
+            }
           />
         )}
       </div>
-      
+
       {/* Core Features */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Core Features</label>
@@ -486,7 +492,7 @@ const ViewProduct = () => {
           />
         )}
       </div>
-      
+
       {/* Care Guide */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Care Guide</label>
