@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DraftViewer from "./DraftViewer";
 
 const ViewProduct = () => {
   const { id } = useParams(); // Fetch product ID from route
@@ -41,7 +42,6 @@ const ViewProduct = () => {
   const formik = useFormik({
     initialValues: {
       name: product?.name || "",
-      description: product?.description || "",
       images: product?.images || [],
       sizeVariations: product?.sizeVariations || [],
       tags: product?.tags || [],
@@ -51,8 +51,12 @@ const ViewProduct = () => {
       gender: product?.gender || "",
       category: product?.category || [],
       outOfStock: product?.outOfStock,
-      careGuide: product?.careGuide || "",
       unlist: product?.unlist,
+      onSale: product?.onSale,
+      shortDescription: product?.shortDescription,
+      coreFeatures: product?.coreFeatures,
+      description: product?.description,
+      careGuide: product?.careGuide,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -65,14 +69,17 @@ const ViewProduct = () => {
     onSubmit: (values) => {
       const formData = new FormData();
       formData.append("name", values.name);
-      formData.append("description", values.description);
       formData.append("originalPrice", values.originalPrice);
       formData.append("discountedPrice", values.discountedPrice);
       formData.append("sku", values.sku);
       formData.append("gender", values.gender);
       formData.append("outOfStock", values.outOfStock);
-      formData.append("careGuide", values.careGuide);
       formData.append("unlist", values.unlist);
+      formData.append("onSale", values.onSale);
+      formData.append("careGuide", values.careGuide);
+      formData.append("description", values.description);
+      formData.append("shortDescription", values.shortDescription);
+      formData.append("coreFeatures", values.coreFeatures);
 
       // Convert arrays to JSON format
       values.category.forEach((cat) => formData.append("category[]", cat));
@@ -172,7 +179,7 @@ const ViewProduct = () => {
           )}
         </div>
 
-        <div className="w-60">
+        <div className="w-32">
           <label className="block text-sm font-medium mb-1">Out of Stock</label>
           {formik?.values?.outOfStock != null && (
             <Select
@@ -196,7 +203,7 @@ const ViewProduct = () => {
 
         {/* unlist */}
 
-        <div className="w-60">
+        <div className="w-40">
           <label className="block text-sm font-medium mb-1">UnList Item</label>
           {formik?.values?.unlist != null && (
             <Select
@@ -217,7 +224,7 @@ const ViewProduct = () => {
             </Select>
           )}
         </div>
-        <div className="w-60">
+        <div className="w-40">
           <label className="block text-sm font-medium mb-1">Gender</label>
           {formik?.values?.gender !== "" && (
             <Select
@@ -237,7 +244,30 @@ const ViewProduct = () => {
             </Select>
           )}
         </div>
+        <div className="w-40">
+          <label className="block text-sm font-medium mb-1">On Sale</label>
+          {formik?.values?.onSale != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("onSale", value === "true")
+              }
+              value={formik?.values?.onSale ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
       </div>
+
+      {/* On Sale */}
 
       {/* SKU */}
 
@@ -296,17 +326,6 @@ const ViewProduct = () => {
             options={categories}
           />
         </div>
-      </div>
-
-      {/* Description */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Description</label>
-        <Textarea
-          name="description"
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
       </div>
 
       {/* Size Variations */}
@@ -433,20 +452,56 @@ const ViewProduct = () => {
         </div>
       </div>
 
+      {/* Description */}
+      {formik.values.description && (
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Description</label>
+        <DraftViewer
+          value={formik.values.description}
+          onChange={(value) => formik.setFieldValue("description", value)}
+        />
+      </div>
+      )}
+
+      {formik.values.shortDescription && (
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">
+            Short Description
+          </label>
+          <DraftViewer
+            value={formik.values.shortDescription}
+            onChange={(value) =>
+              formik.setFieldValue("shortDescription", value)
+            }
+          />
+        </div>
+      )}
+
+      {/* Core Features */}
+      {formik.values.coreFeatures && (
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Core Features</label>
+        <DraftViewer
+          value={formik.values.coreFeatures}
+          onChange={(value) => formik.setFieldValue("coreFeatures", value)}
+        />
+      </div>
+      )}
+
+      {/* Care Guide */}
+      {formik.values.careGuide &&  
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Care Guide</label>
-        <Textarea
-          type="text"
-          name="careGuide"
-          placeholder="Enter care guide ( comma separated values)"
+        <DraftViewer
           value={formik.values.careGuide}
-          onChange={formik.handleChange}
+          onChange={(value) => formik.setFieldValue("careGuide", value)}
         />
-        {formik.touched.careGuide && formik.errors.careGuide && (
-          <p className="text-red-500 text-sm">{formik.errors.careGuide}</p>
-        )}
       </div>
-      <div className="flex gap-4 justify-end">
+      }
+
+      <div className="flex gap-4 justify-end fixed bottom-4 right-4">
         <Button
           type="submit"
           className="w-40 bg-blue-600 hover:bg-blue-700 text-white"

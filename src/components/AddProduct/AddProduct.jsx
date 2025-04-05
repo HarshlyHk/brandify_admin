@@ -18,6 +18,7 @@ import { createProduct } from "@/features/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import MultiSelect from "react-select";
 import { Label } from "../ui/label";
+import DraftEditor from "./DraftEditor";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,8 @@ const AddProduct = () => {
       images: null,
       unlist: false,
       careGuide: "",
+      coreFeatures: "",
+      shortDescription: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Product name is required"),
@@ -77,8 +80,12 @@ const AddProduct = () => {
       formData.append("sizeVariations", values.sizeVariations);
       formData.append("colorVariations", values.colorVariations || "");
       formData.append("careGuide", values.careGuide || "");
+      formData.append("coreFeatures", values.coreFeatures || "");
       formData.append("unlist", values.unlist);
-      
+      formData.append("coreFeatures", values.coreFeatures || "");
+      formData.append("shortDescription", values.shortDescription || "");
+      formData.append("outOfStock", values.outOfStock);
+      formData.append("onSale", values.onSale || false);
 
       // Append images to FormData
       if (values.images) {
@@ -243,24 +250,6 @@ const AddProduct = () => {
           </div>
         </div>
 
-        {/* Description */}
-        <div className="mb-8">
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <Textarea
-            type="text"
-            name="description"
-            placeholder="Enter product description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.description && formik.errors.description && (
-            <p className="text-red-500 absolute text-sm">
-              {formik.errors.description}
-            </p>
-          )}
-        </div>
-
         <div className="flex items-center justify-between mb-4 gap-4"></div>
         <div className="flex gap-10">
           <div className="mb-4 w-full">
@@ -398,44 +387,93 @@ const AddProduct = () => {
           ))}
         </div>
 
+        {/* Description */}
+        <div className="mb-8">
+          <label className="block text-sm font-medium mb-1">Description</label>
+          <DraftEditor
+            value={formik.values.description}
+            onChange={(value) => formik.setFieldValue("description", value)}
+          />
+          {formik.touched.description && formik.errors.description && (
+            <p className="text-red-500 text-sm">{formik.errors.description}</p>
+          )}
+        </div>
+
+        <div className="mb-8">
+          <label className="block text-sm font-medium mb-1">
+            Short Description
+          </label>
+          <DraftEditor
+            value={formik.values.shortDescription}
+            onChange={(value) =>
+              formik.setFieldValue("shortDescription", value)
+            }
+          />
+        </div>
+
         {/* Care Guide */}
 
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Care Guide</label>
-          <Textarea
-            type="text"
-            name="careGuide"
-            placeholder="Enter care guide ( comma separated values)"
+          <DraftEditor
             value={formik.values.careGuide}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            onChange={(value) => formik.setFieldValue("careGuide", value)}
           />
-          {formik.touched.careGuide && formik.errors.careGuide && (
-            <p className="text-red-500 text-sm">{formik.errors.careGuide}</p>
-          )}
         </div>
 
-        <div className="flex gap-4 mb-4 items-end">
-          <div>
-            <Label className="block text-sm font-medium mb-1">Unlist</Label>
-            <Select>
-              <SelectTrigger className="min-w-60">
-                <SelectValue placeholder="Unlist" className="min-w-60" />
-              </SelectTrigger>
-              <SelectContent className="min-w-60">
-                <SelectGroup className="min-w-60">
-                  <SelectLabel>Unlist</SelectLabel>
-                  <SelectItem value="true">True</SelectItem>
-                  <SelectItem value="false">False</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        {/* Core Features */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">
+            Core Features
+          </label>
+          <DraftEditor
+            value={formik.values.coreFeatures}
+            onChange={(value) => formik.setFieldValue("coreFeatures", value)}
+          />
+        </div>
+
+        <div className="flex gap-4 mb-4 items-end justify-between">
+          <div className="flex gap-4 mb-4 items-end ">
+            <div>
+              <Label className="block text-sm font-medium mb-1">Unlist</Label>
+              <Select
+                onValueChange={(value) =>
+                  formik.setFieldValue("unlist", value === "true")
+                }
+              >
+                <SelectTrigger className="min-w-60">
+                  <SelectValue placeholder="Unlist" className="min-w-60" />
+                </SelectTrigger>
+                <SelectContent className="min-w-60">
+                  <SelectGroup className="min-w-60">
+                    <SelectLabel>Unlist</SelectLabel>
+                    <SelectItem value="true">True</SelectItem>
+                    <SelectItem value="false">False</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="block text-sm font-medium mb-1">On Sale</Label>
+              <Select
+                onValueChange={(value) =>
+                  formik.setFieldValue("onSale", value === "true")
+                }
+              >
+                <SelectTrigger className="min-w-60">
+                  <SelectValue placeholder="On Sale" className="min-w-60" />
+                </SelectTrigger>
+                <SelectContent className="min-w-60">
+                  <SelectGroup className="min-w-60">
+                    <SelectLabel>On Sale</SelectLabel>
+                    <SelectItem value="true">True</SelectItem>
+                    <SelectItem value="false">False</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <Button
-            type="submit"
-            className="w cursor-pointer"
-            disabled={loading}
-          >
+          <Button type="submit" className="w cursor-pointer" disabled={loading}>
             {loading ? (
               <div className="flex items-center justify-center">
                 Adding Product...
