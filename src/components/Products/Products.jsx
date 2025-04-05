@@ -63,6 +63,15 @@ const Products = () => {
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
+  const handleDuplicate = async (productId) => {
+    const res = await dispatch(duplicateProduct(productId));
+    if (res.meta.requestStatus === "fulfilled") {
+      if (res.payload.status === 200) {
+        navigate("edit/" + res.payload.data.duplicatedProduct._id)
+      }
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -161,9 +170,9 @@ const Products = () => {
                         <div className="flex flex-col gap-2">
                           <Button
                             className="cursor-pointer hover:bg-green-700 bg-green-500 text-white"
-                            onClick={() =>
-                              navigate(dispatch(duplicateProduct(product._id)))
-                            }
+                            onClick={() => {
+                              handleDuplicate(product._id);
+                            }}
                           >
                             Duplicate
                           </Button>
