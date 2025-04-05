@@ -114,7 +114,7 @@ export const duplicateProduct = createAsyncThunk(
     toast.info("Duplicating product...");
     try {
       const { data } = await axiosInstance.post(`/product/admin/duplicate`, {
-        _id : productId,
+        _id: productId,
       });
       toast.success("Product duplicated successfully!");
       return data;
@@ -122,6 +122,24 @@ export const duplicateProduct = createAsyncThunk(
       toast.error(
         err.response?.data?.message || "Failed to duplicate product."
       );
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+export const reorderedImage = createAsyncThunk(
+  "product/reorderedImage",
+  async ({ productId, images }, { rejectWithValue }) => {
+    toast.info("Reordering images...");
+    try {
+      const { data } = await axiosInstance.put(
+        `/product/admin/reorder-images/${productId}`,
+        { images }
+      );
+      toast.success("Images reordered successfully!");
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to reorder images.");
       return rejectWithValue(err.response?.data);
     }
   }
@@ -228,6 +246,24 @@ const productSlice = createSlice({
       })
       .addCase(getSingleProduct.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+      // Reorder Images
+      .addCase(reorderedImage.pending, (state) => {
+        state.taskLoading = true;
+        state.error = null;
+      })
+      .addCase(reorderedImage.fulfilled, (state, action) => {
+        state.taskLoading = false;
+        const index = state.products.findIndex(
+          (product) => product._id === action.payload.data.product._id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload.data.product;
+        }
+      })
+      .addCase(reorderedImage.rejected, (state, action) => {
+        state.taskLoading = false;
         state.error = action.payload;
       });
   },

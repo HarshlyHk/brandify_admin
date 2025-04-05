@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { getSingleProduct, updateProduct } from "@/features/productSlice";
+import {
+  getSingleProduct,
+  reorderedImage,
+  updateProduct,
+} from "@/features/productSlice";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DraftViewer from "./DraftViewer";
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 const ViewProduct = () => {
   const { id } = useParams(); // Fetch product ID from route
@@ -99,6 +105,18 @@ const ViewProduct = () => {
     },
   });
 
+  const handleMoveImage = (index, direction) => {
+    const images = [...formik.values.images];
+    if (direction === "up" && index > 0) {
+      // Swap with the previous image
+      [images[index - 1], images[index]] = [images[index], images[index - 1]];
+    } else if (direction === "down" && index < images.length - 1) {
+      // Swap with the next image
+      [images[index], images[index + 1]] = [images[index + 1], images[index]];
+    }
+    formik.setFieldValue("images", images);
+  };
+
   // ...existing code...
 
   const handleDeleteImage = (image) => {
@@ -111,9 +129,12 @@ const ViewProduct = () => {
 
   const handleNewImageUpload = (e) => {
     const files = Array.from(e.target.files);
-
-    // Add the new files to the state
     setNewImages((prev) => [...prev, ...files]);
+  };
+
+  const handleReorderSubmit = () => {
+    const reorderedImages = formik.values.images;
+    dispatch(reorderedImage({ productId: id, images: reorderedImages }));
   };
 
   if (loading || !product) {
@@ -393,6 +414,26 @@ const ViewProduct = () => {
                 className="w-28 h-28 object-cover rounded-md shadow-md"
               />
               <span className="text-sm text-gray-500 mt-1">#{index + 1}</span>
+              <div className="flex gap-2 mt-2">
+                <Button
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-1 rounded-md"
+                  onClick={() => handleMoveImage(index, "up")}
+                  disabled={index === 0} // Disable "Move Up" for the first image
+                >
+                  <FaArrowAltCircleLeft />
+
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-2 py-1 rounded-md"
+                  onClick={() => handleMoveImage(index, "down")}
+                  disabled={index === formik.values.images.length - 1} // Disable "Move Down" for the last image
+                >
+                  <FaArrowAltCircleRight />
+
+                </Button>
+              </div>
               <Button
                 type="button"
                 onClick={() => handleDeleteImage(image)}
@@ -505,6 +546,13 @@ const ViewProduct = () => {
       </div>
 
       <div className="flex gap-4 justify-end fixed bottom-4 right-4">
+        <Button
+          type="button"
+          className="w-40 bg-green-600 hover:bg-green-700 text-white"
+          onClick={handleReorderSubmit}
+        >
+          Save Image Order
+        </Button>
         <Button
           type="submit"
           className="w-40 bg-blue-600 hover:bg-blue-700 text-white"
