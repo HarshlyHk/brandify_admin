@@ -453,53 +453,50 @@ const ViewProduct = () => {
       </div>
 
       {/* Description */}
-      {formik.values.description && (
 
+      {/* Description */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Description</label>
-        <DraftViewer
-          value={formik.values.description}
-          onChange={(value) => formik.setFieldValue("description", value)}
-        />
+        {formik.values.description !== undefined && (
+          <DraftViewer
+            value={formik.values.description}
+            onChange={(value) => formik.setFieldValue("description", value)}
+          />
+        )}
       </div>
-      )}
-
-      {formik.values.shortDescription && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">
-            Short Description
-          </label>
+      
+      {/* Short Description */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Short Description</label>
+        {formik.values.shortDescription !== undefined && (
           <DraftViewer
             value={formik.values.shortDescription}
-            onChange={(value) =>
-              formik.setFieldValue("shortDescription", value)
-            }
+            onChange={(value) => formik.setFieldValue("shortDescription", value)}
           />
-        </div>
-      )}
-
+        )}
+      </div>
+      
       {/* Core Features */}
-      {formik.values.coreFeatures && (
-
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Core Features</label>
-        <DraftViewer
-          value={formik.values.coreFeatures}
-          onChange={(value) => formik.setFieldValue("coreFeatures", value)}
-        />
+        {formik.values.coreFeatures !== undefined && (
+          <DraftViewer
+            value={formik.values.coreFeatures}
+            onChange={(value) => formik.setFieldValue("coreFeatures", value)}
+          />
+        )}
       </div>
-      )}
-
+      
       {/* Care Guide */}
-      {formik.values.careGuide &&  
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Care Guide</label>
-        <DraftViewer
-          value={formik.values.careGuide}
-          onChange={(value) => formik.setFieldValue("careGuide", value)}
-        />
+        {formik.values.careGuide !== undefined && (
+          <DraftViewer
+            value={formik.values.careGuide}
+            onChange={(value) => formik.setFieldValue("careGuide", value)}
+          />
+        )}
       </div>
-      }
 
       <div className="flex gap-4 justify-end fixed bottom-4 right-4">
         <Button
