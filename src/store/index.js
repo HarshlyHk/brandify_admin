@@ -4,6 +4,7 @@ import productReducer from "../features/productSlice";
 import analyticsReducer from "../features/analyticsSlice";
 import categoryReducer from "../features/categorySlics";
 import tagReducer from "../features/tagSlice";
+import orderReducer from "../features/orderSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     analytics: analyticsReducer,
     category: categoryReducer,
     tags: tagReducer,
+    order: orderReducer,
   },
 });
 

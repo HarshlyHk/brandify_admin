@@ -10,6 +10,8 @@ import ViewProduct from "./components/ViewProduct/ViewProduct";
 import { Toaster } from "@/components/ui/sonner";
 import Category from "./components/Category/Category";
 import Tag from "./components/Category/Tags";
+import OrderPage from "./pages/OrderPage";
+import EditOrder from "./components/Orders/ViewOrder";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/products" element={<ProductPage />} />
+            <Route path="/orders" element={<OrderPage />} />
+            <Route path="/orders/:id" element={<EditOrder />} />
             <Route path="/products/add" element={<AddProduct />} />
             <Route path="/products/edit/:id" element={<ViewProduct />} />
             <Route path="/category" element={<Category />} />

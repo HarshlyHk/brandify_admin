@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Home, Settings, Users, LogOut, Package } from "lucide-react";
+import { Home, Settings, Users, LogOut, Package ,ShoppingBag} from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/userSlice";
@@ -15,6 +15,7 @@ const Sidebar = () => {
     { name: "Users", path: "/users", icon: Users },
     { name: "Settings", path: "/settings", icon: Settings },
     { name: "Products", path: "/products", icon: Package },
+    { name: "Orders", path: "/orders", icon: ShoppingBag },
   ];
 
   const handleLogout = () => {

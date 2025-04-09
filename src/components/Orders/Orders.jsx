@@ -1,0 +1,193 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router";
+import { Button } from "../ui/button";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  getAllOrdersAdmin,
+  deleteOrder,
+  updateOrder,
+} from "@/features/orderSlice";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+const Orders = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { totalOrders, totalPages, loading } = useSelector(
+    (state) => state.order
+  );
+  const { orders } = useSelector((state) => state.order);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  useEffect(() => {
+    dispatch(getAllOrdersAdmin({ page: currentPage, items: itemsPerPage }));
+  }, [dispatch, currentPage, itemsPerPage]);
+
+  const handleDelete = (orderId) => {
+    dispatch(deleteOrder(orderId));
+  };
+
+  const updateDeliveryStatus = (orderId) => {
+    dispatch(updateOrder(orderId));
+  };
+
+  const updatePaymentStatus = (orderId) => {
+    dispatch(updateOrder(orderId));
+  };
+
+  console.log("Orders:", orders);
+
+  const sortedOrders = [...orders].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Orders</h2>
+        <h4>
+          <span className="text-sm text-gray-500">
+            Total Orders: {totalOrders}
+          </span>
+        </h4>
+      </div>
+
+      <Table>
+        <TableCaption>Manage your orders</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Customer</TableHead>
+            <TableHead>Total Amount</TableHead>
+            <TableHead>Payment</TableHead>
+            <TableHead>Payment Mode</TableHead>
+            <TableHead>Delivery</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="text-center">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : orders.length > 0 ? (
+            sortedOrders.map((order) => (
+              <TableRow key={order._id}>
+                <TableCell>{order.shippingAddress.fullName}</TableCell>
+                <TableCell>₹{order.totalAmount}</TableCell>
+                <TableCell
+                  className={`${
+                    order.paymentStatus === "Completed"
+                      ? "text-teal-700"
+                      : order.paymentStatus === "Pending"
+                      ? "text-yellow-800"
+                      : order.paymentStatus === "Failed"
+                      ? "text-red-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {order.paymentStatus}
+                </TableCell>
+                    <TableCell className={`${order?.paymentMethod == "PhonePe" ? " text-purple-600" : "text-black" }`}>{order.paymentMethod}</TableCell>
+                <TableCell>{order.status}</TableCell>
+                <TableCell>
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-end">
+                  <div className="flex gap-2 justify-center items-center">
+                    <Button
+                      className="cursor-pointer hover:bg-green-700 bg-green-500 text-white"
+                      onClick={() => navigate(`/orders/${order._id}`)}
+                    >
+                      Edit
+                    </Button>
+                    {/* <Button
+                      className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
+                      onClick={() => dispatch(updateOrder(order._id))}
+                    >
+                      Update
+                    </Button> */}
+                    {/* <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="bg-red-500 text-white hover:bg-red-700 cursor-pointer">
+                          Delete
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Delete Order</DialogTitle>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button
+                            className="bg-red-500 text-white hover:bg-red-700 cursor-pointer"
+                            onClick={() => handleDelete(order._id)}
+                          >
+                            Confirm
+                          </Button>
+                          <Button variant="ghost">Cancel</Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog> */}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                No orders found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={6}>
+              <div className="flex justify-between items-center">
+                <Button
+                  className="cursor-pointer"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                >
+                  Previous
+                </Button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  className="cursor-pointer"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </div>
+  );
+};
+
+export default Orders;
