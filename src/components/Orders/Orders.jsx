@@ -36,6 +36,8 @@ const Orders = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
     dispatch(getAllOrdersAdmin({ page: currentPage, items: itemsPerPage }));
@@ -93,7 +95,17 @@ const Orders = () => {
           ) : orders.length > 0 ? (
             sortedOrders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell>{order.shippingAddress.fullName}</TableCell>
+                <TableCell className="cursor-pointer">
+                  <button
+                    className=" cursor-pointer"
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      setShowDialog(true);
+                    }}
+                  >
+                    {order.shippingAddress.fullName}
+                  </button>
+                </TableCell>
                 <TableCell>₹{order.totalAmount}</TableCell>
                 <TableCell
                   className={`${
@@ -108,7 +120,15 @@ const Orders = () => {
                 >
                   {order.paymentStatus}
                 </TableCell>
-                    <TableCell className={`${order?.paymentMethod == "PhonePe" ? " text-purple-600" : "text-black" }`}>{order.paymentMethod}</TableCell>
+                <TableCell
+                  className={`${
+                    order?.paymentMethod == "PhonePe"
+                      ? " text-purple-600"
+                      : "text-black"
+                  }`}
+                >
+                  {order.paymentMethod}
+                </TableCell>
                 <TableCell>{order.status}</TableCell>
                 <TableCell>
                   {new Date(order.createdAt).toLocaleDateString()}
@@ -186,6 +206,55 @@ const Orders = () => {
           </TableRow>
         </TableFooter>
       </Table>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle>Order Details</DialogTitle>
+          </DialogHeader>
+          {selectedOrder && (
+            <div className="p-4">
+              <h3 className="text-lg font-bold mb-4">Customer Details</h3>
+              <div className=" flex flex-col gap-4">
+                <p>Name: {selectedOrder.shippingAddress.fullName}</p>
+                <p>Email: {selectedOrder.user?.email}</p>
+                <div className="flex flex-col">
+                  <p>Full Address- </p>
+                  <p>
+                    {selectedOrder.shippingAddress.street},{" "}
+                    {selectedOrder.shippingAddress.locality},{" "}
+                    {selectedOrder.shippingAddress.landmark},{" "}
+                    {selectedOrder.shippingAddress.city},{" "}
+                    {selectedOrder.shippingAddress.state},{" "}
+                    {selectedOrder.shippingAddress.country} -{" "}
+                    {selectedOrder.shippingAddress.zipCode}
+                  </p>
+                </div>
+                <p>Phone: {selectedOrder.shippingAddress.phoneNumber}</p>
+                {selectedOrder.shippingAddress.alternatePhoneNumber && (
+                  <p>
+                    Alternate Phone:{" "}
+                    {selectedOrder.shippingAddress.alternatePhoneNumber}
+                  </p>
+                )}
+              </div>
+              <h3 className="text-lg font-bold mt-4">Products</h3>
+              {selectedOrder.products.map((product) => (
+                <div key={product._id} className="flex gap-4">
+                  <span>{product.name}</span>
+                  <span>Qty: {product.quantity}</span>
+                  <span>Size: {product.size}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowDialog(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
