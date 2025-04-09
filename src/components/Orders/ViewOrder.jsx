@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-const EditOrder = () => {
+const ViewOrder = () => {
   const { id } = useParams(); // Order ID from route
   const dispatch = useDispatch();
   const { order, loading, taskLoading } = useSelector((state) => state.order);
@@ -15,13 +15,19 @@ const EditOrder = () => {
     paymentStatus: "",
     shippingAddress: {
       fullName: "",
-      address: "",
+      street: "",
+      locality: "",
+      landmark: "",
       city: "",
-      postalCode: "",
+      state: "",
       country: "",
+      zipCode: "",
+      phoneNumber: "",
+      alternatePhoneNumber: "",
     },
     status: "",
     totalAmount: 0,
+    products: [],
   });
 
   useEffect(() => {
@@ -34,6 +40,7 @@ const EditOrder = () => {
         shippingAddress: order.shippingAddress,
         status: order.status,
         totalAmount: order.totalAmount,
+        products: order.products,
       });
     }
   }, [dispatch, id, order]);
@@ -68,7 +75,7 @@ const EditOrder = () => {
 
   return (
     <form onSubmit={handleSubmit} className="p-6 bg-white rounded-md">
-      <h1 className="text-2xl font-bold mb-4">Edit Order</h1>
+      <h1 className="text-2xl font-bold mb-4">View/Edit Order</h1>
 
       {/* Payment Method */}
       <div className="mb-4">
@@ -104,9 +111,25 @@ const EditOrder = () => {
           className="mb-2"
         />
         <Textarea
-          name="address"
-          placeholder="Address"
-          value={formData.shippingAddress.address}
+          name="street"
+          placeholder="Street"
+          value={formData.shippingAddress.street}
+          onChange={handleAddressChange}
+          className="mb-2"
+        />
+        <Input
+          type="text"
+          name="locality"
+          placeholder="Locality"
+          value={formData.shippingAddress.locality}
+          onChange={handleAddressChange}
+          className="mb-2"
+        />
+        <Input
+          type="text"
+          name="landmark"
+          placeholder="Landmark"
+          value={formData.shippingAddress.landmark}
           onChange={handleAddressChange}
           className="mb-2"
         />
@@ -120,9 +143,9 @@ const EditOrder = () => {
         />
         <Input
           type="text"
-          name="postalCode"
-          placeholder="Postal Code"
-          value={formData.shippingAddress.postalCode}
+          name="state"
+          placeholder="State"
+          value={formData.shippingAddress.state}
           onChange={handleAddressChange}
           className="mb-2"
         />
@@ -131,6 +154,30 @@ const EditOrder = () => {
           name="country"
           placeholder="Country"
           value={formData.shippingAddress.country}
+          onChange={handleAddressChange}
+          className="mb-2"
+        />
+        <Input
+          type="text"
+          name="zipCode"
+          placeholder="Zip Code"
+          value={formData.shippingAddress.zipCode}
+          onChange={handleAddressChange}
+          className="mb-2"
+        />
+        <Input
+          type="text"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={formData.shippingAddress.phoneNumber}
+          onChange={handleAddressChange}
+          className="mb-2"
+        />
+        <Input
+          type="text"
+          name="alternatePhoneNumber"
+          placeholder="Alternate Phone Number"
+          value={formData.shippingAddress.alternatePhoneNumber}
           onChange={handleAddressChange}
         />
       </div>
@@ -157,6 +204,19 @@ const EditOrder = () => {
         />
       </div>
 
+      {/* Products */}
+      <div className="mb-4">
+        <h2 className="text-lg font-bold mb-2">Products</h2>
+        <ul className="list-disc pl-5">
+          {formData.products.map((product, index) => (
+            <li key={index} className="mb-2">
+              <span className="font-medium">{product.name}</span> - Quantity:{" "}
+              {product.quantity}
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <Button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -168,4 +228,4 @@ const EditOrder = () => {
   );
 };
 
-export default EditOrder;
+export default ViewOrder;
