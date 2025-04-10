@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { Button } from "../ui/button";
 import {
   Table,
@@ -33,15 +33,14 @@ const Orders = () => {
     (state) => state.order
   );
   const { orders } = useSelector((state) => state.order);
-
-  const [currentPage, setCurrentPage] = useState(1);
+  const { page } = useParams();
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllOrdersAdmin({ page: currentPage, items: itemsPerPage }));
-  }, [dispatch, currentPage, itemsPerPage]);
+    dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage }));
+  }, [dispatch, itemsPerPage, page]);
 
   const handleDelete = (orderId) => {
     dispatch(deleteOrder(orderId));
@@ -103,7 +102,7 @@ const Orders = () => {
                       setShowDialog(true);
                     }}
                   >
-                    {order.shippingAddress.fullName}
+                    {order.user.name}
                   </button>
                 </TableCell>
                 <TableCell>₹{order.totalAmount}</TableCell>
@@ -186,18 +185,18 @@ const Orders = () => {
               <div className="flex justify-between items-center">
                 <Button
                   className="cursor-pointer"
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                  disabled={page == 1}
+                  onClick={() => navigate(`/order/${Number(page) - 1}`)}
                 >
                   Previous
                 </Button>
                 <span>
-                  Page {currentPage} of {totalPages}
+                  Page {page} of {totalPages}
                 </span>
                 <Button
                   className="cursor-pointer"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                  disabled={page == totalPages}
+                  onClick={() => navigate(`/order/${Number(page) + 1}`)}
                 >
                   Next
                 </Button>
@@ -213,13 +212,21 @@ const Orders = () => {
             <DialogTitle>Order Details</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
-            <div className="p-4">
-              <h3 className="text-lg font-bold mb-4">Customer Details</h3>
+            <div className="p-4 ">
               <div className=" flex flex-col gap-4">
-                <p>Name: {selectedOrder.shippingAddress.fullName}</p>
-                <p>Email: {selectedOrder.user?.email}</p>
+                <h2 className=" font-bold">
+                  Account Name : {selectedOrder.user.name}
+                </h2>
+
+                <p>
+                  <strong>Name:</strong>{" "}
+                  {selectedOrder.shippingAddress.fullName}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedOrder.user?.email}
+                </p>
                 <div className="flex flex-col">
-                  <p>Full Address- </p>
+                  <p className=" font-bold">Full Address- </p>
                   <p>
                     {selectedOrder.shippingAddress.street},{" "}
                     {selectedOrder.shippingAddress.locality},{" "}
@@ -230,7 +237,39 @@ const Orders = () => {
                     {selectedOrder.shippingAddress.zipCode}
                   </p>
                 </div>
-                <p>Phone: {selectedOrder.shippingAddress.phoneNumber}</p>
+                <div className="flex flex-wrap gap-4"> 
+                  <p className="flex">
+                    <strong>Landmark:</strong>{" "}
+                    {selectedOrder.shippingAddress?.landmark}
+                  </p>
+                  <p className="flex">
+                    <strong>Street:</strong>{" "}
+                    {selectedOrder.shippingAddress?.street}
+                  </p>
+                  <p>
+                    <strong>Locality:</strong>{" "}
+                    {selectedOrder.shippingAddress?.locality}
+                  </p>
+                  <p className="">
+                    <strong>City:</strong> {selectedOrder.shippingAddress?.city}
+                  </p>
+                  <p>
+                    <strong>State:</strong>{" "}
+                    {selectedOrder.shippingAddress?.state}
+                  </p>
+                  <p>
+                    <strong>Country:</strong>{" "}
+                    {selectedOrder.shippingAddress?.country}
+                  </p>
+                  <p>
+                    <strong>Zip Code: </strong>
+                    {selectedOrder.shippingAddress?.zipCode}
+                  </p>
+                  <p>
+                    <strong>Phone: </strong>
+                    {selectedOrder.shippingAddress.phoneNumber}
+                  </p>
+                </div>
                 {selectedOrder.shippingAddress.alternatePhoneNumber && (
                   <p>
                     Alternate Phone:{" "}

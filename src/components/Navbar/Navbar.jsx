@@ -15,7 +15,7 @@ const Sidebar = () => {
     { name: "Users", path: "/users", icon: Users },
     { name: "Settings", path: "/settings", icon: Settings },
     { name: "Products", path: "/products", icon: Package },
-    { name: "Orders", path: "/orders", icon: ShoppingBag },
+    { name: "Orders", path: "/order/1", icon: ShoppingBag },
   ];
 
   const handleLogout = () => {
