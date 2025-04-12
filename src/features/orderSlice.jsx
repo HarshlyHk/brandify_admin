@@ -48,9 +48,11 @@ export const getAllOrders = createAsyncThunk(
 // Get All Orders (Admin)
 export const getAllOrdersAdmin = createAsyncThunk(
   "order/getAllOrdersAdmin",
-  async ({page, items}, { rejectWithValue }) => {
+  async ({ page, items }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.get("/orders/admin/get-order?page=" + page + "&items=" + items);
+      const { data } = await axiosInstance.get(
+        "/orders/admin/get-order?page=" + page + "&items=" + items
+      );
       return data;
     } catch (err) {
       toast.error(
@@ -67,7 +69,9 @@ export const getOrder = createAsyncThunk(
   async (orderId, { rejectWithValue }) => {
     toast.info("Fetching order...");
     try {
-      const { data } = await axiosInstance.get(`/orders/admin/get-single-order/${orderId}`);
+      const { data } = await axiosInstance.get(
+        `/orders/admin/get-single-order/${orderId}`
+      );
       return data;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to fetch order.");
@@ -90,6 +94,29 @@ export const updateOrder = createAsyncThunk(
       return data;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to update order.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+// Send Tracking ID
+
+export const sendTrackingId = createAsyncThunk(
+  "order/sendTrackingId",
+  async (
+    { orderId, trackingId, deliveryServiceName, deliveryServiceUrl, email, name },
+    { rejectWithValue }
+  ) => {
+    toast.info("Sending tracking ID...");
+    try {
+      const { data } = await axiosInstance.put(
+        `/orders/admin/send-tracking-id/${orderId}`,
+        { trackingId, deliveryServiceName, deliveryServiceUrl, email, name }
+      );
+      toast.success("Tracking ID sent successfully!");
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to send tracking ID.");
       return rejectWithValue(err.response?.data);
     }
   }

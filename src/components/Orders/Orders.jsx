@@ -42,9 +42,7 @@ const Orders = () => {
     dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage }));
   }, [dispatch, itemsPerPage, page]);
 
-  const handleDelete = (orderId) => {
-    dispatch(deleteOrder(orderId));
-  };
+
 
   const updateDeliveryStatus = (orderId) => {
     dispatch(updateOrder(orderId));
@@ -96,13 +94,14 @@ const Orders = () => {
               <TableRow key={order._id}>
                 <TableCell className="cursor-pointer">
                   <button
-                    className=" cursor-pointer"
+                    className=" cursor-pointer flex flex-col gap-2 items-start"
                     onClick={() => {
                       setSelectedOrder(order);
                       setShowDialog(true);
                     }}
                   >
-                    {order.user.name}
+                    <p>{order.user.name}</p>
+                    <p className=" uppercase text-red-400">{order?.referal}</p>
                   </button>
                 </TableCell>
                 <TableCell>₹{order.totalAmount}</TableCell>
@@ -138,7 +137,7 @@ const Orders = () => {
                       className="cursor-pointer hover:bg-green-700 bg-green-500 text-white"
                       onClick={() => navigate(`/orders/${order._id}`)}
                     >
-                      Edit
+                      View
                     </Button>
                     {/* <Button
                       className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
@@ -146,34 +145,13 @@ const Orders = () => {
                     >
                       Update
                     </Button> */}
-                    {/* <Dialog>
-                      <DialogTrigger asChild>
-                        <Button className="bg-red-500 text-white hover:bg-red-700 cursor-pointer">
-                          Delete
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Delete Order</DialogTitle>
-                        </DialogHeader>
-                        <DialogFooter>
-                          <Button
-                            className="bg-red-500 text-white hover:bg-red-700 cursor-pointer"
-                            onClick={() => handleDelete(order._id)}
-                          >
-                            Confirm
-                          </Button>
-                          <Button variant="ghost">Cancel</Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog> */}
                   </div>
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={8} className="text-center">
                 No orders found.
               </TableCell>
             </TableRow>
@@ -181,7 +159,7 @@ const Orders = () => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={6}>
+            <TableCell colSpan={8}>
               <div className="flex justify-between items-center">
                 <Button
                   className="cursor-pointer"

@@ -12,6 +12,7 @@ import Category from "./components/Category/Category";
 import Tag from "./components/Category/Tags";
 import OrderPage from "./pages/OrderPage";
 import EditOrder from "./components/Orders/ViewOrder";
+import AbandonedCartPage from "./pages/AbandonedCartPage";
 
 function App() {
   return (
@@ -21,11 +22,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/products" element={<ProductPage />} />
+            <Route path="/products/:page" element={<ProductPage />} />
             <Route path="/order/:page" element={<OrderPage />} />
             <Route path="/orders/:id" element={<EditOrder />} />
             <Route path="/products/add" element={<AddProduct />} />
             <Route path="/products/edit/:id" element={<ViewProduct />} />
+            <Route path="/abandoned-cart/:page" element={<AbandonedCartPage />} />
             <Route path="/category" element={<Category />} />
             <Route path="/tag" element={<Tag />} />
           </Route>

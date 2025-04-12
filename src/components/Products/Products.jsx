@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { Button } from "../ui/button";
 import {
   Table,
@@ -48,12 +48,12 @@ const Products = () => {
     (state) => state.product
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const { page } = useParams();
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
-    dispatch(getProducts({ page: currentPage, items: itemsPerPage }));
-  }, [dispatch, currentPage, itemsPerPage]);
+    dispatch(getProducts({ page, items: itemsPerPage }));
+  }, [dispatch, page, itemsPerPage]);
 
   const handleDelete = (productId) => {
     dispatch(deleteProduct(productId));
@@ -67,7 +67,7 @@ const Products = () => {
     const res = await dispatch(duplicateProduct(productId));
     if (res.meta.requestStatus === "fulfilled") {
       if (res.payload.status === 200) {
-        navigate("edit/" + res.payload.data.duplicatedProduct._id)
+        navigate("edit/" + res.payload.data.duplicatedProduct._id);
       }
     }
   };
@@ -138,7 +138,7 @@ const Products = () => {
             sortedProducts.map((product) => (
               <TableRow key={product._id}>
                 <TableCell>{product.name}</TableCell>
-                <TableCell className="uppercase">
+                <TableCell className="uppercase truncate max-w-52">
                   {product.category.map((cat) => cat).join(", ")}
                 </TableCell>
 
@@ -235,18 +235,18 @@ const Products = () => {
               <div className="flex justify-between items-center">
                 <Button
                   className={" cursor-pointer"}
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                  disabled={page == 1}
+                  onClick={() => navigate(`/products/${Number(page) - 1}`)}
                 >
                   Previous
                 </Button>
                 <span>
-                  Page {currentPage} of {totalPages}
+                  Page {page} of {totalPages}
                 </span>
                 <Button
                   className=" cursor-pointer"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                  disabled={page == totalPages}
+                  onClick={() => navigate(`/products/${Number(page) + 1}`)}
                 >
                   Next
                 </Button>

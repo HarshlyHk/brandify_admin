@@ -1,18 +1,65 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { getOrder, updateOrder } from "@/features/orderSlice";
+import {
+  getOrder,
+  updateOrder,
+  deleteOrder,
+  sendTrackingId,
+} from "@/features/orderSlice";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "../ui/label";
+
+const paymentStatusOptions = ["Failed", "Pending", "Completed", "Refunded"];
+const orderStatusOptions = [
+  "Pending",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+  "Refunded",
+];
+
+const deliveryServices = [
+  {
+    name: "Shree Maruti",
+    trackingUrl: "https://www.shreemaruti.com/track-your-shipment/",
+  },
+  {
+    name: "Shiprocket",
+    trackingUrl: "https://www.shiprocket.in/shipment-tracking/",
+  },
+];
 
 const ViewOrder = () => {
-  const { id } = useParams(); // Order ID from route
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { order, loading, taskLoading } = useSelector((state) => state.order);
+  const [open, setOpen] = useState(false);
+  const [trackingId, setTrackingId] = useState("");
+
   const [formData, setFormData] = useState({
     paymentMethod: "",
-    paymentStatus: "",
+    paymentStatus: null,
     shippingAddress: {
       fullName: "",
       street: "",
@@ -25,9 +72,17 @@ const ViewOrder = () => {
       phoneNumber: "",
       alternatePhoneNumber: "",
     },
-    status: "",
+    status: null,
     totalAmount: 0,
     products: [],
+  });
+
+  const [trackingFormData, setTrackingFormData] = useState({
+    trackingId: "",
+    deliveryServiceName: "",
+    deliveryServiceUrl: "",
+    email: order?.user?.email,
+    name: order?.shippingAddress?.fullName,
   });
 
   useEffect(() => {
@@ -64,9 +119,26 @@ const ViewOrder = () => {
     }));
   };
 
+  const handleDelete = (orderId) => {
+    dispatch(deleteOrder(orderId));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(updateOrder({ orderId: id, updatedData: formData }));
+  };
+
+  const handleSendTrackingId = () => {
+    dispatch(sendTrackingId({ orderId: id, ...trackingFormData }));
+    setOpen(false);
+    setTrackingId("");
+    setTrackingFormData({
+      trackingId: "",
+      deliveryServiceName: "",
+      deliveryServiceUrl: "",
+      email: order?.user?.email,
+      name: order?.shippingAddress?.fullName,
+    });
   };
 
   if (loading || !order) {
@@ -74,156 +146,310 @@ const ViewOrder = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-white rounded-md">
-      <h1 className="text-2xl font-bold mb-4">View/Edit Order</h1>
+    <form
+      onSubmit={handleSubmit}
+      className="p-6 bg-white rounded-md shadow-md space-y-6 mx-auto w-full"
+    >
+      <h1 className="text-xl font-bold mb-6 text-center uppercase">
+        Manage Order -{" "}
+        <span
+          className={`${
+            order?.status === "Shipped"
+              ? "text-blue-500"
+              : order?.status === "Cancelled"
+              ? "text-red-500"
+              : order?.status === "Delivered"
+              ? "text-green-500"
+              : order?.status === "Processing"
+              ? "text-yellow-500"
+              : "text-pink-500"
+          } uppercase `}
+        >
+          {order?.status}
+        </span>
+      </h1>
 
-      {/* Payment Method */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Payment Method</label>
-        <Input
-          type="text"
-          name="paymentMethod"
-          value={formData.paymentMethod}
-          onChange={handleInputChange}
-        />
-      </div>
+      <hr />
+      <div className=" flex items-center gap-10 justify-center">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="paymentMethod" className=" font-bold uppercase">
+            Payment Method
+          </Label>
+          <Input
+            id="paymentMethod"
+            name="paymentMethod"
+            value={formData.paymentMethod}
+            onChange={handleInputChange}
+            placeholder="e.g. Credit Card, PayPal"
+          />
+        </div>
 
-      {/* Payment Status */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Payment Status</label>
-        <Input
-          type="text"
-          name="paymentStatus"
-          value={formData.paymentStatus}
-          onChange={handleInputChange}
-        />
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="paymentStatus" className="uppercase font-bold">
+            Payment Status
+          </Label>
+          {formData.paymentStatus != undefined && (
+            <Select
+              value={formData.paymentStatus}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, paymentStatus: value }))
+              }
+            >
+              <SelectTrigger className="w-60" id="paymentStatus">
+                <SelectValue placeholder="Select payment status" />
+              </SelectTrigger>
+              <SelectContent>
+                {paymentStatusOptions.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2 w-60">
+          <Label htmlFor="status" className="uppercase font-bold">
+            Order Status
+          </Label>
+          {formData.status != undefined && (
+            <div className=" w-60">
+              <Select
+                value={formData.status}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, status: value }))
+                }
+              >
+                <SelectTrigger className="w-full" id="status">
+                  <SelectValue placeholder="Select order status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {orderStatusOptions.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
       </div>
+      <hr />
 
       {/* Shipping Address */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Shipping Address</label>
-        <Input
-          type="text"
-          name="fullName"
-          placeholder="Full Name"
-          value={formData.shippingAddress.fullName}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Textarea
-          name="street"
-          placeholder="Street"
-          value={formData.shippingAddress.street}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="locality"
-          placeholder="Locality"
-          value={formData.shippingAddress.locality}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="landmark"
-          placeholder="Landmark"
-          value={formData.shippingAddress.landmark}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formData.shippingAddress.city}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="state"
-          placeholder="State"
-          value={formData.shippingAddress.state}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="country"
-          placeholder="Country"
-          value={formData.shippingAddress.country}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="zipCode"
-          placeholder="Zip Code"
-          value={formData.shippingAddress.zipCode}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formData.shippingAddress.phoneNumber}
-          onChange={handleAddressChange}
-          className="mb-2"
-        />
-        <Input
-          type="text"
-          name="alternatePhoneNumber"
-          placeholder="Alternate Phone Number"
-          value={formData.shippingAddress.alternatePhoneNumber}
-          onChange={handleAddressChange}
-        />
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold mb-4 text-center uppercase">
+          Shipping Address
+        </h3>
+        {[
+          { name: "fullName", placeholder: "Full Name" },
+          { name: "street", placeholder: "Street", isTextarea: true },
+          { name: "locality", placeholder: "Locality" },
+          { name: "landmark", placeholder: "Landmark" },
+          { name: "city", placeholder: "City" },
+          { name: "state", placeholder: "State" },
+          { name: "country", placeholder: "Country" },
+          { name: "zipCode", placeholder: "Zip Code" },
+          { name: "phoneNumber", placeholder: "Phone Number" },
+          {
+            name: "alternatePhoneNumber",
+            placeholder: "Alternate Phone Number",
+          },
+        ].map(({ name, placeholder, isTextarea }) => (
+          <div key={name}>
+            {isTextarea ? (
+              <div className=" flex gap-2">
+                <Label className="w-60 uppercase font-bold" htmlFor={name}>
+                  {placeholder}
+                </Label>
+                <Textarea
+                  name={name}
+                  placeholder={placeholder}
+                  value={formData.shippingAddress[name]}
+                  onChange={handleAddressChange}
+                />
+              </div>
+            ) : (
+              <div className=" flex gap-2">
+                <Label className="w-60 uppercase font-bold" htmlFor={name}>
+                  {placeholder}
+                </Label>
+                <Input
+                  name={name}
+                  placeholder={placeholder}
+                  value={formData.shippingAddress[name]}
+                  onChange={handleAddressChange}
+                />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Order Status */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Order Status</label>
-        <Input
-          type="text"
-          name="status"
-          value={formData.status}
-          onChange={handleInputChange}
-        />
-      </div>
 
       {/* Total Amount */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Total Amount</label>
+      <div className="flex gap-2">
+        <Label htmlFor="totalAmount" className="w-60 font-bold uppercase">
+          Total Amount
+        </Label>
         <Input
           type="number"
+          id="totalAmount"
           name="totalAmount"
           value={formData.totalAmount}
           onChange={handleInputChange}
         />
       </div>
 
+      {/* Tracking id and deliveryServiceName */}
+
+      <hr />
+
+      <div className="flex gap-4">
+        <div className="flex items-center gap-4">
+          <div className=" font-bold text-sm uppercase">Tracking ID</div>
+          <div className=" font-bold text-sm uppercase">
+            {order?.trackingId && order.trackingId}
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className=" font-bold text-sm uppercase">Delivery Service</div>
+          <div className=" font-bold text-sm uppercase">
+            {order?.deliveryServiceName && order.deliveryServiceName}
+          </div>
+        </div>
+      </div>
+
+      <hr />
       {/* Products */}
-      <div className="mb-4">
-        <h2 className="text-lg font-bold mb-2">Products</h2>
-        <ul className="list-disc pl-5">
+
+      <div>
+        <h2 className=" text-center font-bold mb-2 uppercase">Products</h2>
+        <ul className="list-disc pl-5 space-y-1">
           {formData.products.map((product, index) => (
-            <li key={index} className="mb-2">
-              <span className="font-medium">{product.name}</span> - Quantity:{" "}
+            <li key={index}>
+              <span className="font-medium">{product.name}</span> — Quantity:{" "}
               {product.quantity}
             </li>
           ))}
         </ul>
       </div>
 
-      <Button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white"
-        disabled={taskLoading}
-      >
-        {taskLoading ? "Saving..." : "Save Changes"}
-      </Button>
+      {/* Footer Buttons */}
+      <div className="flex justify-between pt-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="bg-red-500 text-white hover:bg-red-700">
+              Delete Order
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Order</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-gray-500">
+              Are you sure you want to delete this order? This action is
+              irreversible.
+            </p>
+            <DialogFooter className="mt-4">
+              <Button
+                className="bg-red-500 text-white hover:bg-red-700"
+                onClick={() => handleDelete(order._id)}
+              >
+                Confirm
+              </Button>
+              <Button variant="ghost">Cancel</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <div className=" flex gap-4">
+          {!order?.trackingId && (
+            <div
+              onClick={() => setOpen(true)}
+              className="bg-green-600 hover:bg-green-700 text-white rounded-md px-4 py-2 cursor-pointer text-sm"
+              disabled={taskLoading}
+            >
+              {taskLoading ? "Sending..." : "Send Tracking ID"}
+            </div>
+          )}
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={taskLoading}
+          >
+            {taskLoading ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Send Tracking ID</DialogTitle>
+          </DialogHeader>
+          <div className=" mt-6 flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="trackingId" className="uppercase">
+                Tracking ID
+              </Label>
+              <Input
+                id="trackingId"
+                value={trackingId}
+                onChange={(e) => setTrackingId(e.target.value)}
+                placeholder="Enter tracking ID"
+              />
+            </div>
+            <div>
+              <p>Select a delivery service to send the tracking ID:</p>
+
+              <Select
+                onValueChange={(value) => {
+                  const selectedService = deliveryServices.find(
+                    (service) => service.name === value
+                  );
+                  setTrackingFormData((prev) => ({
+                    trackingId,
+                    deliveryServiceName: selectedService.name,
+                    deliveryServiceUrl: selectedService.trackingUrl,
+                    email: order?.user?.email,
+                    name: order?.shippingAddress?.fullName,
+                  }));
+                }}
+              >
+                <SelectTrigger className="w-full mt-2">
+                  <SelectValue placeholder="Select delivery service" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {deliveryServices.map((service) => (
+                      <SelectItem key={service.name} value={service.name}>
+                        {service.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button
+              className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => {
+                handleSendTrackingId();
+              }}
+            >
+              Send
+            </Button>
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 };

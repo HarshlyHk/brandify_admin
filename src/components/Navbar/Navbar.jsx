@@ -14,8 +14,9 @@ const Sidebar = () => {
     { name: "Dashboard", path: "/dashboard", icon: Home },
     { name: "Users", path: "/users", icon: Users },
     { name: "Settings", path: "/settings", icon: Settings },
-    { name: "Products", path: "/products", icon: Package },
+    { name: "Products", path: "/products/1", icon: Package },
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
+    { name: "Abandoned Cart", path: "/abandoned-cart/1", icon: Package },
   ];
 
   const handleLogout = () => {

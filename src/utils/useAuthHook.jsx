@@ -23,7 +23,7 @@ const useAuthHook = () => {
           navigate("/login");
         });
     }
-  }, [dispatch, navigate]);
+  }, []);
 };
 
 export default useAuthHook;
