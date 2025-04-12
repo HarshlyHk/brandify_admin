@@ -80,7 +80,7 @@ const AbandonedCart = () => {
                 <TableCell>
                   {new Date(cart.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell>{cart?.referal}</TableCell>
+                <TableCell className="uppercase text-red-600">{cart.referal ? cart?.referal : "Website"}</TableCell>
               </TableRow>
             ))
           ) : (
