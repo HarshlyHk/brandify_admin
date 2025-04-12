@@ -53,6 +53,7 @@ const AbandonedCart = () => {
             <TableHead>Phone</TableHead>
             <TableHead>Total Price</TableHead>
             <TableHead>Date</TableHead>
+            <TableHead>Referral</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -79,6 +80,7 @@ const AbandonedCart = () => {
                 <TableCell>
                   {new Date(cart.createdAt).toLocaleDateString()}
                 </TableCell>
+                <TableCell>{cart?.referal}</TableCell>
               </TableRow>
             ))
           ) : (
