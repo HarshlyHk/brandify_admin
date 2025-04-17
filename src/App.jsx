@@ -13,6 +13,7 @@ import Tag from "./components/Category/Tags";
 import OrderPage from "./pages/OrderPage";
 import EditOrder from "./components/Orders/ViewOrder";
 import AbandonedCartPage from "./pages/AbandonedCartPage";
+import Traffic from "./components/Traffic/Traffic";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/abandoned-cart/:page" element={<AbandonedCartPage />} />
             <Route path="/category" element={<Category />} />
             <Route path="/tag" element={<Tag />} />
+            <Route path="/traffic" element={<Traffic />} />
           </Route>
           <Route index element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />

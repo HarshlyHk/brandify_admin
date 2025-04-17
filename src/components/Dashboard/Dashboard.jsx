@@ -1,10 +1,29 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAnalytics } from "../../features/analyticsSlice";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router";
 
-const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"];
+const COLORS = [
+  "#FF6384",
+  "#36A2EB",
+  "#FFCE56",
+  "#4BC0C0",
+  "#9966FF",
+  "#FF9F40",
+];
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -46,18 +65,34 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="p-6 min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-center mb-6">Dashboard</h1>
+    <div className="p-6 min-h-screen">
+      <h1 className="text-xl font-bold mb-6 uppercase">Dashboard</h1>
+      <div>
+        <Link
+          to="/traffic"
+          className="text-blue-500 hover:underline mb-4 inline-block"
+        >
+          View Traffic
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Analytics Overview</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart
+              data={barData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#4BC0C0" barSize={50} radius={[10, 10, 0, 0]} />
+              <Bar
+                dataKey="value"
+                fill="#4BC0C0"
+                barSize={50}
+                radius={[10, 10, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -67,7 +102,10 @@ const Dashboard = () => {
             <PieChart>
               <Pie data={pieData} cx="50%" cy="50%" outerRadius={100} label>
                 {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Pie>
               <Tooltip />
