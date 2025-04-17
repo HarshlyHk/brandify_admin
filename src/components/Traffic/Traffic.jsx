@@ -1,83 +1,196 @@
-import React, { useState } from 'react';
-import axiosInstance from '@/config/axiosInstance';
-import { Button } from '../ui/button';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
+import React, { useState, useEffect } from "react";
+import axiosInstance from "@/config/axiosInstance";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  isSameDay,
+  isSameMonth,
+} from "date-fns";
+import {
+  Typography,
+  Grid,
+  IconButton,
+  Box,
+  styled,
+  Paper,
+  useTheme,
+} from "@mui/material";
+import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
+
+const StyledDay = styled(Box, {
+  shouldForwardProp: (prop) =>
+    prop !== "isSelected" &&
+    prop !== "isToday" &&
+    prop !== "isCurrentMonth" &&
+    prop !== "hasTraffic",
+})(({ theme, isSelected, isToday, isCurrentMonth, hasTraffic }) => ({
+  height: "100px",
+  padding: "12px",
+  display: "flex",
+  width: "140px",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  cursor: "pointer",
+  backgroundColor: isSelected
+    ? theme.palette.primary.light
+    : isToday
+    ? "rgba(255, 135, 38, 0.2)"
+    : isCurrentMonth
+    ? theme.palette.background.paper
+    : theme.palette.grey[100],
+  color: isCurrentMonth
+    ? isSelected
+      ? theme.palette.primary.contrastText
+      : theme.palette.text.primary
+    : theme.palette.text.disabled,
+  borderRadius: "10px",
+  border: hasTraffic ? isToday ? "2px solid #ff7403" : "2px solid #ff7403" : "none",
+  transition: "all 0.2s ease",
+  "&:hover": {
+    transform: "scale(1.03)",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+  },
+}));
 
 const Traffic = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [trafficData, setTrafficData] = useState(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [trafficData, setTrafficData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const theme = useTheme();
 
-  const fetchTrafficData = async () => {
-    if (!selectedDate) return;
-
+  const fetchTrafficData = async (date = currentDate) => {
     setLoading(true);
-    setError('');
-
+    setError("");
     try {
-      const year = format(selectedDate, 'yyyy');
-      const month = format(selectedDate, 'MM');
-      const day = format(selectedDate, 'dd');
-
-      const query = { day: `${year}-${month}-${day}` };
-
-      const response = await axiosInstance.get('/traffic', { params: query });
-      setTrafficData(response.data.traffic);
+      const year = format(date, "yyyy");
+      const month = format(date, "MM");
+      const response = await axiosInstance.get("/traffic", {
+        params: { month: `${year}-${month}` },
+      });
+      const dailyTraffic = response.data.traffic.dailyTraffic || {};
+      const events = Object.entries(dailyTraffic).map(([day, value]) => ({
+        date: new Date(day),
+        visits: value,
+      }));
+      setTrafficData(events);
     } catch (err) {
-      setError('Failed to fetch traffic data. Please try again.');
+      setError("Failed to fetch traffic data. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchTrafficData();
+  }, [currentDate]);
+
+  const renderHeader = () => (
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      mb={4}
+    >
+      <IconButton onClick={() => setCurrentDate(addDays(currentDate, -30))}>
+        <MdNavigateBefore size={24} />
+      </IconButton>
+      <Typography variant="h5" fontWeight="bold">
+        {format(currentDate, "MMMM yyyy")}
+      </Typography>
+      <IconButton onClick={() => setCurrentDate(addDays(currentDate, 30))}>
+        <MdNavigateNext size={24} />
+      </IconButton>
+    </Box>
+  );
+
+  const renderDays = () => {
+    const days = [];
+    const startDate = startOfWeek(currentDate);
+    for (let i = 0; i < 7; i++) {
+      days.push(
+        <Grid item xs key={i}>
+          <Typography align="center" variant="subtitle1" fontWeight="medium">
+            {format(addDays(startDate, i), "EEE")}
+          </Typography>
+        </Grid>
+      );
+    }
+    return (
+      <Grid container spacing={16} mb={1}>
+        {days}
+      </Grid>
+    );
+  };
+
+  const renderCells = () => {
+    const monthStart = startOfMonth(currentDate);
+    const monthEnd = endOfMonth(monthStart);
+    const startDate = startOfWeek(monthStart);
+    const endDate = endOfWeek(monthEnd);
+    const rows = [];
+    let days = [];
+    let day = startDate;
+
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        const currentDay = day;
+        const traffic = trafficData.find((t) => isSameDay(t.date, currentDay));
+        days.push(
+          <Grid item xs={12} sm={1.71} md={1.71} key={day.toString()}>
+            <StyledDay
+              isSelected={isSameDay(day, selectedDate)}
+              isToday={isSameDay(day, new Date())}
+              isCurrentMonth={isSameMonth(day, monthStart)}
+              hasTraffic={!!traffic}
+              onClick={() => setSelectedDate(currentDay)}
+            >
+              <Typography variant="body1" fontWeight="500">
+                {format(day, "d")}
+              </Typography>
+              {traffic && (
+                <div className={`text-[13px] uppercase `}>
+                  {traffic.visits} visits
+                </div>
+              )}
+            </StyledDay>
+          </Grid>
+        );
+        day = addDays(day, 1);
+      }
+      rows.push(
+        <Grid container spacing={2} key={day.toString()} mb={2}>
+          {days}
+        </Grid>
+      );
+      days = [];
+    }
+    return rows;
+  };
+
   return (
-    <div className="max-w-3xl mx-auto p-6 mt-8 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl">
-      <h1 className="text-2xl font-bold text-zinc-800 dark:text-white mb-6 text-center">
-        Traffic Statistics
-      </h1>
-
-      <div className="flex flex-col md:flex-row justify-center gap-4 items-center mb-6">
-        <div className="flex flex-col">
-          <label className="text-sm text-zinc-700 dark:text-zinc-300 mb-1">Select Date</label>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="YYYY-MM-DD"
-            className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition"
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-          />
-        </div>
-
-        <Button
-          onClick={fetchTrafficData}
-          disabled={loading || !selectedDate}
-          className="px-6 py-2 rounded-xl bg-primary text-white hover:bg-primary/90 transition mt-4 md:mt-6"
-        >
-          {loading ? 'Loading...' : 'Fetch Traffic'}
-        </Button>
+    <div className="p-6 min-h-screen">
+      <div className="text-xl font-bold mb-4 uppercase">Traffic Overview</div>
+      <div className="flex flex-col items-center justify-center">
+        {renderHeader()}
+        {renderDays()}
+        {renderCells()}
       </div>
-
-      {error && (
-        <p className="mt-4 text-center text-sm text-red-600 bg-red-50 border border-red-200 px-4 py-2 rounded-lg">
-          {error}
-        </p>
+      {loading && (
+        <Typography align="center" color="textSecondary" mt={2}>
+          Loading...
+        </Typography>
       )}
-
-      {trafficData && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold text-zinc-800 dark:text-white mb-2">
-            Traffic Data:
-          </h2>
-          <div className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl p-4 overflow-auto text-sm text-zinc-700 dark:text-zinc-200">
-            <pre>{JSON.stringify(trafficData, null, 2)}</pre>
-          </div>
-        </div>
+      {error && (
+        <Typography align="center" color="error" mt={2}>
+          {error}
+        </Typography>
       )}
     </div>
   );

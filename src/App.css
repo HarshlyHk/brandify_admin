@@ -1,87 +1,85 @@
 @font-face {
-  font-family: 'Eurostile';
+  font-family: "Eurostile";
   src: url("../src/assets/fonts/Eurostile.TTF");
 }
 @font-face {
-  font-family: 'Rawgly';
+  font-family: "Rawgly";
   src: url("../src/assets/fonts/Rawgly.otf");
 }
 @font-face {
-  font-family: 'Rebaston';
+  font-family: "Rebaston";
   src: url("../src/assets/fonts/Rebaston.otf");
 }
 
 @font-face {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   src: url("../src/assets/fonts/Poppins-Regular.ttf");
 }
 
 @font-face {
-  font-family: 'Helvetica-Light';
+  font-family: "Helvetica-Light";
   src: url("../src/assets/fonts/Helvetica/Helvetica-Light.ttf");
 }
 
 @font-face {
-  font-family: 'Helvetica-Bold';
+  font-family: "Helvetica-Bold";
   src: url("../src/assets/fonts/Helvetica/Helvetica-Bold.ttf");
 }
 
 @font-face {
-  font-family: 'Helvetica';
+  font-family: "Helvetica";
   src: url("../src/assets/fonts/Helvetica/Helvetica.ttf");
 }
 
 @font-face {
-  font-family: 'Poppins-Light';
+  font-family: "Poppins-Light";
   src: url("../src/assets/fonts/Poppins-Light.ttf");
 }
 
-
-
-.def-text-color{
+.def-text-color {
   color: #ffffff;
 }
 
-.font-eurostile{
-  font-family: 'Eurostile', sans-serif;
+.font-eurostile {
+  font-family: "Eurostile", sans-serif;
 }
 
-.font-rawgly{
-  font-family: 'Rawgly', sans-serif;
+.font-rawgly {
+  font-family: "Rawgly", sans-serif;
 }
 
-.font-rebaston{
-  font-family: 'Rebaston', sans-serif;
+.font-rebaston {
+  font-family: "Rebaston", sans-serif;
 }
-.font-poppins{
-  font-family: 'Poppins', sans-serif;
-}
-
-.font-poppins-light{
-  font-family: 'Poppins-Light', sans-serif;
+.font-poppins {
+  font-family: "Poppins", sans-serif;
 }
 
-.font-helvetica-light{
-  font-family: 'Helvetica-Light', sans-serif;
+.font-poppins-light {
+  font-family: "Poppins-Light", sans-serif;
 }
 
-.font-helvetica-bold{
-  font-family: 'Helvetica-Bold', sans-serif;
+.font-helvetica-light {
+  font-family: "Helvetica-Light", sans-serif;
 }
 
-.font-helvetica{
-  font-family: 'Helvetica', sans-serif;
+.font-helvetica-bold {
+  font-family: "Helvetica-Bold", sans-serif;
 }
 
-.def-bg-color{
+.font-helvetica {
+  font-family: "Helvetica", sans-serif;
+}
+
+.def-bg-color {
   background-color: #000000;
 }
 
-.def-border{
+.def-border {
   border: 2px solid #727272;
 }
 
-.def-btn{
+.def-btn {
   background-color: #ffffff;
   color: white;
   padding: 10px 20px;
@@ -90,8 +88,55 @@
   cursor: pointer;
 }
 
-
 ::placeholder {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
+/*//! calendar style */
+.rbc-row-content {
+  position: relative !important;
+}
+.rbc-row {
+  position: relative;
+}
+
+.rbc-date-cell {
+  padding: 20px !important;
+}
+
+.rbc-month-row + .rbc-month-row,
+.rbc-day-bg {
+  border: none !important;
+  border-radius: 0px !important;
+}
+
+
+.rbc-day-bg:hover {
+  background-color: #8000ff !important;
+  border-radius: 10px !important;
+  border: 2px #8000ff !important;
+
+}
+
+.rbc-today {
+  border: none !important;
+  border-radius: 10px !important;
+}
+.rbc-today {
+  border: 2px solid #8000ff !important;
+  background-color: transparent !important;
+}
+
+.rbc-event {
+  background-color: transparent !important;
+  color: #a704ff !important;
+  border-radius: 5px;
+  padding: 5px;
+  width: fit-content !important;
+  position: relative !important;
+  left: 20px;
+}
+
+.rbc-off-range-bg, .rbc-off-range{
+  opacity: 0 !important;
+}

@@ -14,29 +14,37 @@ import OrderPage from "./pages/OrderPage";
 import EditOrder from "./components/Orders/ViewOrder";
 import AbandonedCartPage from "./pages/AbandonedCartPage";
 import Traffic from "./components/Traffic/Traffic";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./utils/ThemeProvider";
 
 function App() {
   return (
     <>
-      <Toaster />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/products/:page" element={<ProductPage />} />
-            <Route path="/order/:page" element={<OrderPage />} />
-            <Route path="/orders/:id" element={<EditOrder />} />
-            <Route path="/products/add" element={<AddProduct />} />
-            <Route path="/products/edit/:id" element={<ViewProduct />} />
-            <Route path="/abandoned-cart/:page" element={<AbandonedCartPage />} />
-            <Route path="/category" element={<Category />} />
-            <Route path="/tag" element={<Tag />} />
-            <Route path="/traffic" element={<Traffic />} />
-          </Route>
-          <Route index element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Toaster />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/products/:page" element={<ProductPage />} />
+              <Route path="/order/:page" element={<OrderPage />} />
+              <Route path="/orders/:id" element={<EditOrder />} />
+              <Route path="/products/add" element={<AddProduct />} />
+              <Route path="/products/edit/:id" element={<ViewProduct />} />
+              <Route
+                path="/abandoned-cart/:page"
+                element={<AbandonedCartPage />}
+              />
+              <Route path="/category" element={<Category />} />
+              <Route path="/tag" element={<Tag />} />
+              <Route path="/traffic" element={<Traffic />} />
+            </Route>
+            <Route index element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </>
   );
 }
