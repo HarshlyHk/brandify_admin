@@ -92,22 +92,18 @@ const Traffic = () => {
   }, [currentDate]);
 
   const renderHeader = () => (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      mb={4}
-    >
+    <div className="flex items-center gap-10 justify-between mb-4">
+    
       <IconButton onClick={() => setCurrentDate(addDays(currentDate, -30))}>
         <MdNavigateBefore size={24} />
       </IconButton>
-      <Typography variant="h5" fontWeight="bold">
+      <div className="text-lg font-bold text-center uppercase">
         {format(currentDate, "MMMM yyyy")}
-      </Typography>
+      </div>
       <IconButton onClick={() => setCurrentDate(addDays(currentDate, 30))}>
         <MdNavigateNext size={24} />
       </IconButton>
-    </Box>
+    </div>
   );
 
   const renderDays = () => {
@@ -175,8 +171,8 @@ const Traffic = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen">
-      <div className="text-xl font-bold mb-4 uppercase">Traffic Overview</div>
+    <div className="px-6 max-h-screen">
+      <div className="text-xl font-bold mb-4 uppercase absolute">Traffic Overview</div>
       <div className="flex flex-col items-center justify-center">
         {renderHeader()}
         {renderDays()}

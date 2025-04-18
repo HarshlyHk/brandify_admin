@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Home, Settings, Users, LogOut, Package ,ShoppingBag} from "lucide-react";
+import {
+  Home,
+  Settings,
+  Users,
+  LogOut,
+  Package,
+  ShoppingBag,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/userSlice";
 import { getCategories } from "@/features/categorySlics";
 import { getTags } from "@/features/tagSlice";
+import { FaUsers } from "react-icons/fa";
 
 const Sidebar = () => {
   const [active, setActive] = useState("Dashboard");
@@ -17,6 +25,9 @@ const Sidebar = () => {
     { name: "Products", path: "/products/1", icon: Package },
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
     { name: "Abandoned Cart", path: "/abandoned-cart/1", icon: Package },
+    { name: "Categories", path: "/category", icon: Package },
+    { name: "Tags", path: "/tag", icon: Package },
+    { name: "Traffic", path: "/traffic", icon: FaUsers },
   ];
 
   const handleLogout = () => {
