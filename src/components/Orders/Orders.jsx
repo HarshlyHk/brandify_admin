@@ -42,8 +42,6 @@ const Orders = () => {
     dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage }));
   }, [dispatch, itemsPerPage, page]);
 
-
-
   const updateDeliveryStatus = (orderId) => {
     dispatch(updateOrder(orderId));
   };
@@ -63,7 +61,7 @@ const Orders = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Orders</h2>
         <h4>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-700">
             Total Orders: {totalOrders}
           </span>
         </h4>
@@ -113,7 +111,7 @@ const Orders = () => {
                       ? "text-yellow-800"
                       : order.paymentStatus === "Failed"
                       ? "text-red-500"
-                      : "text-gray-500"
+                      : "text-gray-700"
                   }`}
                 >
                   {order.paymentStatus}
@@ -185,88 +183,144 @@ const Orders = () => {
       </Table>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="sm:max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle>Order Details</DialogTitle>
+        <DialogContent className="sm:max-w-[700px] h-[80vh] overflow-y-scroll p-0">
+          <DialogHeader className=" sticky top-0 bg-white z-10 p-4">
+            <DialogTitle className="text-xl font-semibold">
+              Order Details
+            </DialogTitle>
           </DialogHeader>
-          {selectedOrder && (
-            <div className="p-4 ">
-              <div className=" flex flex-col gap-4">
-                <h2 className=" font-bold">
-                  Account Name : {selectedOrder.user.name}
-                </h2>
 
-                <p>
-                  <strong>Name:</strong>{" "}
-                  {selectedOrder.shippingAddress.fullName}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedOrder.user?.email}
-                </p>
-                <div className="flex flex-col">
-                  <p className=" font-bold">Full Address- </p>
-                  <p>
+          {selectedOrder && (
+            <div className="p-4 space-y-6 text-sm text-gray-700">
+              {/* User Info */}
+              <div className="space-y-1 p-4 flex flex-col">
+                <div>
+                  <p className="font-medium w-32">Account Name:</p>
+                  <p className="text-gray-500"> {selectedOrder.user.name}</p>
+                </div>
+
+                <div>
+                  <p className="font-medium w-32">Recipient Name:</p>
+                  <p className="text-gray-500">
+                    {selectedOrder.shippingAddress.fullName}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-medium w-32">Email:</p>
+                  <p className="text-gray-500">{selectedOrder.user?.email}</p>
+                </div>
+                {selectedOrder?.insta_handle && (
+                  <div>
+                    <p className="font-medium w-32">Insta Handle:</p>
+                    <p className="text-gray-500">
+                      {selectedOrder?.insta_handle}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <hr />
+              <div className=" p-4 ">
+                {/* Address */}
+                <div className="space-y-2 flex flex-col">
+                  <p className="font-medium text-black">Full Address:</p>
+                  <p className="leading-relaxed text-gray-500 mb-4">
                     {selectedOrder.shippingAddress.street},{" "}
                     {selectedOrder.shippingAddress.locality},{" "}
-                    {selectedOrder.shippingAddress.landmark},{" "}
+                    {selectedOrder.shippingAddress.landmark},<br />
                     {selectedOrder.shippingAddress.city},{" "}
                     {selectedOrder.shippingAddress.state},{" "}
                     {selectedOrder.shippingAddress.country} -{" "}
                     {selectedOrder.shippingAddress.zipCode}
                   </p>
+                  <hr />
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 py-2">
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Street</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.street}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Locality</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.locality}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Landmark</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.landmark}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">City</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.city}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">State</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.state}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Country</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.country}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Zip Code</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.zipCode}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Phone</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.phoneNumber}
+                      </span>
+                    </div>
+                    {selectedOrder.shippingAddress.alternatePhoneNumber && (
+                      <div className="flex flex-col">
+                        <span className="text-gray-700">Alternate Phone</span>
+                        <span className="text-gray-500">
+                          {selectedOrder.shippingAddress?.alternatePhoneNumber}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-4"> 
-                  <p className="flex">
-                    <strong>Landmark:</strong>{" "}
-                    {selectedOrder.shippingAddress?.landmark}
-                  </p>
-                  <p className="flex">
-                    <strong>Street:</strong>{" "}
-                    {selectedOrder.shippingAddress?.street}
-                  </p>
-                  <p>
-                    <strong>Locality:</strong>{" "}
-                    {selectedOrder.shippingAddress?.locality}
-                  </p>
-                  <p className="">
-                    <strong>City:</strong> {selectedOrder.shippingAddress?.city}
-                  </p>
-                  <p>
-                    <strong>State:</strong>{" "}
-                    {selectedOrder.shippingAddress?.state}
-                  </p>
-                  <p>
-                    <strong>Country:</strong>{" "}
-                    {selectedOrder.shippingAddress?.country}
-                  </p>
-                  <p>
-                    <strong>Zip Code: </strong>
-                    {selectedOrder.shippingAddress?.zipCode}
-                  </p>
-                  <p>
-                    <strong>Phone: </strong>
-                    {selectedOrder.shippingAddress.phoneNumber}
-                  </p>
+                <hr />
+
+                {/* Products */}
+                <div className=" my-8">
+                  <p className="font-medium">Products</p>
+                  <div className="flex flex-col gap-4 mt-4">
+                    {selectedOrder.products.map((product) => (
+                      <div
+                        key={product._id}
+                        className="flex justify-between items-center border border-gray-200 rounded-md p-3 bg-gray-50"
+                      >
+                        <span className=" w-80">{product.name}</span>
+                        <span>Qty: {product.quantity}</span>
+                        <span>Size: {product.size}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                {selectedOrder.shippingAddress.alternatePhoneNumber && (
-                  <p>
-                    Alternate Phone:{" "}
-                    {selectedOrder.shippingAddress.alternatePhoneNumber}
-                  </p>
-                )}
               </div>
-              <h3 className="text-lg font-bold mt-4">Products</h3>
-              {selectedOrder.products.map((product) => (
-                <div key={product._id} className="flex gap-4">
-                  <span>{product.name}</span>
-                  <span>Qty: {product.quantity}</span>
-                  <span>Size: {product.size}</span>
-                </div>
-              ))}
             </div>
           )}
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowDialog(false)}>
+
+          <DialogFooter className=" p-4">
+            <Button
+              className="text-red-500 border-2 bg-white hover:bg-white"
+              onClick={() => setShowDialog(false)}
+            >
               Close
             </Button>
           </DialogFooter>
