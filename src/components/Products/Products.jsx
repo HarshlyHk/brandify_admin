@@ -75,7 +75,7 @@ const Products = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Products</h2>
+        <h2 className=" underline underline-offset-4 font-bold uppercase">Products</h2>
         <h4>
           <span className="text-sm text-gray-500">
             Total Products: {totalProducts}
@@ -83,10 +83,7 @@ const Products = () => {
         </h4>
         <div className="flex gap-4">
           <Link to="/products/add">
-            <Button>Add Product</Button>
-          </Link>
-          <Link to="/category">
-            <Button>Manage Categories</Button>
+            <Button className="">Add Product</Button>
           </Link>
         </div>
       </div>
@@ -116,12 +113,11 @@ const Products = () => {
         <TableCaption>Manage your products</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-[100px]">Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Categories</TableHead>
             <TableHead>Org. Price</TableHead>
             <TableHead>Disc. Price</TableHead>
-            <TableHead>Reviews</TableHead>
-            <TableHead>Rating</TableHead>
             <TableHead>Out of Stock</TableHead>
             <TableHead>Popularity</TableHead>
             <TableHead className=" text-center">Actions</TableHead>
@@ -137,7 +133,20 @@ const Products = () => {
           ) : products.length > 0 ? (
             sortedProducts.map((product) => (
               <TableRow key={product._id}>
-                <TableCell>{product.name}</TableCell>
+                <TableCell className="w-[100px]">
+                  <img
+                    src={product?.images[0]}
+                    alt={product.name}
+                    className="w-20 h-20 object-cover rounded-md"
+                  />
+                </TableCell>
+
+                <TableCell
+                  onClick={() => navigate(`/products/edit/${product._id}`)}
+                  className="cursor-pointer hover:underline max-w-[200px] truncate  text-gray-700 hover:text-gray-900"
+                >
+                  {product.name}
+                </TableCell>
                 <TableCell className="uppercase truncate max-w-52">
                   {product.category.map((cat) => cat).join(", ")}
                 </TableCell>
@@ -149,8 +158,6 @@ const Products = () => {
                     ? `₹${product.discountedPrice}`
                     : "N/A"}
                 </TableCell>
-                <TableCell>{product.reviews.length}</TableCell>
-                <TableCell>{product.ratings}</TableCell>
                 <TableCell>{product.outOfStock ? "Yes" : "No"}</TableCell>
                 <TableCell>{product.popularity}</TableCell>
 
@@ -234,17 +241,27 @@ const Products = () => {
             <TableCell colSpan={9}>
               <div className="flex justify-between items-center">
                 <Button
-                  className={" cursor-pointer"}
+                  className={"cursor-pointer"}
                   disabled={page == 1}
                   onClick={() => navigate(`/products/${Number(page) - 1}`)}
                 >
                   Previous
                 </Button>
-                <span>
-                  Page {page} of {totalPages}
-                </span>
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <Button
+                      key={index + 1}
+                      className={`cursor-pointer ${
+                        Number(page) === index + 1 ? "bg-black text-white" : " bg-white text-black hover:text-white"
+                      }`}
+                      onClick={() => navigate(`/products/${index + 1}`)}
+                    >
+                      {index + 1}
+                    </Button>
+                  ))}
+                </div>
                 <Button
-                  className=" cursor-pointer"
+                  className="cursor-pointer"
                   disabled={page == totalPages}
                   onClick={() => navigate(`/products/${Number(page) + 1}`)}
                 >
