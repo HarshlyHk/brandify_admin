@@ -41,6 +41,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "../ui/skeleton";
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -75,7 +76,9 @@ const Products = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className=" underline underline-offset-4 font-bold uppercase">Products</h2>
+        <h2 className=" underline underline-offset-4 font-bold uppercase">
+          Products
+        </h2>
         <h4>
           <span className="text-sm text-gray-500">
             Total Products: {totalProducts}
@@ -125,15 +128,22 @@ const Products = () => {
         </TableHeader>
         <TableBody>
           {loading ? (
-            <TableRow>
-              <TableCell colSpan={9} className="text-center">
-                Loading...
-              </TableCell>
-            </TableRow>
+            <>
+              {Array.from({ length: itemsPerPage }, (_, index) => (
+                <TableRow>
+                  <TableCell key={index} colSpan={8}>
+                    <Skeleton className="h-20 w-full" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </>
           ) : products.length > 0 ? (
             sortedProducts.map((product) => (
               <TableRow key={product._id}>
-                <TableCell className="w-[100px]">
+                <TableCell
+                  className="w-[100px] cursor-pointer"
+                  onClick={() => navigate(`/products/edit/${product._id}`)}
+                >
                   <img
                     src={product?.images[0]}
                     alt={product.name}
@@ -252,7 +262,9 @@ const Products = () => {
                     <Button
                       key={index + 1}
                       className={`cursor-pointer ${
-                        Number(page) === index + 1 ? "bg-black text-white" : " bg-white text-black hover:text-white"
+                        Number(page) === index + 1
+                          ? "bg-black text-white"
+                          : " bg-white text-black hover:text-white"
                       }`}
                       onClick={() => navigate(`/products/${index + 1}`)}
                     >

@@ -98,7 +98,7 @@ const AbandonedCart = () => {
                 <Button
                   className="cursor-pointer"
                   disabled={page == 1 || !page}
-                  onClick={() => navigate(`/abandoned-carts/${Number(page) - 1}`)}
+                  onClick={() => navigate(`/abandoned-cart/${Number(page) - 1}`)}
                 >
                   Previous
                 </Button>
@@ -108,7 +108,7 @@ const AbandonedCart = () => {
                 <Button
                   className="cursor-pointer"
                   disabled={page == totalPages}
-                  onClick={() => navigate(`/abandoned-carts/${Number(page) + 1}`)}
+                  onClick={() => navigate(`/abandoned-cart/${Number(page) + 1}`)}
                 >
                   Next
                 </Button>
