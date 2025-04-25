@@ -25,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Skeleton } from "../ui/skeleton";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -82,15 +83,19 @@ const Orders = () => {
         </TableHeader>
         <TableBody>
           {loading ? (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center">
-                Loading...
-              </TableCell>
-            </TableRow>
+            <>
+              {Array.from({ length: itemsPerPage }, (_, index) => (
+                <TableRow >
+                  <TableCell key={index} colSpan={8}  >
+                    <Skeleton className="h-20 w-full" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </>
           ) : orders.length > 0 ? (
             sortedOrders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell className="cursor-pointer">
+                <TableCell className="cursor-pointer h-20">
                   <button
                     className=" cursor-pointer flex flex-col gap-2 items-start"
                     onClick={() => {
@@ -156,9 +161,9 @@ const Orders = () => {
           )}
         </TableBody>
         <TableFooter>
-          <TableRow>
-            <TableCell colSpan={8}>
-              <div className="flex justify-between items-center">
+          <TableRow >
+            <TableCell colSpan={8} >
+              <div className="flex justify-between items-center  ">
                 <Button
                   className="cursor-pointer"
                   disabled={page == 1}
@@ -166,9 +171,21 @@ const Orders = () => {
                 >
                   Previous
                 </Button>
-                <span>
-                  Page {page} of {totalPages}
-                </span>
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <Button
+                      key={index + 1}
+                      className={`cursor-pointer ${
+                        Number(page) === index + 1
+                          ? "bg-black text-white"
+                          : " bg-white text-black hover:text-white"
+                      }`}
+                      onClick={() => navigate(`/order/${index + 1}`)}
+                    >
+                      {index + 1}
+                    </Button>
+                  ))}
+                </div>
                 <Button
                   className="cursor-pointer"
                   disabled={page == totalPages}

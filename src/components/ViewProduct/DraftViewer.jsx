@@ -12,9 +12,8 @@ const DraftViewer = ({ value, onChange }) => {
   };
 
   return (
-    <div className="border border-gray-300 rounded-md p-4">
+    <div className="">
         <SimpleMDE value={markdown} onChange={handleChange} />
-
     </div>
   );
 };
