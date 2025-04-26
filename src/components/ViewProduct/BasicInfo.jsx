@@ -11,19 +11,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TbExternalLink } from "react-icons/tb";
 
-const BasicInfo = ({ formik, tags, categories }) => {
+const BasicInfo = ({ formik, tags, categories , id}) => {
   return (
     <>
       <div className="flex justify-center mb-10 items-center">
         <h1 className="text-xl underline underline-offset-4 font-bold">
-          {formik.values.name}
+          {formik?.values?.name}
         </h1>
+        <a
+          href={`https://dripdrip.in/${formik?.values?.name.replace(/\s+/g, "-")}/${id}`}          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-4"
+          title="View Product"
+        >
+          <TbExternalLink className="text-2xl text-gray-500" />
+        </a>
       </div>
       {/* Product Name */}
       <div className="flex gap-4 mb-10 w-full">
         <div className="w-1/2">
-          <label className="block text-xs font-bold uppercase mb-1">Product Name</label>
+          <label className="block text-xs font-bold uppercase mb-1">
+            Product Name
+          </label>
           <Input
             type="text"
             name="name"
@@ -88,7 +99,9 @@ const BasicInfo = ({ formik, tags, categories }) => {
         </div>
 
         <div className="w-32">
-          <label className="block text-xs font-bold uppercase  mb-1">Out of Stock</label>
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Out of Stock
+          </label>
           {formik?.values?.outOfStock != null && (
             <Select
               onValueChange={(value) =>
@@ -112,7 +125,9 @@ const BasicInfo = ({ formik, tags, categories }) => {
         {/* unlist */}
 
         <div className="w-40">
-          <label className="block text-xs font-bold uppercase  mb-1">UnList Item</label>
+          <label className="block text-xs font-bold uppercase  mb-1">
+            UnList Item
+          </label>
           {formik?.values?.unlist != null && (
             <Select
               onValueChange={(value) =>
@@ -133,7 +148,9 @@ const BasicInfo = ({ formik, tags, categories }) => {
           )}
         </div>
         <div className="w-40">
-          <label className="block text-xs font-bold uppercase  mb-1">Gender</label>
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Gender
+          </label>
           {formik?.values?.gender !== "" && (
             <Select
               value={formik?.values?.gender}
@@ -153,7 +170,9 @@ const BasicInfo = ({ formik, tags, categories }) => {
           )}
         </div>
         <div className="w-40">
-          <label className="block text-xs font-bold uppercase  mb-1">On Sale</label>
+          <label className="block text-xs font-bold uppercase  mb-1">
+            On Sale
+          </label>
           {formik?.values?.onSale != null && (
             <Select
               onValueChange={(value) =>
@@ -177,7 +196,9 @@ const BasicInfo = ({ formik, tags, categories }) => {
 
       <div className="mb-10 flex flex-row-reverse gap-4">
         <div className="w-1/2">
-          <label className="block text-xs font-bold uppercase  mb-1">Tags</label>
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Tags
+          </label>
           <MultiSelect
             isMulti
             value={formik.values.tags.map((tag) => ({
@@ -199,7 +220,9 @@ const BasicInfo = ({ formik, tags, categories }) => {
         </div>
 
         <div className="w-1/2">
-          <label className="block text-xs font-bold uppercase  mb-1">Categories</label>
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Categories
+          </label>
           <MultiSelect
             isMulti
             value={formik.values.category.map((cat) => ({

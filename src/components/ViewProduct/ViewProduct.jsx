@@ -147,7 +147,7 @@ const ViewProduct = () => {
       className="w-full mx-auto bg-white rounded-md"
     >
       <div className="p-6">
-        <BasicInfo formik={formik} tags={tags} categories={categories} />
+        <BasicInfo formik={formik} tags={tags} categories={categories} id= {id} />
 
         <div className="my-10">
           <hr />
