@@ -40,6 +40,10 @@
   color: #ffffff;
 }
 
+body{
+  overflow: hidden;
+}
+
 .font-eurostile {
   font-family: "Eurostile", sans-serif;
 }
@@ -139,4 +143,8 @@
 
 .rbc-off-range-bg, .rbc-off-range{
   opacity: 0 !important;
+}
+
+.navbar-scrollbar::-webkit-scrollbar {
+display: none;
 }

@@ -24,10 +24,10 @@ const Sidebar = () => {
     { name: "Settings", path: "/settings", icon: Settings },
     { name: "Products", path: "/products/1", icon: Package },
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
-    { name: "Abandoned Cart", path: "/abandoned-cart/1", icon: Package },
+    // { name: "Abandoned Cart", path: "/abandoned-cart/1", icon: Package },
     { name: "Categories", path: "/category", icon: Package },
-    { name: "Tags", path: "/tag", icon: Package },
-    { name: "Traffic", path: "/traffic", icon: FaUsers },
+    // { name: "Tags", path: "/tag", icon: Package },
+    // { name: "Traffic", path: "/traffic", icon: FaUsers },
     { name: "Collabos", path: "/collabos", icon: Users },
   ];
 
@@ -43,7 +43,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="h-screen w-64 bg-gray-900 text-white flex flex-col p-5 shadow-lg">
+    <div className="h-screen w-64 bg-gray-900 text-white flex flex-col p-5 shadow-lg overflow-auto navbar-scrollbar">
       {/* Logo Section */}
       <div className="text-2xl font-bold text-center mb-10">Admin Panel</div>
 
