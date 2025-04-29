@@ -17,6 +17,7 @@ import Traffic from "./components/Traffic/Traffic";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./utils/ThemeProvider";
 import Collabos from "./components/Collabos/Collabos";
+import CollabosOrderUpdate from "./components/Collabos/CollaboOrder";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               <Route path="/tag" element={<Tag />} />
               <Route path="/traffic" element={<Traffic />} />
               <Route path="/collabos" element={<Collabos />} />
+              <Route path= "collabo-order" element={<CollabosOrderUpdate />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

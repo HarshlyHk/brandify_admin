@@ -24,10 +24,7 @@ const Sidebar = () => {
     { name: "Settings", path: "/settings", icon: Settings },
     { name: "Products", path: "/products/1", icon: Package },
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
-    // { name: "Abandoned Cart", path: "/abandoned-cart/1", icon: Package },
     { name: "Categories", path: "/category", icon: Package },
-    // { name: "Tags", path: "/tag", icon: Package },
-    // { name: "Traffic", path: "/traffic", icon: FaUsers },
     { name: "Collabos", path: "/collabos", icon: Users },
   ];
 
