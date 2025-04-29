@@ -105,7 +105,9 @@ const Collabos = () => {
           </Button>
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Create Collabo</Button>
+              <Button className={"bg-green-500 hover:bg-green-600"}>
+                Create Collabo
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -173,7 +175,12 @@ const Collabos = () => {
                 >
                   Reset
                 </Button>
-                <Button onClick={handleCreate}>Create</Button>
+                <Button
+                  onClick={handleCreate}
+                  className={"bg-green-500 hover:bg-green-600"}
+                >
+                  Create
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
