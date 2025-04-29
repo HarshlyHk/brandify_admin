@@ -28,6 +28,7 @@ const Sidebar = () => {
     { name: "Categories", path: "/category", icon: Package },
     { name: "Tags", path: "/tag", icon: Package },
     { name: "Traffic", path: "/traffic", icon: FaUsers },
+    { name: "Collabos", path: "/collabos", icon: Users },
   ];
 
   const handleLogout = () => {

@@ -16,6 +16,7 @@ import AbandonedCartPage from "./pages/AbandonedCartPage";
 import Traffic from "./components/Traffic/Traffic";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./utils/ThemeProvider";
+import Collabos from "./components/Collabos/Collabos";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               <Route path="/category" element={<Category />} />
               <Route path="/tag" element={<Tag />} />
               <Route path="/traffic" element={<Traffic />} />
+              <Route path="/collabos" element={<Collabos />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

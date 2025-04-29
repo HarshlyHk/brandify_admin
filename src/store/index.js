@@ -6,6 +6,7 @@ import categoryReducer from "../features/categorySlics";
 import tagReducer from "../features/tagSlice";
 import orderReducer from "../features/orderSlice";
 import abandonedCartReducer from "../features/abandonedCart";
+import Collabos from "../features/collaboSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     tags: tagReducer,
     order: orderReducer,
     abandonedCart: abandonedCartReducer,
+    collabo: Collabos,
   },
 });
 
