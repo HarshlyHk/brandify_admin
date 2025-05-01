@@ -94,7 +94,7 @@ const Orders = () => {
             </>
           ) : orders.length > 0 ? (
             sortedOrders.map((order) => (
-              <TableRow key={order._id}>
+              <TableRow key={order?._id}>
                 <TableCell className="cursor-pointer h-20">
                   <button
                     className=" cursor-pointer flex flex-col gap-2 items-start"
@@ -103,11 +103,11 @@ const Orders = () => {
                       setShowDialog(true);
                     }}
                   >
-                    <p>{order.user.name}</p>
+                    <p>{order?.user?.name}</p>
                     <p className=" uppercase text-red-400">{order?.referal}</p>
                   </button>
                 </TableCell>
-                <TableCell>₹{order.totalAmount}</TableCell>
+                <TableCell>₹{order?.totalAmount}</TableCell>
                 <TableCell
                   className={`${
                     order.paymentStatus === "Completed"
@@ -119,7 +119,7 @@ const Orders = () => {
                       : "text-gray-700"
                   }`}
                 >
-                  {order.paymentStatus}
+                  {order?.paymentStatus}
                 </TableCell>
                 <TableCell
                   className={`${
@@ -128,11 +128,11 @@ const Orders = () => {
                       : "text-black"
                   }`}
                 >
-                  {order.paymentMethod}
+                  {order?.paymentMethod}
                 </TableCell>
-                <TableCell>{order.status}</TableCell>
+                <TableCell>{order?.status}</TableCell>
                 <TableCell>
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {new Date(order?.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell className="text-end">
                   <div className="flex gap-2 justify-center items-center">
