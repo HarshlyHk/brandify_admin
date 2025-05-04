@@ -85,8 +85,8 @@ const Orders = () => {
           {loading ? (
             <>
               {Array.from({ length: itemsPerPage }, (_, index) => (
-                <TableRow >
-                  <TableCell key={index} colSpan={8}  >
+                <TableRow>
+                  <TableCell key={index} colSpan={8}>
                     <Skeleton className="h-20 w-full" />
                   </TableCell>
                 </TableRow>
@@ -125,7 +125,11 @@ const Orders = () => {
                   className={`${
                     order?.paymentMethod == "PhonePe"
                       ? " text-purple-600"
-                      : "text-black"
+                      : order?.paymentMethod == "RAZORPAY"
+                      ? "text-blue-600"
+                      : order?.paymentMethod == "COD"
+                        ? "text-orange-600"
+                      :"text-black"
                   }`}
                 >
                   {order?.paymentMethod}
@@ -144,9 +148,9 @@ const Orders = () => {
                     </Button>
                     {/* <Button
                       className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
-                      onClick={() => dispatch(updateOrder(order._id))}
+                      onClick={() => dispatch(deleteOrder(order._id))}
                     >
-                      Update
+                      Delete
                     </Button> */}
                   </div>
                 </TableCell>
@@ -161,8 +165,8 @@ const Orders = () => {
           )}
         </TableBody>
         <TableFooter>
-          <TableRow >
-            <TableCell colSpan={8} >
+          <TableRow>
+            <TableCell colSpan={8}>
               <div className="flex justify-between items-center  ">
                 <Button
                   className="cursor-pointer"
