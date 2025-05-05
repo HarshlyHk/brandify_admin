@@ -128,8 +128,8 @@ const Orders = () => {
                       : order?.paymentMethod == "RAZORPAY"
                       ? "text-blue-600"
                       : order?.paymentMethod == "COD"
-                        ? "text-orange-600"
-                      :"text-black"
+                      ? "text-orange-600"
+                      : "text-black"
                   }`}
                 >
                   {order?.paymentMethod}
@@ -204,7 +204,7 @@ const Orders = () => {
       </Table>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="sm:max-w-[700px] h-[80vh] overflow-y-scroll p-0">
+        <DialogContent className="sm:max-w-[900px] h-[80vh] overflow-y-scroll p-0">
           <DialogHeader className=" sticky top-0 bg-white z-10 p-4">
             <DialogTitle className="text-xl font-semibold">
               Order Details
@@ -214,29 +214,66 @@ const Orders = () => {
           {selectedOrder && (
             <div className="p-4 space-y-6 text-sm text-gray-700">
               {/* User Info */}
-              <div className="space-y-1 p-4 flex flex-col">
-                <div>
-                  <p className="font-medium w-32">Account Name:</p>
-                  <p className="text-gray-500"> {selectedOrder.user.name}</p>
-                </div>
-
-                <div>
-                  <p className="font-medium w-32">Recipient Name:</p>
-                  <p className="text-gray-500">
-                    {selectedOrder.shippingAddress.fullName}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="font-medium w-32">Email:</p>
-                  <p className="text-gray-500">{selectedOrder.user?.email}</p>
-                </div>
-                {selectedOrder?.insta_handle && (
+              <div className="flex justify-between items-start p-4">
+                <div className="space-y-1 flex flex-col">
                   <div>
-                    <p className="font-medium w-32">Insta Handle:</p>
+                    <p className="font-medium w-32">Account Name:</p>
+                    <p className="text-gray-500"> {selectedOrder.user.name}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-medium w-32">Recipient Name:</p>
                     <p className="text-gray-500">
-                      {selectedOrder?.insta_handle}
+                      {selectedOrder.shippingAddress.fullName}
                     </p>
+                  </div>
+
+                  <div>
+                    <p className="font-medium w-32">Email:</p>
+                    <p className="text-gray-500">{selectedOrder.user?.email}</p>
+                  </div>
+                  {selectedOrder?.insta_handle && (
+                    <div>
+                      <p className="font-medium w-32">Insta Handle:</p>
+                      <p className="text-gray-500">
+                        {selectedOrder?.insta_handle}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {selectedOrder?.utmParams.Source != null && (
+                  <div className="space-y-1 p- flex flex-col">
+                    <div>
+                      <p className="font-medium w-36">Source:</p>
+                      <p className="text-gray-500">
+                        {selectedOrder?.utmParams?.Source}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-medium w-36">Placement:</p>
+                      <p className="text-gray-500">
+                        {selectedOrder?.utmParams?.Placement}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-medium w-36">Campaign Name:</p>
+                      <p className="text-gray-500">
+                        {selectedOrder?.utmParams?.CampaignName}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-medium w-36">Ad Set Name:</p>
+                      <p className="text-gray-500">
+                        {selectedOrder?.utmParams?.AdSetName}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-medium w-36">Ad Name:</p>
+                      <p className="text-gray-500">
+                        {selectedOrder?.utmParams?.AdName}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
