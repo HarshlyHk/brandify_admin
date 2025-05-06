@@ -242,7 +242,7 @@ const Orders = () => {
                   )}
                 </div>
 
-                {selectedOrder?.utmParams.Source != null && (
+                {selectedOrder?.utmParams?.Source != null && (
                   <div className="space-y-1 p- flex flex-col">
                     <div>
                       <p className="font-medium w-36">Source:</p>
