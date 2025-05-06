@@ -164,6 +164,7 @@ const CategoryPriorityEditor = () => {
               <SelectItem value="oversized-tees">Oversized Tees</SelectItem>
               <SelectItem value="hoodies">Hoodies</SelectItem>
               <SelectItem value="bottoms">Bottoms</SelectItem>
+              <SelectItem value="vest">Vest</SelectItem>
               <SelectItem value="dripcult">Drip Cult</SelectItem>
               <SelectItem value="fear-no-one">Fear No One</SelectItem>
               <SelectItem value="blanks">Blanks</SelectItem>
