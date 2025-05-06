@@ -18,6 +18,7 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./utils/ThemeProvider";
 import Collabos from "./components/Collabos/Collabos";
 import CollabosOrderUpdate from "./components/Collabos/CollaboOrder";
+import CategoryPriorityEditor from "./components/Products/CategoryPriorityEditor";
 
 function App() {
   return (
@@ -35,6 +36,10 @@ function App() {
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/products/edit/:id" element={<ViewProduct />} />
               <Route
+                path="/products/priority"
+                element={<CategoryPriorityEditor />}
+              />
+              <Route
                 path="/abandoned-cart/:page"
                 element={<AbandonedCartPage />}
               />
@@ -42,7 +47,7 @@ function App() {
               <Route path="/tag" element={<Tag />} />
               <Route path="/traffic" element={<Traffic />} />
               <Route path="/collabos" element={<Collabos />} />
-              <Route path= "collabo-order" element={<CollabosOrderUpdate />} />
+              <Route path="collabo-order" element={<CollabosOrderUpdate />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

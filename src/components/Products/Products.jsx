@@ -68,7 +68,7 @@ const Products = () => {
     const res = await dispatch(duplicateProduct(productId));
     if (res.meta.requestStatus === "fulfilled") {
       if (res.payload.status === 200) {
-        navigate("edit/" + res.payload.data.duplicatedProduct._id);
+        navigate("/products/edit/" + res.payload.data.duplicatedProduct._id);
       }
     }
   };
@@ -85,6 +85,9 @@ const Products = () => {
           </span>
         </h4>
         <div className="flex gap-4">
+          <Link to="/products/priority">
+            <Button className="">Update Priority</Button>
+          </Link>
           <Link to="/products/add">
             <Button className="">Add Product</Button>
           </Link>

@@ -10,6 +10,7 @@ const initialState = {
   loading: false,
   taskLoading: false,
   error: null,
+  productsByPriority: [],
 };
 
 // Thunks
@@ -145,6 +146,42 @@ export const reorderedImage = createAsyncThunk(
   }
 );
 
+export const getAllProductsByPriority = createAsyncThunk(
+  "product/getAllProductsByPriority",
+  async (category, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get(
+        `/product/get-product-all-details?category=${category}`
+      );
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to fetch products.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+export const updateBulkPriority = createAsyncThunk(
+  "product/updateBulkPriority",
+
+  async (priorityData, { rejectWithValue }) => {
+    toast.info("Updating product priority...");
+    try {
+      const { data } = await axiosInstance.patch(
+        `/product/admin/update-priority`,
+        priorityData
+      );
+      toast.success("Product priority updated successfully!");
+      return data;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to update product priority."
+      );
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -265,6 +302,16 @@ const productSlice = createSlice({
       .addCase(reorderedImage.rejected, (state, action) => {
         state.taskLoading = false;
         state.error = action.payload;
+      })
+      // Get All Products By Priority
+
+      .addCase(getAllProductsByPriority.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllProductsByPriority.fulfilled, (state, action) => {
+        state.loading = false;
+        state.productsByPriority = action.payload.data.products;
       });
   },
 });
