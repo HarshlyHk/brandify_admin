@@ -203,7 +203,7 @@ const Collabos = () => {
             {collabos.map((collabo) => (
               <TableRow key={collabo._id}>
                 <TableCell>
-                  {collabo.imageUrl && collabo.imageUrl.endsWith(".mp4") ? (
+                  {collabo?.isVideo ? (
                     <video
                       src={collabo.imageUrl}
                       controls
