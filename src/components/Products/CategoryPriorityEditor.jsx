@@ -73,7 +73,7 @@ const SortableRow = ({ product, index, handleNavigate }) => {
         {product.name}
       </TableCell>
       <TableCell className="uppercase truncate max-w-52">
-        {product.category}
+        {product.order}
       </TableCell>
     </TableRow>
   );
@@ -81,7 +81,7 @@ const SortableRow = ({ product, index, handleNavigate }) => {
 
 const CategoryPriorityEditor = () => {
   const dispatch = useDispatch();
-  const [category, setCategory] = useState("dripcult");
+  const [category, setCategory] = useState("oversized-tees");
   const [products, setProducts] = useState([]);
   const { productsByPriority, loading } = useSelector((state) => state.product);
 
@@ -150,7 +150,7 @@ const CategoryPriorityEditor = () => {
 
       <div className="mb-4">
         <Label htmlFor="category" className="mb-2">
-          Category
+          Select Category
         </Label>
         <Select
           onValueChange={(value) => setCategory(value)}
@@ -188,7 +188,7 @@ const CategoryPriorityEditor = () => {
                 <TableHead>S No.</TableHead>
                 <TableHead className="w-[100px]">Image</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead>Priority Order</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
