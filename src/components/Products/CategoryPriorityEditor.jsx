@@ -167,6 +167,7 @@ const CategoryPriorityEditor = () => {
               <SelectItem value="dripcult">Drip Cult</SelectItem>
               <SelectItem value="fear-no-one">Fear No One</SelectItem>
               <SelectItem value="blanks">Blanks</SelectItem>
+              <SelectItem value="featured">Featured</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
