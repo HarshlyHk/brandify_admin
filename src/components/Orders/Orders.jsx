@@ -129,7 +129,7 @@ const Orders = () => {
                       ? "text-blue-600"
                       : order?.paymentMethod == "COD"
                       ? "text-orange-600"
-                      : "text-black"
+                      : "text-blue-600"
                   }`}
                 >
                   {order?.paymentMethod}
@@ -146,12 +146,12 @@ const Orders = () => {
                     >
                       View
                     </Button>
-                    {/* <Button
-                      className="cursor-pointer hover:bg-blue-700 bg-blue-500 text-white"
+                    <Button
+                      className="cursor-pointer hover:bg-red-700 bg-red-500 text-white"
                       onClick={() => dispatch(deleteOrder(order._id))}
                     >
                       Delete
-                    </Button> */}
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -353,6 +353,19 @@ const Orders = () => {
                   </div>
                 </div>
                 <hr />
+
+                {/* order notes : orderNotes*/}
+                {selectedOrder.orderNotes && (
+                  <>
+                    <div className="space-y-2 flex flex-col py-4">
+                      <p className="font-medium text-black">Order Notes:</p>
+                      <p className="text-gray-500 mb-4">
+                        {selectedOrder.orderNotes}
+                      </p>
+                    </div>
+                    <hr />
+                  </>
+                )}
 
                 {/* Products */}
                 <div className=" my-8">
