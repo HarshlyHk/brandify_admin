@@ -74,7 +74,7 @@ const FailedOrders = () => {
             <TableHead>Total Amount</TableHead>
             <TableHead>Payment</TableHead>
             <TableHead>Payment Mode</TableHead>
-            <TableHead>Delivery</TableHead>
+            <TableHead>Time</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
@@ -132,8 +132,13 @@ const FailedOrders = () => {
                 >
                   {order?.paymentMethod}
                 </TableCell>
-                <TableCell>{order?.status}</TableCell>
                 <TableCell>
+                  {new Date(order?.createdAt).toLocaleTimeString("en-IN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "Asia/Kolkata",
+                  })}
+                </TableCell>                <TableCell>
                   {new Date(order?.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell className="text-end">
@@ -182,7 +187,7 @@ const FailedOrders = () => {
                           ? "bg-black text-white"
                           : " bg-white text-black hover:text-white"
                       }`}
-                      onClick={() => navigate(`/failed-order/${index + 1}`)}
+                      onClick={() => navigate(`/failed-orders/${index + 1}`)}
                     >
                       {index + 1}
                     </Button>
@@ -191,7 +196,7 @@ const FailedOrders = () => {
                 <Button
                   className="cursor-pointer"
                   disabled={page == totalPages}
-                  onClick={() => navigate(`/failed-order/${Number(page) + 1}`)}
+                  onClick={() => navigate(`/failed-orders/${Number(page) + 1}`)}
                 >
                   Next
                 </Button>

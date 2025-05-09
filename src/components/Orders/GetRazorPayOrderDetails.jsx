@@ -40,7 +40,7 @@ const GetRazorPayOrderDetails = ({ orderId }) => {
         `/orders/save-razorpay/${orderId}`,
         orderDetails
       );
-      if (response.data.success) {
+      if (response.data.status == 200) {
         toast.success("Order details saved successfully!");
         setOrderDetails(response.data.data);
       } else {
@@ -124,7 +124,9 @@ const GetRazorPayOrderDetails = ({ orderId }) => {
                 </div>
                 <div className="flex gap-2 items-center">
                   <p className="text-gray-700">Amount Due:</p>
-                  <p className="text-gray-500">{orderDetails?.amount_due / 100}</p>
+                  <p className="text-gray-500">
+                    {orderDetails?.amount_due / 100}
+                  </p>
                 </div>
               </div>
             </div>

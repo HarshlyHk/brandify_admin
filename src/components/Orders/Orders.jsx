@@ -110,7 +110,7 @@ const Orders = () => {
                       setShowDialog(true);
                     }}
                   >
-                    <p>{order?.user?.name}</p>
+                    <p>{order?.shippingAddress?.fullName}</p>
                     <p className=" uppercase text-red-400">{order?.referal}</p>
                   </button>
                 </TableCell>
