@@ -182,7 +182,7 @@ const FailedOrders = () => {
                           ? "bg-black text-white"
                           : " bg-white text-black hover:text-white"
                       }`}
-                      onClick={() => navigate(`/order/${index + 1}`)}
+                      onClick={() => navigate(`/failed-order/${index + 1}`)}
                     >
                       {index + 1}
                     </Button>
@@ -191,7 +191,7 @@ const FailedOrders = () => {
                 <Button
                   className="cursor-pointer"
                   disabled={page == totalPages}
-                  onClick={() => navigate(`/order/${Number(page) + 1}`)}
+                  onClick={() => navigate(`/failed-order/${Number(page) + 1}`)}
                 >
                   Next
                 </Button>

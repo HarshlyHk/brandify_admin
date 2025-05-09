@@ -97,6 +97,7 @@ const ViewOrder = () => {
         status: order.status,
         totalAmount: order.totalAmount,
         products: order.products,
+        email: order.email,
       });
     }
   }, [dispatch, id, order]);
@@ -252,6 +253,21 @@ const ViewOrder = () => {
       </div>
       <hr />
 
+      {/* Email */}
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="email" className=" font-bold uppercase">
+          Email
+        </Label>
+        <Input
+          id="email"
+          name="email"
+          value={formData?.email}
+          onChange={handleInputChange}
+          placeholder="e.g. user@gmail.com"
+        />
+      </div>
+
       {/* Shipping Address */}
       <div className="space-y-3">
         <h3 className="text-lg font-semibold mb-4 text-center uppercase">
@@ -344,7 +360,10 @@ const ViewOrder = () => {
         <h2 className=" text-center font-bold mb-2 uppercase">Products</h2>
         <ul className="list-disc pl-5 space-y-1">
           {formData.products.map((product, index) => (
-            <li key={index} className="flex gap-4 items-center text-sm text-gray-700">
+            <li
+              key={index}
+              className="flex gap-4 items-center text-sm text-gray-700"
+            >
               <img
                 src={product?.image}
                 alt={product?.name}
