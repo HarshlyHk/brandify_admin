@@ -11,6 +11,7 @@ const initialState = {
   loading: false,
   taskLoading: false,
   error: null,
+  failedOrders: [],
 };
 
 // Thunks
@@ -104,7 +105,14 @@ export const updateOrder = createAsyncThunk(
 export const sendTrackingId = createAsyncThunk(
   "order/sendTrackingId",
   async (
-    { orderId, trackingId, deliveryServiceName, deliveryServiceUrl, email, name },
+    {
+      orderId,
+      trackingId,
+      deliveryServiceName,
+      deliveryServiceUrl,
+      email,
+      name,
+    },
     { rejectWithValue }
   ) => {
     toast.info("Sending tracking ID...");
@@ -133,6 +141,24 @@ export const deleteOrder = createAsyncThunk(
       return orderId;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete order.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+// Get All Failed Orders (Admin)
+export const getAllFailedOrdersAdmin = createAsyncThunk(
+  "order/getAllFailedOrdersAdmin",
+  async ({ page, items }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get(
+        "/orders/admin/get-failed-orders?page=" + page + "&items=" + items
+      );
+      return data;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to fetch failed orders."
+      );
       return rejectWithValue(err.response?.data);
     }
   }
@@ -234,6 +260,21 @@ const orderSlice = createSlice({
       })
       .addCase(deleteOrder.rejected, (state, action) => {
         state.taskLoading = false;
+        state.error = action.payload;
+      })
+      // Get All Failed Orders (Admin)
+      .addCase(getAllFailedOrdersAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllFailedOrdersAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.failedOrders = action.payload.data.orders;
+        state.totalOrders = action.payload.data.pagination.totalOrders;
+        state.totalPages = action.payload.data.pagination.totalPages;
+      })
+      .addCase(getAllFailedOrdersAdmin.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

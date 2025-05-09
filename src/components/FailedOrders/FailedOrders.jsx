@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  getAllOrdersAdmin,
+  getAllFailedOrdersAdmin,
   deleteOrder,
   updateOrder,
 } from "@/features/orderSlice";
@@ -27,20 +27,20 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "../ui/skeleton";
 
-const Orders = () => {
+const FailedOrders = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { totalOrders, totalPages, loading } = useSelector(
     (state) => state.order
   );
-  const { orders } = useSelector((state) => state.order);
+  const orders = useSelector((state) => state.order.failedOrders);
   const { page } = useParams();
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage }));
+    dispatch(getAllFailedOrdersAdmin({ page: page, items: itemsPerPage }));
   }, [dispatch, itemsPerPage, page]);
 
   const updateDeliveryStatus = (orderId) => {
@@ -51,8 +51,6 @@ const Orders = () => {
     dispatch(updateOrder(orderId));
   };
 
-  console.log("Orders:", orders);
-
   const sortedOrders = [...orders].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
@@ -61,18 +59,11 @@ const Orders = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Orders</h2>
-        <div className="flex gap-4 items-center">
-          <Link to="/failed-orders/1">
-            <Button className="bg-red-500 text-white hover:bg-red-700">
-              Failed Orders
-            </Button>
-          </Link>
-          <h4>
-            <span className="text-sm text-gray-700">
-              Total Orders: {totalOrders}
-            </span>
-          </h4>
-        </div>
+        <h4>
+          <span className="text-sm text-gray-700">
+            Total Orders: {totalOrders}
+          </span>
+        </h4>
       </div>
 
       <Table>
@@ -153,12 +144,12 @@ const Orders = () => {
                     >
                       View
                     </Button>
-                    {/* <Button
+                    <Button
                       className="cursor-pointer hover:bg-red-700 bg-red-500 text-white"
                       onClick={() => dispatch(deleteOrder(order._id))}
                     >
                       Delete
-                    </Button> */}
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -408,4 +399,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default FailedOrders;

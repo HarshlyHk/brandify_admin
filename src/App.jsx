@@ -19,6 +19,7 @@ import theme from "./utils/ThemeProvider";
 import Collabos from "./components/Collabos/Collabos";
 import CollabosOrderUpdate from "./components/Collabos/CollaboOrder";
 import CategoryPriorityEditor from "./components/Products/CategoryPriorityEditor";
+import FailedOrders from "./components/FailedOrders/FailedOrders";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/products/:page" element={<ProductPage />} />
               <Route path="/order/:page" element={<OrderPage />} />
               <Route path="/orders/:id" element={<EditOrder />} />
+              <Route path="/failed-orders/:page" element={<FailedOrders />} />
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/products/edit/:id" element={<ViewProduct />} />
               <Route

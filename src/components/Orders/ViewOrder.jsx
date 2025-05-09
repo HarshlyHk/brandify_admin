@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "../ui/label";
-
+import GetRazorPayOrderDetails from "./GetRazorPayOrderDetails";
 
 const paymentStatusOptions = ["Failed", "Pending", "Completed", "Refunded"];
 const orderStatusOptions = [
@@ -151,27 +151,40 @@ const ViewOrder = () => {
       onSubmit={handleSubmit}
       className="p-6 bg-white rounded-md shadow-md space-y-6 mx-auto w-full"
     >
-      <h1 className="text-xl font-bold mb-6 text-center uppercase">
-        Manage Order -{" "}
-        <span
-          className={`${
-            order?.status === "Shipped"
-              ? "text-blue-500"
-              : order?.status === "Cancelled"
-              ? "text-red-500"
-              : order?.status === "Delivered"
-              ? "text-green-500"
-              : order?.status === "Processing"
-              ? "text-yellow-500"
-              : "text-pink-500"
-          } uppercase `}
-        >
-          {order?.status}
-        </span>
-      </h1>
+      <div className="flex items-center justify-between mb-4">
+        <div></div>
+        <h1 className="text-xl font-bold mb-6 text-center uppercase">
+          Manage Order -{" "}
+          <span
+            className={`${
+              order?.status === "Shipped"
+                ? "text-blue-500"
+                : order?.status === "Cancelled"
+                ? "text-red-500"
+                : order?.status === "Delivered"
+                ? "text-green-500"
+                : order?.status === "Processing"
+                ? "text-yellow-500"
+                : "text-pink-500"
+            } uppercase `}
+          >
+            {order?.status}
+          </span>
+        </h1>
+        <div>
+          <GetRazorPayOrderDetails orderId={order.transactionId} />
+        </div>
+      </div>
 
       <hr />
       <div className=" flex items-center gap-10 justify-center">
+        <div className="flex flex-col gap-2 w-60">
+          <Label htmlFor="paymentMethod" className=" font-bold uppercase">
+            Order ID
+          </Label>
+          <Input value={order.transactionId} />
+        </div>
+
         <div className="flex flex-col gap-2">
           <Label htmlFor="paymentMethod" className=" font-bold uppercase">
             Payment Method
@@ -268,7 +281,7 @@ const ViewOrder = () => {
                 <Textarea
                   name={name}
                   placeholder={placeholder}
-                  value={formData.shippingAddress[name]}
+                  value={formData?.shippingAddress?.[name] || ""}
                   onChange={handleAddressChange}
                 />
               </div>
@@ -280,7 +293,7 @@ const ViewOrder = () => {
                 <Input
                   name={name}
                   placeholder={placeholder}
-                  value={formData.shippingAddress[name]}
+                  value={formData?.shippingAddress?.[name] || ""}
                   onChange={handleAddressChange}
                 />
               </div>
@@ -331,9 +344,15 @@ const ViewOrder = () => {
         <h2 className=" text-center font-bold mb-2 uppercase">Products</h2>
         <ul className="list-disc pl-5 space-y-1">
           {formData.products.map((product, index) => (
-            <li key={index}>
-              <span className="font-medium">{product.name}</span> — Quantity:{" "}
-              {product.quantity}
+            <li key={index} className="flex gap-4 items-center text-sm text-gray-700">
+              <img
+                src={product?.image}
+                alt={product?.name}
+                className="w-16 h-16 object-cover"
+              />
+              <p>{product?.name}</p>
+              <p> SIZE-{product?.size}</p>
+              <p>QTY.{product?.quantity}</p>
             </li>
           ))}
         </ul>
