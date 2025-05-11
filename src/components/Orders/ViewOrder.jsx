@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   getOrder,
   updateOrder,
@@ -57,6 +57,7 @@ const ViewOrder = () => {
   const { order, loading, taskLoading } = useSelector((state) => state.order);
   const [open, setOpen] = useState(false);
   const [trackingId, setTrackingId] = useState("");
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     paymentMethod: "",
@@ -123,6 +124,7 @@ const ViewOrder = () => {
 
   const handleDelete = (orderId) => {
     dispatch(deleteOrder(orderId));
+    navigate("/order/1");
   };
 
   const handleSubmit = (e) => {
