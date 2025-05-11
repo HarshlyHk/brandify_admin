@@ -257,6 +257,9 @@ const orderSlice = createSlice({
         state.orders = state.orders.filter(
           (order) => order._id !== action.payload
         );
+        state.failedOrders = state.failedOrders.filter(
+          (order) => order._id !== action.payload
+        );
       })
       .addCase(deleteOrder.rejected, (state, action) => {
         state.taskLoading = false;

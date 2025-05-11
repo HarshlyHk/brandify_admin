@@ -290,13 +290,13 @@ const Orders = () => {
                 <div className="space-y-2 flex flex-col">
                   <p className="font-medium text-black">Full Address:</p>
                   <p className="leading-relaxed text-gray-500 mb-4">
-                    {selectedOrder.shippingAddress.street},{" "}
-                    {selectedOrder.shippingAddress.locality},{" "}
-                    {selectedOrder.shippingAddress.landmark},<br />
-                    {selectedOrder.shippingAddress.city},{" "}
-                    {selectedOrder.shippingAddress.state},{" "}
-                    {selectedOrder.shippingAddress.country} -{" "}
-                    {selectedOrder.shippingAddress.zipCode}
+                    {selectedOrder.shippingAddress?.street},{" "}
+                    {selectedOrder.shippingAddress?.locality},{" "}
+                    {selectedOrder.shippingAddress?.landmark},<br />
+                    {selectedOrder.shippingAddress?.city},{" "}
+                    {selectedOrder.shippingAddress?.state},{" "}
+                    {selectedOrder.shippingAddress?.country} -{" "}
+                    {selectedOrder.shippingAddress?.zipCode}
                   </p>
                   <hr />
 
@@ -383,9 +383,14 @@ const Orders = () => {
                         key={product._id}
                         className="flex justify-between items-center border border-gray-200 rounded-md p-3 bg-gray-50"
                       >
-                        <span className=" w-80">{product.name}</span>
-                        <span>Qty: {product.quantity}</span>
-                        <span>Size: {product.size}</span>
+                        <img
+                          src={product?.image}
+                          alt={product?.name}
+                          className="w-16 h-16 object-cover rounded-md"
+                        />
+                        <span className=" w-80">{product?.name}</span>
+                        <span>Qty: {product?.quantity}</span>
+                        <span>Size: {product?.size}</span>
                       </div>
                     ))}
                   </div>
