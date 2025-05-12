@@ -18,6 +18,8 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./utils/ThemeProvider";
 import Collabos from "./components/Collabos/Collabos";
 import CollabosOrderUpdate from "./components/Collabos/CollaboOrder";
+import LookBook from "./components/LookBook/LookBook";
+import LookBookOrderUpdate from "./components/LookBook/LookBookOrder";
 import CategoryPriorityEditor from "./components/Products/CategoryPriorityEditor";
 import FailedOrders from "./components/FailedOrders/FailedOrders";
 
@@ -50,6 +52,8 @@ function App() {
               <Route path="/traffic" element={<Traffic />} />
               <Route path="/collabos" element={<Collabos />} />
               <Route path="collabo-order" element={<CollabosOrderUpdate />} />
+              <Route path="/lookbook" element={<LookBook />} />
+              <Route path="/lookbook-order" element={<LookBookOrderUpdate />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

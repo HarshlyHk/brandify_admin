@@ -7,6 +7,7 @@ import {
   Package,
   ShoppingBag,
 } from "lucide-react";
+import { TbMoodLookUp } from "react-icons/tb";
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/userSlice";
@@ -26,6 +27,8 @@ const Sidebar = () => {
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
     { name: "Categories", path: "/category", icon: Package },
     { name: "Collabos", path: "/collabos", icon: Users },
+    { name: "LookBook", path: "/lookbook", icon: TbMoodLookUp },
+ 
   ];
 
   const handleLogout = () => {

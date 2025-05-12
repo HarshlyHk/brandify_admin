@@ -7,6 +7,8 @@ import tagReducer from "../features/tagSlice";
 import orderReducer from "../features/orderSlice";
 import abandonedCartReducer from "../features/abandonedCart";
 import Collabos from "../features/collaboSlice";
+import LookBook from "../features/lookBookSlice";
+
 
 const store = configureStore({
   reducer: {
@@ -18,6 +20,7 @@ const store = configureStore({
     order: orderReducer,
     abandonedCart: abandonedCartReducer,
     collabo: Collabos,
+    lookBook: LookBook,
   },
 });
 
