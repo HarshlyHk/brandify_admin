@@ -48,13 +48,19 @@ const Products = () => {
   const { products, totalProducts, totalPages, loading } = useSelector(
     (state) => state.product
   );
+  const [category, setCategory] = useState("All");
+  const { categories } = useSelector((state) => state.category);
 
   const { page } = useParams();
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState("12");
 
   useEffect(() => {
-    dispatch(getProducts({ page, items: itemsPerPage }));
-  }, [dispatch, page, itemsPerPage]);
+    if (category != "All") {
+      dispatch(getProducts({ page, items: itemsPerPage, category : `&categories=${category}` }));
+    } else {
+      dispatch(getProducts({ page, items: itemsPerPage , category : "" }));
+    }
+  }, [dispatch, page, itemsPerPage, category]);
 
   const handleDelete = (productId) => {
     dispatch(deleteProduct(productId));
@@ -94,25 +100,52 @@ const Products = () => {
         </div>
       </div>
 
-      <div className="mb-4">
-        <Label htmlFor="items-per-page" className=" mb-2">
-          Items per page:
-        </Label>
-        <Select
-          onValueChange={(value) => setItemsPerPage(Number(value))}
-          defaultValue={itemsPerPage.toString()}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Items per page" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+      <div className="flex gap-4 mb-4">
+        <div className="mb-4">
+          <Label htmlFor="items-per-page" className=" mb-2">
+            Items per page:
+          </Label>
+          <Select
+            onValueChange={(value) => setItemsPerPage(Number(value))}
+            defaultValue={itemsPerPage.toString()}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Items per page" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="8">8</SelectItem>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="mb-4">
+          <Label htmlFor="items-per-page" className=" mb-2">
+            Filter By Category
+          </Label>
+          <Select
+            onValueChange={(value) => setCategory(value)}
+            defaultValue={category}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Items per page" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="All">All</SelectItem>
+                {categories.length > 0 &&
+                  categories.map((category) => (
+                    <SelectItem value={category?.value} key={category._id}>
+                      {category?.label}
+                    </SelectItem>
+                  ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <Table>

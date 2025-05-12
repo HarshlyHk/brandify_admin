@@ -41,10 +41,10 @@ export const createProduct = createAsyncThunk(
 // Get Products
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async ({ page = 1, items = 12 }, { rejectWithValue }) => {
+  async ({ page = 1, items = 12, category }, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get(
-        `/product/get-product?page=${page}&items=${items}`
+        `/product/get-product?page=${page}&items=${items}${category}`
       );
       return data;
     } catch (err) {
