@@ -56,9 +56,16 @@ const Products = () => {
 
   useEffect(() => {
     if (category != "All") {
-      dispatch(getProducts({ page, items: itemsPerPage, category : `&categories=${category}` }));
+      navigate(`/products/1`);
+      dispatch(
+        getProducts({
+          page,
+          items: itemsPerPage,
+          category: `&categories=${category}`,
+        })
+      );
     } else {
-      dispatch(getProducts({ page, items: itemsPerPage , category : "" }));
+      dispatch(getProducts({ page, items: itemsPerPage, category: "" }));
     }
   }, [dispatch, page, itemsPerPage, category]);
 
@@ -277,7 +284,7 @@ const Products = () => {
           ) : (
             <TableRow>
               <TableCell colSpan={9} className="text-center">
-                No products found.
+                No products found. {page > 1 && "Go to page 1"}
               </TableCell>
             </TableRow>
           )}
