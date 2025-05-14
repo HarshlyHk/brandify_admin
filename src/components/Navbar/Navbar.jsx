@@ -14,6 +14,7 @@ import { logout } from "@/features/userSlice";
 import { getCategories } from "@/features/categorySlics";
 import { getTags } from "@/features/tagSlice";
 import { FaUsers } from "react-icons/fa";
+import { TbTruckReturn } from "react-icons/tb";
 
 const Sidebar = () => {
   const [active, setActive] = useState("Dashboard");
@@ -28,7 +29,7 @@ const Sidebar = () => {
     { name: "Categories", path: "/category", icon: Package },
     { name: "Collabos", path: "/collabos", icon: Users },
     { name: "LookBook", path: "/lookbook", icon: TbMoodLookUp },
- 
+    { name: " Return/Refund", path: "/return-refund/1", icon: TbTruckReturn },
   ];
 
   const handleLogout = () => {

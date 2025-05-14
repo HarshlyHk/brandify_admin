@@ -51,8 +51,6 @@ const Orders = () => {
     dispatch(updateOrder(orderId));
   };
 
-  console.log("Orders:", orders);
-
   const sortedOrders = [...orders].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );

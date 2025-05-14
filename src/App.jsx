@@ -22,7 +22,7 @@ import LookBook from "./components/LookBook/LookBook";
 import LookBookOrderUpdate from "./components/LookBook/LookBookOrder";
 import CategoryPriorityEditor from "./components/Products/CategoryPriorityEditor";
 import FailedOrders from "./components/FailedOrders/FailedOrders";
-
+import ReturnRefund from "./components/Support/ReturnRefund";
 function App() {
   return (
     <>
@@ -54,6 +54,7 @@ function App() {
               <Route path="collabo-order" element={<CollabosOrderUpdate />} />
               <Route path="/lookbook" element={<LookBook />} />
               <Route path="/lookbook-order" element={<LookBookOrderUpdate />} />
+              <Route path="/return-refund/:page" element={<ReturnRefund />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

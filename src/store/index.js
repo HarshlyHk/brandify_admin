@@ -8,6 +8,7 @@ import orderReducer from "../features/orderSlice";
 import abandonedCartReducer from "../features/abandonedCart";
 import Collabos from "../features/collaboSlice";
 import LookBook from "../features/lookBookSlice";
+import returnRefund from "../features/returnRefundSlice";
 
 
 const store = configureStore({
@@ -21,6 +22,7 @@ const store = configureStore({
     abandonedCart: abandonedCartReducer,
     collabo: Collabos,
     lookBook: LookBook,
+    returnRefund: returnRefund,
   },
 });
 
