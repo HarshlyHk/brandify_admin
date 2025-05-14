@@ -52,7 +52,7 @@ export const getAllOrdersAdmin = createAsyncThunk(
   async ({ page, items }, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get(
-        "/orders/admin/get-order?page=" + page + "&items=" + items
+        "/orders/admin/get-order?page=" + page + "&limit=" + items
       );
       return data;
     } catch (err) {

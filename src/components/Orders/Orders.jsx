@@ -26,6 +26,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "../ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -35,7 +44,7 @@ const Orders = () => {
   );
   const { orders } = useSelector((state) => state.order);
   const { page } = useParams();
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(16);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
 
@@ -72,7 +81,26 @@ const Orders = () => {
           </h4>
         </div>
       </div>
-
+      <div className="mb-4">
+        <Label htmlFor="items-per-page" className=" mb-2">
+          Items per page:
+        </Label>
+        <Select
+          onValueChange={(value) => setItemsPerPage(Number(value))}
+          defaultValue={itemsPerPage.toString()}
+        >
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Items per page" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="12">12</SelectItem>
+              <SelectItem value="16">16</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
       <Table>
         <TableCaption>Manage your orders</TableCaption>
         <TableHeader>
