@@ -44,12 +44,12 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="h-screen w-64 bg-gray-900 text-white flex flex-col p-5 shadow-lg overflow-auto navbar-scrollbar">
+    <div className="h-screen w-64 bg-gray-900 text-white flex flex-col p-5 shadow-lg overflow-y-auto navbar-scrollbar">
       {/* Logo Section */}
       <div className="text-2xl font-bold text-center mb-10">Admin Panel</div>
 
       {/* Navigation Links */}
-      <nav className="flex-1">
+      <nav className="flex-1 ">
         <ul className="space-y-4">
           {navLinks.map((link) => {
             const Icon = link.icon;
@@ -57,7 +57,7 @@ const Sidebar = () => {
               <li key={link.name}>
                 <Link
                   to={link.path}
-                  className={`flex items-center p-3 rounded-md ${
+                  className={`flex items-center p-3  text-sm rounded-md ${
                     active === link.name ? "bg-gray-800" : "hover:bg-gray-800"
                   }`}
                   onClick={() => setActive(link.name)}
@@ -71,9 +71,9 @@ const Sidebar = () => {
       </nav>
 
       {/* Logout Section */}
-      <div className="mt-auto">
+      <div className="mt-10">
         <button
-          className="flex items-center p-3 w-full hover:bg-red-600 rounded-md cursor-pointer"
+          className="flex items-center p-3 w-full bg-red-600 rounded-md cursor-pointer"
           onClick={handleLogout}
         >
           <LogOut className="w-5 h-5 mr-3" /> Logout
