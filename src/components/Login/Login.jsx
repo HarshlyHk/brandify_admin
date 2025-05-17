@@ -5,12 +5,10 @@ import { Link, useNavigate } from "react-router";
 import {
   loginWithCredentials,
 } from "../../features/userSlice";
-import loginBg from "../../assets/images/login-bg.png";
 import { MdPermIdentity } from "react-icons/md";
 import { CiLock } from "react-icons/ci";
 import CrossIcon from "../Svgs/CrossIcon";
 import "./Login.css";
-import GoogleIcon from "../Svgs/GoogleIcon";
 import { BiHide, BiShow } from "react-icons/bi";
 import { useFormik } from "formik";
 import * as Yup from "yup";

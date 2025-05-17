@@ -24,6 +24,8 @@ import {
   getProducts,
   deleteProduct,
   duplicateProduct,
+  updateProduct,
+  updateToggleSpecial,
 } from "@/features/productSlice";
 import { Label } from "../ui/label";
 import {
@@ -42,6 +44,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "../ui/skeleton";
+import { CiStar } from "react-icons/ci";
+import { FaStar } from "react-icons/fa6";
+
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -84,6 +89,10 @@ const Products = () => {
         navigate("/products/edit/" + res.payload.data.duplicatedProduct._id);
       }
     }
+  };
+
+  const handleToggleSpecial = async (product) => {
+    await dispatch(updateToggleSpecial(product._id));
   };
 
   return (
@@ -165,7 +174,8 @@ const Products = () => {
             <TableHead>Org. Price</TableHead>
             <TableHead>Disc. Price</TableHead>
             <TableHead>Out of Stock</TableHead>
-            <TableHead>Popularity</TableHead>
+            <TableHead className="text-center">Star Item</TableHead>{" "}
+            {/* Add this */}{" "}
             <TableHead className=" text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -212,7 +222,16 @@ const Products = () => {
                     : "N/A"}
                 </TableCell>
                 <TableCell>{product.outOfStock ? "Yes" : "No"}</TableCell>
-                <TableCell>{product.popularity}</TableCell>
+                <TableCell className="text-center">
+                  {" "}
+                  <button onClick={() => handleToggleSpecial(product)}>
+                    {product.isSpecial ? (
+                      <FaStar size={20} />
+                    ) : (
+                      <CiStar size={20} />
+                    )}
+                  </button>
+                </TableCell>
 
                 <TableCell className=" text-end">
                   <div className="flex gap-2 justify-center items-center">

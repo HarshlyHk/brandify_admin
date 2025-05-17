@@ -182,6 +182,25 @@ export const updateBulkPriority = createAsyncThunk(
   }
 );
 
+export const updateToggleSpecial = createAsyncThunk(
+  "product/updateToggleSpecial",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.patch(
+        `/product/admin/update-special/${productId}`
+      );
+      toast.success("Product special status updated successfully!");
+      return data;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to update product special status."
+      );
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -312,6 +331,15 @@ const productSlice = createSlice({
       .addCase(getAllProductsByPriority.fulfilled, (state, action) => {
         state.loading = false;
         state.productsByPriority = action.payload.data.products;
+      })
+      .addCase(updateToggleSpecial.fulfilled, (state, action) => {
+        state.taskLoading = false;
+        const index = state.products.findIndex(
+          (product) => product._id === action.payload.data.product._id
+        );
+        if (index !== -1) {
+          state.products[index] = action.payload.data.product;
+        }
       });
   },
 });
