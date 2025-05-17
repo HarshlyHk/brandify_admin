@@ -137,7 +137,17 @@ const Orders = () => {
                     }}
                   >
                     <p>{order?.shippingAddress?.fullName}</p>
-                    <p className=" uppercase text-red-400">{order?.referal}</p>
+                    <p
+                      className={` uppercase ${
+                        order?.utmParams?.CampaignName ? "text-red-400" : "text-blue-400"
+                      }`}
+                    >
+                      {order.utmParams.CampaignName != null
+                        ? "META"
+                        : order?.utmParams.Fbclid != null
+                        ? "INSTAGRAM"
+                        : ""}
+                    </p>
                   </button>
                 </TableCell>
                 <TableCell>₹{order?.totalAmount}</TableCell>
