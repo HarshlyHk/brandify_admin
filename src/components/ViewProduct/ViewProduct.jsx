@@ -63,6 +63,7 @@ const ViewProduct = () => {
       coreFeatures: product?.coreFeatures,
       description: product?.description,
       careGuide: product?.careGuide,
+      isSpecial: product?.isSpecial,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -86,6 +87,7 @@ const ViewProduct = () => {
       formData.append("description", values.description);
       formData.append("shortDescription", values.shortDescription);
       formData.append("coreFeatures", values.coreFeatures);
+      formData.append("isSpecial", values.isSpecial);
 
       // Convert arrays to JSON format
       values.category.forEach((cat) => formData.append("category[]", cat));

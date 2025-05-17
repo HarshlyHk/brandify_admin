@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { TbExternalLink } from "react-icons/tb";
 
-const BasicInfo = ({ formik, tags, categories , id}) => {
+const BasicInfo = ({ formik, tags, categories, id }) => {
   return (
     <>
       <div className="flex justify-center mb-10 items-center">
@@ -21,7 +21,11 @@ const BasicInfo = ({ formik, tags, categories , id}) => {
           {formik?.values?.name}
         </h1>
         <a
-          href={`https://dripdrip.in/${formik?.values?.name.replace(/\s+/g, "-")}/${id}`}          target="_blank"
+          href={`https://dripdrip.in/${formik?.values?.name.replace(
+            /\s+/g,
+            "-"
+          )}/${id}`}
+          target="_blank"
           rel="noopener noreferrer"
           className="ml-4"
           title="View Product"
@@ -124,7 +128,7 @@ const BasicInfo = ({ formik, tags, categories , id}) => {
 
         {/* unlist */}
 
-        <div className="w-40">
+        <div className="w-32">
           <label className="block text-xs font-bold uppercase  mb-1">
             UnList Item
           </label>
@@ -147,6 +151,31 @@ const BasicInfo = ({ formik, tags, categories , id}) => {
             </Select>
           )}
         </div>
+
+        <div className="w-32">
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Star Item
+          </label>
+          {formik?.values?.isSpecial != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("isSpecial", value == "true")
+              }
+              value={formik?.values?.isSpecial ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
         <div className="w-40">
           <label className="block text-xs font-bold uppercase  mb-1">
             Gender
