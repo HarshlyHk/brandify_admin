@@ -139,18 +139,27 @@ const Orders = () => {
                     <p>{order?.shippingAddress?.fullName}</p>
                     <p
                       className={` uppercase ${
-                        order?.utmParams?.CampaignName ? "text-red-400" : "text-blue-400"
+                        order?.utmParams?.CampaignName
+                          ? "text-red-400"
+                          : "text-blue-400"
                       }`}
                     >
-                      {order.utmParams.CampaignName != null
+                      {order?.utmParams?.CampaignName != null
                         ? "META"
-                        : order?.utmParams.Fbclid != null
+                        : order?.utmParams?.Fbclid != null
                         ? "INSTAGRAM"
                         : ""}
                     </p>
                   </button>
                 </TableCell>
-                <TableCell>₹{order?.totalAmount}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-2">
+                    <p>₹{order?.totalAmount}</p>
+                    {order?.amountPaid > 0 && (
+                      <p className="text-gray-500">₹{order?.amountPaid} Paid</p>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell
                   className={`${
                     order.paymentStatus === "Completed"

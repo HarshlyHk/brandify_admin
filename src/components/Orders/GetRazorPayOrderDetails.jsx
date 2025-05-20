@@ -128,6 +128,18 @@ const GetRazorPayOrderDetails = ({ orderId }) => {
                     {orderDetails?.amount_due / 100}
                   </p>
                 </div>
+                <div className="flex gap-2 items-center">
+                  <p className="text-gray-700">Amount Paid:</p>
+                  <p className="text-gray-500">
+                    {orderDetails?.amount_paid/ 100}
+                  </p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <p className="text-gray-700">Offer Applied</p>
+                  <p className="text-gray-500">
+                    {orderDetails?.offers ? orderDetails?.offers : "N/A"}
+                  </p>
+                </div>
               </div>
             </div>
             <hr />
