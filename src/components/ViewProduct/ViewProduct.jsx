@@ -64,6 +64,7 @@ const ViewProduct = () => {
       description: product?.description,
       careGuide: product?.careGuide,
       isSpecial: product?.isSpecial,
+      preeBook: product?.preeBook,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -88,6 +89,7 @@ const ViewProduct = () => {
       formData.append("shortDescription", values.shortDescription);
       formData.append("coreFeatures", values.coreFeatures);
       formData.append("isSpecial", values.isSpecial);
+      formData.append("preeBook", values.preeBook);
 
       // Convert arrays to JSON format
       values.category.forEach((cat) => formData.append("category[]", cat));
@@ -149,7 +151,12 @@ const ViewProduct = () => {
       className="w-full mx-auto bg-white rounded-md"
     >
       <div className="p-6">
-        <BasicInfo formik={formik} tags={tags} categories={categories} id= {id} />
+        <BasicInfo
+          formik={formik}
+          tags={tags}
+          categories={categories}
+          id={id}
+        />
 
         <div className="my-10">
           <hr />

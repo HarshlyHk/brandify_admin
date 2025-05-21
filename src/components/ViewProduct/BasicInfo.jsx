@@ -66,7 +66,7 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
         </div>
       </div>
 
-      <div className="flex gap-4 mb-10 justify-between">
+      <div className="flex gap-4 mb-10 flex-wrap justify-between">
         <div className="">
           <label className="block text-xs font-bold uppercase  mb-1">
             Original Price
@@ -102,7 +102,7 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
           )}
         </div>
 
-        <div className="w-32">
+        <div className="w-48">
           <label className="block text-xs font-bold uppercase  mb-1">
             Out of Stock
           </label>
@@ -128,7 +128,7 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
 
         {/* unlist */}
 
-        <div className="w-32">
+        <div className="w-48">
           <label className="block text-xs font-bold uppercase  mb-1">
             UnList Item
           </label>
@@ -152,7 +152,7 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
           )}
         </div>
 
-        <div className="w-32">
+        <div className="w-48">
           <label className="block text-xs font-bold uppercase  mb-1">
             Star Item
           </label>
@@ -175,8 +175,32 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
             </Select>
           )}
         </div>
+        {/* Preebook */}
+        <div className="w-48">
+          <label className="block text-xs font-bold uppercase  mb-1">
+            PREBOOK Item
+          </label>
+          {formik?.values?.preeBook != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("preeBook", value == "true")
+              }
+              value={formik?.values?.preeBook ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
 
-        <div className="w-40">
+        <div className="w-48">
           <label className="block text-xs font-bold uppercase  mb-1">
             Gender
           </label>
@@ -198,7 +222,7 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
             </Select>
           )}
         </div>
-        <div className="w-40">
+        <div className="w-48">
           <label className="block text-xs font-bold uppercase  mb-1">
             On Sale
           </label>
