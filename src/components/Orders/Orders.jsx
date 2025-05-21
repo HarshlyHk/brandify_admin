@@ -188,7 +188,7 @@ const Orders = () => {
                 </TableCell>
                 <TableCell>{order?.status}</TableCell>
                 <TableCell>
-                  {new Date(order?.createdAt).toLocaleDateString()}
+                  {new Date(order?.createdAt).toLocaleString()}
                 </TableCell>
                 <TableCell className="text-end">
                   <div className="flex gap-2 justify-center items-center">
