@@ -9,7 +9,7 @@ import abandonedCartReducer from "../features/abandonedCart";
 import Collabos from "../features/collaboSlice";
 import LookBook from "../features/lookBookSlice";
 import returnRefund from "../features/returnRefundSlice";
-
+import manageUser from "../features/manageUser";
 
 const store = configureStore({
   reducer: {
@@ -23,6 +23,7 @@ const store = configureStore({
     collabo: Collabos,
     lookBook: LookBook,
     returnRefund: returnRefund,
+    manageUser: manageUser,
   },
 });
 

@@ -23,6 +23,7 @@ import LookBookOrderUpdate from "./components/LookBook/LookBookOrder";
 import CategoryPriorityEditor from "./components/Products/CategoryPriorityEditor";
 import FailedOrders from "./components/FailedOrders/FailedOrders";
 import ReturnRefund from "./components/Support/ReturnRefund";
+import ManageUsers from "./components/ManageUsers/ManageUsers";
 function App() {
   return (
     <>
@@ -33,6 +34,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/manage-users" element={<ManageUsers />} />
               <Route path="/products/:page" element={<ProductPage />} />
               <Route path="/order/:page" element={<OrderPage />} />
               <Route path="/orders/:id" element={<EditOrder />} />
