@@ -167,15 +167,18 @@ const FailedOrders = () => {
         <TableFooter>
           <TableRow>
             <TableCell colSpan={8}>
-              <div className="flex justify-between items-center  ">
+              <div className="flex justify-between items-center">
                 <Button
                   className="cursor-pointer"
                   disabled={page == 1}
-                  onClick={() => navigate(`/order/${Number(page) - 1}`)}
+                  onClick={() => navigate(`/failed-orders/${Number(page) - 1}`)}
                 >
                   Previous
                 </Button>
-                <div className="flex gap-2">
+                <div
+                  className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                  style={{ maxWidth: "60vw" }}
+                >
                   {Array.from({ length: totalPages }, (_, index) => (
                     <Button
                       key={index + 1}
