@@ -70,10 +70,9 @@ const FailedOrders = () => {
         <TableCaption>Manage your orders</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Customer</TableHead>
+            <TableHead>Customer Detail</TableHead>
             <TableHead>Total Amount</TableHead>
-            <TableHead>Payment</TableHead>
-            <TableHead>Payment Mode</TableHead>
+            <TableHead>Payment Status</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-center">Actions</TableHead>
@@ -95,8 +94,13 @@ const FailedOrders = () => {
               <TableRow key={order?._id}>
                 <TableCell className="cursor-pointer h-20">
                   <button className=" cursor-pointer flex flex-col gap-2 items-start">
-                    <p>{order?.user?.name}</p>
-                    <p className=" uppercase text-red-400">{order?.referal}</p>
+                    <p>{order?.email}</p>
+                    <div className="flex gap-1">
+                      <p>{order?.shippingAddress?.phoneNumber}</p>
+                      <p className=" uppercase text-red-400">
+                        {order?.referal}
+                      </p>
+                    </div>
                   </button>
                 </TableCell>
                 <TableCell>₹{order?.totalAmount}</TableCell>
@@ -112,19 +116,6 @@ const FailedOrders = () => {
                   }`}
                 >
                   {order?.paymentStatus}
-                </TableCell>
-                <TableCell
-                  className={`${
-                    order?.paymentMethod == "PhonePe"
-                      ? " text-purple-600"
-                      : order?.paymentMethod == "RAZORPAY"
-                      ? "text-blue-600"
-                      : order?.paymentMethod == "COD"
-                      ? "text-orange-600"
-                      : "text-blue-600"
-                  }`}
-                >
-                  {order?.paymentMethod}
                 </TableCell>
                 <TableCell>
                   {new Date(order?.createdAt).toLocaleTimeString("en-IN", {

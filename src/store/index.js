@@ -10,7 +10,8 @@ import Collabos from "../features/collaboSlice";
 import LookBook from "../features/lookBookSlice";
 import returnRefund from "../features/returnRefundSlice";
 import manageUser from "../features/manageUser";
-
+import contactUs from "../features/contactSlice";
+import paymentQuery from "../features/paymentQuerySlice";
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -24,6 +25,8 @@ const store = configureStore({
     lookBook: LookBook,
     returnRefund: returnRefund,
     manageUser: manageUser,
+    contactUs: contactUs,
+    paymentQuery: paymentQuery,
   },
 });
 
