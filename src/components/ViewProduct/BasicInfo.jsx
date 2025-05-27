@@ -51,7 +51,14 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
           )}
         </div>
 
-        <div className="w-1/2">
+        <div className="w-1/4">
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Product ID
+          </label>
+          <Input type="text" name="sku" value={id} />
+        </div>
+
+        <div className="w-1/4">
           <label className="block text-xs font-bold uppercase  mb-1">SKU</label>
           <Input
             type="text"

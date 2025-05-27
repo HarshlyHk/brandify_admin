@@ -12,6 +12,7 @@ import returnRefund from "../features/returnRefundSlice";
 import manageUser from "../features/manageUser";
 import contactUs from "../features/contactSlice";
 import paymentQuery from "../features/paymentQuerySlice";
+import combo from "../features/comboSlice";
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -27,6 +28,7 @@ const store = configureStore({
     manageUser: manageUser,
     contactUs: contactUs,
     paymentQuery: paymentQuery,
+    combo : combo,
   },
 });
 

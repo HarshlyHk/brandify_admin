@@ -31,6 +31,7 @@ const Sidebar = () => {
     { name: "LookBook", path: "/lookbook", icon: TbMoodLookUp },
     { name: " Return/Refund", path: "/return-refund/1", icon: TbTruckReturn },
     { name: "Contact Us", path: "/contact-us/1", icon: FaUsers },
+    { name: "Combos", path: "/combos", icon: Package },
     { name: "Payment Query", path: "/payment-query/1", icon: FaUsers },
   ];
 

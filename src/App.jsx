@@ -26,6 +26,7 @@ import ReturnRefund from "./components/Support/ReturnRefund";
 import ManageUsers from "./components/ManageUsers/ManageUsers";
 import ContactUs from "./components/Support/ContactUs";
 import PaymentQuery from "./components/Support/PaymentQuery";
+import Combos from "./components/Combo/Combo";
 function App() {
   return (
     <>
@@ -61,6 +62,7 @@ function App() {
               <Route path="/return-refund/:page" element={<ReturnRefund />} />
               <Route path="/contact-us/:page" element={<ContactUs />} />
               <Route path="/payment-query/:page" element={<PaymentQuery />} />
+              <Route path="/combos" element={<Combos />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
