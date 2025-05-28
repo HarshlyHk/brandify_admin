@@ -26,7 +26,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const Combos = () => {
   const dispatch = useDispatch();
   const { combos, loading, taskLoading } = useSelector((state) => state.combo);
@@ -34,7 +42,7 @@ const Combos = () => {
   const [newCombo, setNewCombo] = useState({
     title: "",
     description: "",
-    isPrepaidOnly: false,
+    isPrepaidOnly: true,
     isActive: true,
     productId: ["", ""],
     comboPrice: [0, 0],
@@ -168,6 +176,29 @@ const Combos = () => {
               </Button>
             </div>
 
+            <div className="mt-4">
+              <Select
+                value={newCombo.isPrepaidOnly ? "prepaid" : "all"}
+                onValueChange={(value) =>
+                  setNewCombo({
+                    ...newCombo,
+                    isPrepaidOnly: value === "prepaid",
+                  })
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Payment Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Payment Type</SelectLabel>
+                    <SelectItem value="prepaid">Prepaid Only</SelectItem>
+                    <SelectItem value="all">All Payments</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
             <DialogFooter className="mt-4">
               <Button
                 className="bg-red-500 hover:bg-red-600"
@@ -218,7 +249,7 @@ const Combos = () => {
                     {combo.title}
                   </button>
                 </TableCell>
-                <TableCell>{combo.description}</TableCell>
+                <TableCell className=" max-w-60 truncate">{combo.description}</TableCell>
                 <TableCell>{combo.isActive ? "Active" : "Inactive"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
@@ -337,6 +368,34 @@ const Combos = () => {
                             + Add Product
                           </Button>
                         </div>
+
+                        <div className="mt-4">
+                          <Select
+                            value={editCombo?.isPrepaidOnly ? "prepaid" : "all"}
+                            onValueChange={(value) =>
+                              setEditCombo({
+                                ...editCombo,
+                                isPrepaidOnly: value === "prepaid",
+                              })
+                            }
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Payment Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Payment Type</SelectLabel>
+                                <SelectItem value="prepaid">
+                                  Prepaid Only
+                                </SelectItem>
+                                <SelectItem value="all">
+                                  All Payments
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
                         <DialogFooter>
                           <Button
                             onClick={handleUpdate}
