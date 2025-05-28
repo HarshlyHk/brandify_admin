@@ -5,6 +5,7 @@ import {
   createCombo,
   updateCombo,
   deleteCombo,
+  updateToggleStarredCombo,
 } from "@/features/comboSlice";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FaStar } from "react-icons/fa";
+import { CiStar } from "react-icons/ci";
 const Combos = () => {
   const dispatch = useDispatch();
   const { combos, loading, taskLoading } = useSelector((state) => state.combo);
@@ -86,6 +89,10 @@ const Combos = () => {
 
   const handleDelete = (id) => {
     dispatch(deleteCombo(id));
+  };
+
+  const handleToggleStarred = async (combo) => {
+    await dispatch(updateToggleStarredCombo(combo._id));
   };
 
   return (
@@ -235,6 +242,7 @@ const Combos = () => {
               <TableHead>Title</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Star</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -249,8 +257,20 @@ const Combos = () => {
                     {combo.title}
                   </button>
                 </TableCell>
-                <TableCell className=" max-w-60 truncate">{combo.description}</TableCell>
+                <TableCell className=" max-w-60 truncate">
+                  {combo.description}
+                </TableCell>
                 <TableCell>{combo.isActive ? "Active" : "Inactive"}</TableCell>
+                <TableCell className="text-center">
+                  {" "}
+                  <button onClick={() => handleToggleStarred(combo)}>
+                    {combo.isStarred ? (
+                      <FaStar size={20} />
+                    ) : (
+                      <CiStar size={20} />
+                    )}
+                  </button>
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <Dialog>

@@ -45,7 +45,10 @@ export const updateCombo = createAsyncThunk(
   "combo/updateCombo",
   async ({ id, comboData }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.put(`/combo/update/${id}`, comboData);
+      const { data } = await axiosInstance.put(
+        `/combo/update/${id}`,
+        comboData
+      );
       toast.success("Combo updated successfully!");
       return data;
     } catch (err) {
@@ -65,6 +68,24 @@ export const deleteCombo = createAsyncThunk(
       return id;
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete combo.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+export const updateToggleStarredCombo = createAsyncThunk(
+  "combo/updateToggleStarredCombo",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.put(`/combo/toggle-starred/${id}`);
+      toast.success(
+        `Combo ${data.isStarred ? "starred" : "unstarred"} successfully!`
+      );
+      return data;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to toggle starred status."
+      );
       return rejectWithValue(err.response?.data);
     }
   }
@@ -130,9 +151,29 @@ const comboSlice = createSlice({
       })
       .addCase(deleteCombo.fulfilled, (state, action) => {
         state.taskLoading = false;
-        state.combos = state.combos.filter((combo) => combo._id !== action.payload);
+        state.combos = state.combos.filter(
+          (combo) => combo._id !== action.payload
+        );
       })
       .addCase(deleteCombo.rejected, (state, action) => {
+        state.taskLoading = false;
+        state.error = action.payload;
+      })
+      // Update Toggle Starred Combo
+      .addCase(updateToggleStarredCombo.pending, (state) => {
+        state.taskLoading = true;
+        state.error = null;
+      })
+      .addCase(updateToggleStarredCombo.fulfilled, (state, action) => {
+        state.taskLoading = false;
+        const index = state.combos.findIndex(
+          (combo) => combo._id === action.payload.data._id
+        );
+        if (index !== -1) {
+          state.combos[index] = action.payload.data;
+        }
+      })
+      .addCase(updateToggleStarredCombo.rejected, (state, action) => {
         state.taskLoading = false;
         state.error = action.payload;
       });
