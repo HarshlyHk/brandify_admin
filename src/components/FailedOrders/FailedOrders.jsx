@@ -70,12 +70,14 @@ const FailedOrders = () => {
         <TableCaption>Manage your orders</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>View</TableHead>
+
             <TableHead>Customer Detail</TableHead>
             <TableHead>Total Amount</TableHead>
             <TableHead>Payment Status</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Date</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
+            <TableHead className="text-center">Delete</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -92,18 +94,26 @@ const FailedOrders = () => {
           ) : orders.length > 0 ? (
             sortedOrders.map((order) => (
               <TableRow key={order?._id}>
-                <TableCell className="cursor-pointer h-20">
-                  <button className=" cursor-pointer flex flex-col gap-2 items-start">
+                <TableCell className="h-20">
+                  <Button
+                    className="cursor-pointer hover:bg-green-700 bg-green-500 text-white"
+                    onClick={() => navigate(`/orders/${order._id}`)}
+                  >
+                    View
+                  </Button>
+                </TableCell>
+                <TableCell className="h-20">
+                  <div className="flex flex-col gap-2 items-start">
                     <p>{order?.email}</p>
                     <div className="flex gap-1">
                       <p>{order?.shippingAddress?.phoneNumber}</p>
-                      <p className=" uppercase text-red-400">
-                        {order?.referal}
-                      </p>
                     </div>
-                  </button>
+                  </div>
                 </TableCell>
-                <TableCell>₹{order?.totalAmount}</TableCell>
+                <TableCell className="flex flex-col gap-2 justify-center">
+                  ₹{order?.totalAmount}
+                  <p className="uppercase text-red-400">{order?.referal}</p>
+                </TableCell>
                 <TableCell
                   className={`${
                     order.paymentStatus === "Completed"
@@ -129,12 +139,6 @@ const FailedOrders = () => {
                 </TableCell>
                 <TableCell className="text-end">
                   <div className="flex gap-2 justify-center items-center">
-                    <Button
-                      className="cursor-pointer hover:bg-green-700 bg-green-500 text-white"
-                      onClick={() => navigate(`/orders/${order._id}`)}
-                    >
-                      View
-                    </Button>
                     <Button
                       className="cursor-pointer hover:bg-red-700 bg-red-500 text-white"
                       onClick={() =>
