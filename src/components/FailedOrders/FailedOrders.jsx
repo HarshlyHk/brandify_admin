@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "../ui/skeleton";
+import ReactPaginate from "react-paginate";
 
 const FailedOrders = () => {
   const dispatch = useDispatch();
@@ -162,40 +163,25 @@ const FailedOrders = () => {
         <TableFooter>
           <TableRow>
             <TableCell colSpan={8}>
-              <div className="flex justify-between items-center">
-                <Button
-                  className="cursor-pointer"
-                  disabled={page == 1}
-                  onClick={() => navigate(`/failed-orders/${Number(page) - 1}`)}
-                >
-                  Previous
-                </Button>
-                <div
-                  className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-                  style={{ maxWidth: "60vw" }}
-                >
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <Button
-                      key={index + 1}
-                      className={`cursor-pointer ${
-                        Number(page) === index + 1
-                          ? "bg-black text-white"
-                          : " bg-white text-black hover:text-white"
-                      }`}
-                      onClick={() => navigate(`/failed-orders/${index + 1}`)}
-                    >
-                      {index + 1}
-                    </Button>
-                  ))}
-                </div>
-                <Button
-                  className="cursor-pointer"
-                  disabled={page == totalPages}
-                  onClick={() => navigate(`/failed-orders/${Number(page) + 1}`)}
-                >
-                  Next
-                </Button>
-              </div>
+              <ReactPaginate
+                pageCount={totalPages}
+                forcePage={Number(page) - 1}
+                onPageChange={(selectedItem) =>
+                  navigate(`/failed-orders/${selectedItem.selected + 1}`)
+                }
+                marginPagesDisplayed={1} // pages at start/end
+                pageRangeDisplayed={10} // pages around current
+                previousLabel="Previous"
+                nextLabel="Next"
+                previousClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
+                  page == 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                } `}
+                containerClassName="flex gap-4 justify-center items-center "
+                activeClassName=" bg-black text-white hover:text-white text-white  rounded"
+                pageClassName=" text-black "
+                pageLinkClassName="hover:bg-black transition-all duration-300  hover:text-white px-4 py-2  cursor-pointer rounded"
+                activeLinkClassName="bg-black text-white hover:text-white px-4 py-2 rounded"
+              />
             </TableCell>
           </TableRow>
         </TableFooter>

@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import ReactPaginate from "react-paginate";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -219,44 +220,32 @@ const Orders = () => {
         <TableFooter>
           <TableRow>
             <TableCell colSpan={8}>
-              <div className="flex justify-between items-center  ">
-                <Button
-                  className="cursor-pointer"
-                  disabled={page == 1}
-                  onClick={() => navigate(`/order/${Number(page) - 1}`)}
-                >
-                  Previous
-                </Button>
-                <div className="flex gap-2">
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <Button
-                      key={index + 1}
-                      className={`cursor-pointer ${
-                        Number(page) === index + 1
-                          ? "bg-black text-white"
-                          : " bg-white text-black hover:text-white"
-                      }`}
-                      onClick={() => navigate(`/order/${index + 1}`)}
-                    >
-                      {index + 1}
-                    </Button>
-                  ))}
-                </div>
-                <Button
-                  className="cursor-pointer"
-                  disabled={page == totalPages}
-                  onClick={() => navigate(`/order/${Number(page) + 1}`)}
-                >
-                  Next
-                </Button>
-              </div>
+              <ReactPaginate
+                pageCount={totalPages}
+                forcePage={Number(page) - 1}
+                onPageChange={(selectedItem) =>
+                  navigate(`/order/${selectedItem.selected + 1}`)
+                }
+                marginPagesDisplayed={1} // pages at start/end
+                pageRangeDisplayed={10} // pages around current
+                previousLabel="Previous"
+                nextLabel="Next"
+                previousClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
+                  page == 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                } `}
+                containerClassName="flex gap-4 justify-center items-center "
+                activeClassName=" bg-black text-white hover:text-white text-white  rounded"
+                pageClassName=" text-black "
+                pageLinkClassName="hover:bg-black transition-all duration-300  hover:text-white px-4 py-2  cursor-pointer rounded"
+                activeLinkClassName="bg-black text-white hover:text-white px-4 py-2 rounded"
+              />
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="sm:max-w-[900px] h-[80vh] overflow-y-scroll p-0">
+        <DialogContent className="sm:max-w-[900px] h-[80vh] overflow-y-scroll p-0  ">
           <DialogHeader className=" sticky top-0 bg-white z-10 p-4">
             <DialogTitle className="text-xl font-semibold">
               Order Details
@@ -394,14 +383,14 @@ const Orders = () => {
                         {selectedOrder.shippingAddress?.phoneNumber}
                       </span>
                     </div>
-                    {selectedOrder.shippingAddress.alternatePhoneNumber && (
-                      <div className="flex flex-col">
-                        <span className="text-gray-700">Alternate Phone</span>
-                        <span className="text-gray-500">
-                          {selectedOrder.shippingAddress?.alternatePhoneNumber}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex flex-col">
+                      <span className="text-gray-700">Alternate Phone</span>
+                      <span className="text-gray-500">
+                        {selectedOrder.shippingAddress?.alternatePhoneNumber
+                          ? selectedOrder.shippingAddress?.alternatePhoneNumber
+                          : "-"}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <hr />
@@ -410,12 +399,12 @@ const Orders = () => {
                 {selectedOrder.orderNotes && (
                   <>
                     <div className="space-y-2 flex flex-col py-4">
-                      <p className="font-medium text-black">Order Notes:</p>
-                      <p className="text-gray-500 mb-4">
+                      <p className="font-medium text-[#ff4d00]">Order Notes:</p>
+                      <p className="text-[#ae00ff] mb-4">
                         {selectedOrder.orderNotes}
                       </p>
                     </div>
-                    <hr />
+                    <hr className=" " />
                   </>
                 )}
 
