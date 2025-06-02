@@ -233,6 +233,11 @@ const Orders = () => {
                 previousClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
                   page == 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                 } `}
+                nextClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
+                  page == totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                } `}
                 containerClassName="flex gap-4 justify-center items-center "
                 activeClassName=" bg-black text-white hover:text-white text-white  rounded"
                 pageClassName=" text-black "

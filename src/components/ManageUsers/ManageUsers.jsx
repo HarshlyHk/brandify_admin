@@ -24,6 +24,7 @@ import {
 import { Label } from "@/components/ui/label";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router";
+import axiosInstance from "@/config/axiosInstance"; // Ensure axiosInstance is configured properly
 
 const ManageUsers = () => {
   const dispatch = useDispatch();
@@ -41,23 +42,43 @@ const ManageUsers = () => {
     dispatch(setPage(newPage));
   };
 
-  useEffect(() => {
-    dispatch(fetchUsers({ page, limit: itemsPerPage }));
-  }, [dispatch, page, itemsPerPage]);
-  
   const handleLimitChange = (value) => {
     setItemsPerPage(Number(value));
     dispatch(setLimit(Number(value)));
     dispatch(setPage(1));
   };
 
+  const handleDownloadEmails = async () => {
+    try {
+      const response = await axiosInstance.get("/user/admin/get-all-user-emails", {
+        responseType: "blob", // Ensure the response is treated as a binary file
+      });
+  
+      // Create a URL for the blob and trigger a download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "user_emails.xlsx"); // Updated file name to .xlsx
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to download user emails:", error);
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Users</h2>
-        <h4>
-          <span className="text-sm text-gray-700">Total Users: {total}</span>
-        </h4>
+        <div className="flex items-center gap-4">
+          <h4>
+            <span className="text-sm text-gray-700">Total Users: {total}</span>
+          </h4>
+          <Button onClick={handleDownloadEmails} className="bg-blue-500 text-white">
+            Download User Emails
+          </Button>
+        </div>
       </div>
       <div className="mb-4">
         <Label htmlFor="items-per-page" className="mb-2">
@@ -132,6 +153,11 @@ const ManageUsers = () => {
                 nextLabel="Next"
                 previousClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
                   page == 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                } `}
+                nextClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
+                  page == totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
                 } `}
                 containerClassName="flex gap-4 justify-center items-center "
                 activeClassName=" bg-black text-white hover:text-white text-white  rounded"
