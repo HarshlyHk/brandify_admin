@@ -17,6 +17,7 @@ import {
   deleteOrder,
   updateOrder,
   sendShippingEmail,
+  sendOutForDeliveryEmail,
 } from "@/features/orderSlice";
 import {
   Dialog,
@@ -38,6 +39,7 @@ import {
 import { Label } from "@/components/ui/label";
 import ReactPaginate from "react-paginate";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { toast } from "sonner";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -66,6 +68,9 @@ const Orders = () => {
   const sendShippingEmailHandler = (orderId) => {
     dispatch(sendShippingEmail(orderId));
   };
+  const sendOutForDeliveryEmailHandler = (orderId) => {
+    dispatch(sendOutForDeliveryEmail(orderId));
+  };
   const sortedOrders = [...orders].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
@@ -87,35 +92,52 @@ const Orders = () => {
           </h4>
         </div>
       </div>
-      <div className="mb-4">
-        <Label htmlFor="items-per-page" className=" mb-2">
-          Items per page:
-        </Label>
-        <Select
-          onValueChange={(value) => setItemsPerPage(Number(value))}
-          defaultValue={itemsPerPage.toString()}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Items per page" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="12">12</SelectItem>
-              <SelectItem value="16">16</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+      <div className="mb-4 flex justify-between items-center">
+        <div className="">
+          <Label htmlFor="items-per-page" className=" mb-2">
+            Items per page:
+          </Label>
+          <Select
+            onValueChange={(value) => setItemsPerPage(Number(value))}
+            defaultValue={itemsPerPage.toString()}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Items per page" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="16">16</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-sm">
+            <IoCheckmarkCircle className="text-red-500" size={20} />
+            <p>Not Shipped</p>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <IoCheckmarkCircle className="text-green-500" size={20} />
+            <p>Shipped</p>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <IoCheckmarkCircle className="text-blue-500" size={20} />
+            <p>Out for Delivery</p>
+          </div>
+        </div>
       </div>
       <Table>
         <TableCaption>Manage your orders</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead className="">Send Mail</TableHead>
             <TableHead>Customer</TableHead>
             <TableHead>Total Amount</TableHead>
             <TableHead>Payment</TableHead>
-            <TableHead>Payment Mode</TableHead>
-            <TableHead>Delivery</TableHead>
+            <TableHead>Mode</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
@@ -134,9 +156,65 @@ const Orders = () => {
           ) : orders.length > 0 ? (
             sortedOrders.map((order) => (
               <TableRow key={order?._id}>
+                <TableCell className="flex items-center">
+                  <div className="flex items-center h-20">
+                    {order?.status !== "Shipped" &&
+                      order?.status !== "Out for Delivery" &&
+                      order?.status !== "Delivered" && (
+                        <button
+                          onClick={() => {
+                            if (order?.status === "Shipped") {
+                              toast.error(
+                                "Email is already sent, cannot resend."
+                              );
+                              return;
+                            }
+                            sendShippingEmailHandler(order._id);
+                          }}
+                        >
+                          <span className="cursor-pointer">
+                            <IoCheckmarkCircle
+                              className="inline-block mr-1 text-red-500"
+                              size={24}
+                            />
+                            Send Shipped
+                          </span>
+                        </button>
+                      )}
+
+                    {(order?.status === "Shipped" ||
+                      order?.status === "Out for Delivery") && (
+                      <button
+                        onClick={() => {
+                          if (order?.status === "Out for Delivery") {
+                            toast.error(
+                              "Email is already sent, cannot resend."
+                            );
+                            return;
+                          }
+                          sendOutForDeliveryEmailHandler(order._id);
+                        }}
+                      >
+                        <span className="cursor-pointer">
+                          <IoCheckmarkCircle
+                            className={`inline-block mr-1 ${
+                              order?.status === "Out for Delivery"
+                                ? "text-blue-500"
+                                : "text-green-500"
+                            }`}
+                            size={24}
+                          />
+                          {order?.status === "Out for Delivery"
+                            ? "Out for Delivery"
+                            : "Send OFD"}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell className="cursor-pointer h-20">
                   <button
-                    className=" cursor-pointer flex flex-col gap-2 items-start"
+                    className=" cursor-pointer hover:underline hover:text-blue-500 flex flex-col gap-2 items-start"
                     onClick={() => {
                       setSelectedOrder(order);
                       setShowDialog(true);
@@ -210,7 +288,7 @@ const Orders = () => {
                 <TableCell className=" uppercase">
                   {new Date(order?.createdAt).toLocaleString("en-IN", {
                     day: "2-digit",
-                    month: "2-digit",
+                    month: "short",
                     year: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
@@ -225,23 +303,6 @@ const Orders = () => {
                     >
                       View
                     </Button>
-                    <button onClick={() => sendShippingEmailHandler(order._id)}>
-                      {order?.status === "Shipped" ? (
-                        <span className="">
-                          <IoCheckmarkCircle
-                            className="inline-block mr-1 text-green-500"
-                            size={24}
-                          />
-                        </span>
-                      ) : (
-                        <span className="cursor-pointer">
-                          <IoCheckmarkCircle
-                            className="inline-block mr-1 text-red-500"
-                            size={24}
-                          />
-                        </span>
-                      )}
-                    </button>
                   </div>
                 </TableCell>
               </TableRow>
