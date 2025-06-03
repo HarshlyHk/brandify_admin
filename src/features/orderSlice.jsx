@@ -164,6 +164,26 @@ export const getAllFailedOrdersAdmin = createAsyncThunk(
   }
 );
 
+// Send Shipping Email
+export const sendShippingEmail = createAsyncThunk(
+  "order/sendShippingEmail",
+  async (orderId, { rejectWithValue }) => {
+    toast.info("Sending shipping email...");
+    try {
+      const { data } = await axiosInstance.post(
+        `/orders/send-shipping-email/${orderId}`
+      );
+      toast.success("Shipping email sent successfully!");
+      return data;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to send shipping email."
+      );
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -279,6 +299,37 @@ const orderSlice = createSlice({
       .addCase(getAllFailedOrdersAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // Send shipping email
+      .addCase(sendShippingEmail.pending, (state) => {
+        state.taskLoading = true;
+        state.error = null;
+      })
+      .addCase(sendShippingEmail.fulfilled, (state, action) => {
+        state.taskLoading = false;
+
+        // Log the response for debugging
+        console.log("Shipping email sent successfully:", action.payload.data);
+
+        // Find the order index in the state
+        const orderIndex = state.orders.findIndex(
+          (order) => order._id === action.payload.data._id
+        );
+
+        // Update the order in the state if it exists
+        if (orderIndex !== -1) {
+          state.orders[orderIndex] = action.payload.data;
+        }
+
+        // Show a success toast
+        toast.success("Shipping email sent successfully!");
+      })
+      .addCase(sendShippingEmail.rejected, (state, action) => {
+        state.taskLoading = false;
+        state.error = action.payload;
+        toast.error(
+          action.payload?.message || "Failed to send shipping email."
+        );
       });
   },
 });

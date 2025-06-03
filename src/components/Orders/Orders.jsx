@@ -16,6 +16,7 @@ import {
   getAllOrdersAdmin,
   deleteOrder,
   updateOrder,
+  sendShippingEmail,
 } from "@/features/orderSlice";
 import {
   Dialog,
@@ -36,6 +37,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import ReactPaginate from "react-paginate";
+import { IoCheckmarkCircle } from "react-icons/io5";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -61,6 +63,9 @@ const Orders = () => {
     dispatch(updateOrder(orderId));
   };
 
+  const sendShippingEmailHandler = (orderId) => {
+    dispatch(sendShippingEmail(orderId));
+  };
   const sortedOrders = [...orders].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
@@ -187,9 +192,30 @@ const Orders = () => {
                 >
                   {order?.paymentMethod}
                 </TableCell>
-                <TableCell>{order?.status}</TableCell>
-                <TableCell>
-                  {new Date(order?.createdAt).toLocaleString()}
+                <TableCell
+                  className={
+                    order?.status === "Shipped"
+                      ? "text-green-600"
+                      : order?.status === "Delivered"
+                      ? "text-blue-600"
+                      : order?.status === "Cancelled"
+                      ? "text-red-600"
+                      : order?.status === "Processing"
+                      ? "text-yellow-600"
+                      : "text-gray-600"
+                  }
+                >
+                  {order?.status}
+                </TableCell>
+                <TableCell className=" uppercase">
+                  {new Date(order?.createdAt).toLocaleString("en-IN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
                 </TableCell>
                 <TableCell className="text-end">
                   <div className="flex gap-2 justify-center items-center">
@@ -199,12 +225,23 @@ const Orders = () => {
                     >
                       View
                     </Button>
-                    {/* <Button
-                      className="cursor-pointer hover:bg-red-700 bg-red-500 text-white"
-                      onClick={() => dispatch(deleteOrder(order._id))}
-                    >
-                      Delete
-                    </Button> */}
+                    <button onClick={() => sendShippingEmailHandler(order._id)}>
+                      {order?.status === "Shipped" ? (
+                        <span className="">
+                          <IoCheckmarkCircle
+                            className="inline-block mr-1 text-green-500"
+                            size={24}
+                          />
+                        </span>
+                      ) : (
+                        <span className="cursor-pointer">
+                          <IoCheckmarkCircle
+                            className="inline-block mr-1 text-red-500"
+                            size={24}
+                          />
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </TableCell>
               </TableRow>
