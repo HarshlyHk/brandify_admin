@@ -6,25 +6,10 @@ import {
   reorderedImage,
   updateProduct,
 } from "@/features/productSlice";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import MultiSelect from "react-select";
-import { MdDelete } from "react-icons/md";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import DraftViewer from "./DraftViewer";
-import { FaArrowAltCircleRight } from "react-icons/fa";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
 import BasicInfo from "./BasicInfo";
 import EditImages from "./EditImages";
 
@@ -49,6 +34,7 @@ const ViewProduct = () => {
     initialValues: {
       name: product?.name || "",
       images: product?.images || [],
+      thumbnails: product?.thumbnails || [],
       sizeVariations: product?.sizeVariations || [],
       tags: product?.tags || [],
       originalPrice: product?.originalPrice || "",
@@ -108,32 +94,108 @@ const ViewProduct = () => {
       dispatch(updateProduct({ productId: id, updatedData: formData }));
     },
   });
-
   const handleMoveImage = (index, direction) => {
     const images = [...formik.values.images];
+    const thumbnails = [...formik.values.thumbnails];
+
     if (direction === "up" && index > 0) {
-      // Swap with the previous image
+      // Swap images and thumbnails with the previous item
       [images[index - 1], images[index]] = [images[index], images[index - 1]];
+      [thumbnails[index - 1], thumbnails[index]] = [
+        thumbnails[index],
+        thumbnails[index - 1],
+      ];
     } else if (direction === "down" && index < images.length - 1) {
-      // Swap with the next image
+      // Swap images and thumbnails with the next item
       [images[index], images[index + 1]] = [images[index + 1], images[index]];
+      [thumbnails[index], thumbnails[index + 1]] = [
+        thumbnails[index + 1],
+        thumbnails[index],
+      ];
     }
+
     formik.setFieldValue("images", images);
+    formik.setFieldValue("thumbnails", thumbnails);
   };
 
-  // ...existing code...
+const handleDeleteImage = (index) => {
+  console.log("Formik Images Before Deletion:", formik.values.images); // ← this matters
+  console.log("Deleting index:", index);
 
-  const handleDeleteImage = (image) => {
-    setImagesToDelete((prev) => [...prev, image]);
-    formik.setFieldValue(
-      "images",
-      formik.values.images.filter((img) => img !== image)
-    );
-  };
+  const images = [...formik.values.images];
+  const thumbnails = [...formik.values.thumbnails];
 
-  const handleNewImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    setNewImages((prev) => [...prev, ...files]);
+  const imageToDelete = images[index];
+  if (!imageToDelete) {
+    console.warn("No image found at index", index);
+    return;
+  }
+
+  images.splice(index, 1);
+  thumbnails.splice(index, 1);
+
+  formik.setFieldValue("images", images);
+  formik.setFieldValue("thumbnails", thumbnails);
+
+  setImagesToDelete((prev) => [...prev, imageToDelete]);
+};
+
+
+  const handleNewImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+
+    const resizeImage = (file) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            // Set canvas dimensions for resizing
+            const MAX_WIDTH = 450;
+            const MAX_HEIGHT = 450;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height = (height * MAX_WIDTH) / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width = (width * MAX_HEIGHT) / height;
+                height = MAX_HEIGHT;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(
+              (blob) => {
+                resolve(new File([blob], file.name, { type: file.type }));
+              },
+              file.type,
+              0.8
+            ); // Adjust quality if needed
+          };
+        };
+
+        reader.readAsDataURL(file);
+      });
+    };
+
+    const resizedImagesPromises = files.map((file) => resizeImage(file));
+
+    Promise.all(resizedImagesPromises).then((resizedImages) => {
+      setNewImages((prev) => [...prev, ...files]);
+    });
   };
 
   const handleReorderSubmit = () => {

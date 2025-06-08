@@ -27,19 +27,24 @@ const EditImages = ({
   return (
     <div className="mb-4">
       <label className="font-bold uppercase block mb-10">Images</label>
-      <div className="flex gap-4 flex-wrap">
-        {formik.values.images.map((image, index) => (
-          <div key={index} className="flex flex-col items-center relative">
+      <div className="flex gap-4 flex-wrap justify-center sm:justify-start">
+        {formik.values.thumbnails.map((thumbnail, index) => (
+          <div
+            key={index}
+            className="flex flex-col items-center relative w-40 sm:w-36"
+          >
+            {/* Display thumbnail */}
             <img
-              src={image}
-              alt={`Product Image ${index + 1}`}
-              className="w-36 h-36 object-cover rounded-md shadow-md"
+              src={thumbnail}
+              alt={`Product Thumbnail ${index + 1}`}
+              className="w-full h-40 sm:h-36 object-cover rounded-md shadow-md"
             />
             <span className="text-sm text-gray-500 mt-1">#{index + 1}</span>
             <div className="flex gap-2 mt-2">
+              {/* Move operations on real images */}
               <Button
                 type="button"
-                className=" text-white px-2 py-1 rounded-md"
+                className="text-white px-2 py-1 rounded-md"
                 onClick={() => handleMoveImage(index, "up")}
                 disabled={index === 0}
               >
@@ -47,57 +52,18 @@ const EditImages = ({
               </Button>
               <Button
                 type="button"
-                className=" text-white px-2 py-1 rounded-md"
+                className="text-white px-2 py-1 rounded-md"
                 onClick={() => handleMoveImage(index, "down")}
                 disabled={index === formik.values.images.length - 1}
               >
                 <FaArrowAltCircleRight />
               </Button>
             </div>
+            {/* Delete operation on real images */}
             <Button
               type="button"
-              onClick={() => handleDeleteImage(image)}
-              className=" bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-[10px] absolute top-2 right-2"
-            >
-              <MdDelete className="text-white" />
-            </Button>
-          </div>
-        ))}
-
-        {newImages.map((image, index) => (
-          <div key={index} className="flex flex-col items-center relative">
-            <img
-              src={URL.createObjectURL(image)}
-              alt={`New Image ${index + 1}`}
-              className="w-36 h-36 object-cover rounded-md shadow-md"
-            />
-            <span className="text-sm text-gray-500 mt-1">
-              #{formik.values.images.length + index + 1}
-            </span>
-            <div className="flex gap-2 mt-2">
-              <Button
-                type="button"
-                className=" text-white px-2 py-1 rounded-md"
-                onClick={() => handleMoveNewImage(index, "up")}
-                disabled={index === 0}
-              >
-                <FaArrowAltCircleLeft />
-              </Button>
-              <Button
-                type="button"
-                className=" text-white px-2 py-1 rounded-md"
-                onClick={() => handleMoveNewImage(index, "down")}
-                disabled={index === newImages.length - 1}
-              >
-                <FaArrowAltCircleRight />
-              </Button>
-            </div>
-            <Button
-              type="button"
-              onClick={() =>
-                setNewImages((prev) => prev.filter((_, i) => i !== index))
-              }
-              className="mt-2 bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-md absolute top-2 right-2"
+              onClick={() => handleDeleteImage(index)}
+              className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-[10px] absolute top-2 right-2"
             >
               <MdDelete className="text-white" />
             </Button>
@@ -105,7 +71,52 @@ const EditImages = ({
         ))}
       </div>
 
-      <div className="mt-4 flex  items-center gap-10 ">
+      {/* New Images Section */}
+      {newImages.map((image, index) => (
+        <div
+          key={index}
+          className="flex flex-col items-center relative w-40 sm:w-36"
+        >
+          <img
+            src={URL.createObjectURL(image)}
+            alt={`New Image ${index + 1}`}
+            className="w-full h-40 sm:h-36 object-cover rounded-md shadow-md"
+          />
+          <span className="text-sm text-gray-500 mt-1">
+            #{formik.values.images.length + index + 1}
+          </span>
+          <div className="flex gap-2 mt-2">
+            <Button
+              type="button"
+              className="text-white px-2 py-1 rounded-md"
+              onClick={() => handleMoveNewImage(index, "up")}
+              disabled={index === 0}
+            >
+              <FaArrowAltCircleLeft />
+            </Button>
+            <Button
+              type="button"
+              className="text-white px-2 py-1 rounded-md"
+              onClick={() => handleMoveNewImage(index, "down")}
+              disabled={index === newImages.length - 1}
+            >
+              <FaArrowAltCircleRight />
+            </Button>
+          </div>
+          <Button
+            type="button"
+            onClick={() =>
+              setNewImages((prev) => prev.filter((_, i) => i !== index))
+            }
+            className="mt-2 bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-md absolute top-2 right-2"
+          >
+            <MdDelete className="text-white" />
+          </Button>
+        </div>
+      ))}
+
+      {/* Upload Images Section */}
+      <div className="mt-4 flex flex-col sm:flex-row items-center gap-4 sm:gap-10">
         <div className="flex items-center gap-4">
           <Button
             type="button"

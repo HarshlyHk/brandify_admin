@@ -27,6 +27,8 @@ import ManageUsers from "./components/ManageUsers/ManageUsers";
 import ContactUs from "./components/Support/ContactUs";
 import PaymentQuery from "./components/Support/PaymentQuery";
 import Combos from "./components/Combo/Combo";
+import ChangePass from "./components/ForgetPass/ChangePass";
+import RequestEmail from "./components/ForgetPass/RequestEmail";
 function App() {
   return (
     <>
@@ -66,6 +68,8 @@ function App() {
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/reset-password" element={<ChangePass />} />
+            <Route path="/forgot-password" element={<RequestEmail />} />
           </Routes>
         </Router>
       </ThemeProvider>
