@@ -44,7 +44,7 @@ const LookBook = () => {
     dispatch(fetchLookBooks());
   }, [dispatch]);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const formData = new FormData();
 
     if (!newLookBook.name) {
@@ -67,18 +67,42 @@ const LookBook = () => {
     if (image) {
       formData.append("file", image);
     }
-    dispatch(createLookBook(formData));
-    setNewLookBook({ name: "", productUrl: "" });
-    setImage(null);
-    setPreview(null);
+    const res = await dispatch(createLookBook(formData));
+    if (res) {
+      setNewLookBook({ name: "", productUrl: "" });
+      setImage(null);
+      setPreview(null);
+    }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (editLookBook) {
-      dispatch(
-        updateLookBook({ id: editLookBook._id, lookBookData: editLookBook })
+      const formData = new FormData();
+      if (!editLookBook.name) {
+        alert("Name is required");
+        return;
+      }
+
+      formData.append("name", editLookBook.name);
+      formData.append("productUrl", editLookBook.productUrl);
+      if (editLookBook.file) {
+        formData.append("file", editLookBook.file);
+      } else if (editLookBook.preview) {
+        formData.append("file", editLookBook.preview.url);
+      }
+      formData.append("isActive", editLookBook.isActive);
+      if (!formData.get("file")) {
+        alert("Image/Video is required");
+        return;
+      }
+
+      const res = await dispatch(
+        updateLookBook({ id: editLookBook._id, lookBookData: formData })
       );
-      setEditLookBook(null);
+      if (res.meta.requestStatus === "fulfilled") {
+        setEditLookBook(null);
+        setPreview(null);
+      }
     }
   };
 
@@ -98,6 +122,17 @@ const LookBook = () => {
     } else if (file.type.startsWith("video/")) {
       setPreview({ type: "video", url: URL.createObjectURL(file) });
     }
+  };
+
+  const handleEditImageChange = (e) => {
+    const file = e.target.files[0];
+    setEditLookBook((prev) => ({
+      ...prev,
+      file: file,
+      preview: file.type.startsWith("image/")
+        ? { type: "image", url: URL.createObjectURL(file) }
+        : { type: "video", url: URL.createObjectURL(file) },
+    }));
   };
 
   return (
@@ -229,12 +264,15 @@ const LookBook = () => {
                 </TableCell>
                 <TableCell className="w-[200px] text-end ">
                   <div className="flex gap-2">
-                    {/* <Button onClick={() => handleToggleStatus(collabo._id)}>
-                      Toggle Status
-                    </Button> */}
                     <Dialog>
                       <DialogTrigger asChild>
-                        {/* <Button>Edit</Button> */}
+                        <Button
+                          onClick={() => {
+                            setEditLookBook(lookBook);
+                          }}
+                        >
+                          Edit
+                        </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
@@ -251,7 +289,7 @@ const LookBook = () => {
                           }
                         />
                         <Input
-                          placeholder="Description"
+                          placeholder="Product URL"
                           value={editLookBook?.productUrl || ""}
                           onChange={(e) =>
                             setEditLookBook({
@@ -260,8 +298,55 @@ const LookBook = () => {
                             })
                           }
                         />
+                        {editLookBook?.preview ? (
+                          <div className="mt-4 flex justify-center">
+                            {editLookBook.preview.type === "image" ? (
+                              <img
+                                src={editLookBook.preview.url}
+                                alt="Preview"
+                                className="w-[200px] h-[200px] object-cover rounded-md border border-gray-300"
+                              />
+                            ) : (
+                              <video
+                                src={editLookBook.preview.url}
+                                controls
+                                loop
+                                muted
+                                autoPlay
+                                className="w-[200px] h-[200px] object-cover rounded-md border border-gray-300"
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          <div className="mt-4 flex justify-center">
+                            <label
+                              htmlFor="edit-file-upload"
+                              className="cursor-pointer h-[200px] w-[200px] flex items-center justify-center border-2 border-dashed rounded-md text-gray-500 hover:border-gray-400"
+                            >
+                              Upload Image / Video
+                            </label>
+                            <input
+                              id="edit-file-upload"
+                              type="file"
+                              accept="image/*,video/*"
+                              onChange={handleEditImageChange}
+                              className="hidden"
+                            />
+                          </div>
+                        )}
                         <DialogFooter>
-                          <Button onClick={handleUpdate}>Save</Button>
+                          <Button
+                            onClick={() => setEditLookBook(null)}
+                            className="bg-red-500 hover:bg-red-600"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={handleUpdate}
+                            className="bg-green-500 hover:bg-green-600"
+                          >
+                            Save
+                          </Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>

@@ -68,12 +68,23 @@ const Collabos = () => {
     setPreview(null);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (editCollabo) {
-      dispatch(
-        updateCollabo({ id: editCollabo._id, collaboData: editCollabo })
+      const formData = new FormData();
+      formData.append("name", editCollabo.name);
+      formData.append("description", editCollabo.description);
+      if (editCollabo.file) {
+        formData.append("file", editCollabo.file);
+      }
+      const res = await dispatch(
+        updateCollabo({ id: editCollabo._id, collaboData: formData })
       );
-      setEditCollabo(null);
+      if (res){
+        console.log(res)
+        // setEditCollabo(null);
+        // setImage(null);
+        // setPreview(null);
+      }
     }
   };
 
@@ -229,7 +240,9 @@ const Collabos = () => {
                     </Button>
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button>Edit</Button>
+                        <Button onClick={() => setEditCollabo(collabo)}>
+                          Edit
+                        </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
@@ -245,7 +258,7 @@ const Collabos = () => {
                             })
                           }
                         />
-                        <Input
+                        <Textarea
                           placeholder="Description"
                           value={editCollabo?.description || ""}
                           onChange={(e) =>
@@ -255,8 +268,68 @@ const Collabos = () => {
                             })
                           }
                         />
+                        <div className="mt-4">
+                          <label
+                            htmlFor="edit-file-upload"
+                            className="cursor-pointer py-2 flex items-center justify-center border-2 border-dashed rounded-md text-gray-500 hover:border-gray-400"
+                          >
+                            Upload New Image / Video (optional)
+                          </label>
+                          <input
+                            id="edit-file-upload"
+                            type="file"
+                            accept="image/*,video/*"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              setEditCollabo({
+                                ...editCollabo,
+                                file,
+                                preview: file
+                                  ? {
+                                      type: file.type.startsWith("image/")
+                                        ? "image"
+                                        : "video",
+                                      url: URL.createObjectURL(file),
+                                    }
+                                  : null,
+                              });
+                            }}
+                            className="hidden"
+                          />
+                          {editCollabo?.preview && (
+                            <div className="mt-4 flex justify-center">
+                              {editCollabo.preview.type === "image" ? (
+                                <img
+                                  src={editCollabo.preview.url}
+                                  alt="Preview"
+                                  className="w-[200px] h-[200px] object-cover rounded-md border border-gray-300"
+                                />
+                              ) : (
+                                <video
+                                  src={editCollabo.preview.url}
+                                  controls
+                                  loop
+                                  muted
+                                  autoPlay
+                                  className="w-[200px] h-[200px] object-cover rounded-md border border-gray-300"
+                                />
+                              )}
+                            </div>
+                          )}
+                        </div>
                         <DialogFooter>
-                          <Button onClick={handleUpdate}>Save</Button>
+                          <Button
+                            className="bg-red-500 hover:bg-red-600"
+                            onClick={() => setEditCollabo(null)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="bg-green-500 hover:bg-green-600"
+                            onClick={handleUpdate}
+                          >
+                            Save Changes
+                          </Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>

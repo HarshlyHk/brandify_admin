@@ -47,7 +47,7 @@ export const updateCollabo = createAsyncThunk(
     try {
       toast.info("Updating collaboration...");
       const { data } = await axiosInstance.put(
-        `/collabos/admin/update${id}`,
+        `/collabos/admin/update/${id}`,
         collaboData
       );
       toast.success("Collaboration updated successfully!");
