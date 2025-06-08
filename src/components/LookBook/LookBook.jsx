@@ -251,7 +251,7 @@ const LookBook = () => {
                     />
                   ) : (
                     <img
-                      src={lookBook.imageUrl}
+                      src={lookBook.thumbnailUrl || lookBook.imageUrl}
                       alt={lookBook.name}
                       className="w-32 h-32 object-contain rounded-md"
                     />
