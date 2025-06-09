@@ -52,10 +52,11 @@ const Orders = () => {
   const [itemsPerPage, setItemsPerPage] = useState(16);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [specialFilter, setSpecialFilter] = useState("new");
 
   useEffect(() => {
-    dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage }));
-  }, [dispatch, itemsPerPage, page]);
+    dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage , specialFilter}));
+  }, [dispatch, itemsPerPage, page, specialFilter]);
 
   const updateDeliveryStatus = (orderId) => {
     dispatch(updateOrder(orderId));
@@ -93,25 +94,46 @@ const Orders = () => {
         </div>
       </div>
       <div className="mb-4 flex justify-between items-center">
-        <div className="">
-          <Label htmlFor="items-per-page" className=" mb-2">
-            Items per page:
-          </Label>
-          <Select
-            onValueChange={(value) => setItemsPerPage(Number(value))}
-            defaultValue={itemsPerPage.toString()}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Items per page" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="12">12</SelectItem>
-                <SelectItem value="16">16</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+        <div className=" flex gap-10">
+          <div className=" ">
+            <Label htmlFor="items-per-page" className=" mb-2">
+              Items per page:
+            </Label>
+            <Select
+              onValueChange={(value) => setItemsPerPage(Number(value))}
+              defaultValue={itemsPerPage.toString()}
+            >
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Items per page" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="12">12</SelectItem>
+                  <SelectItem value="16">16</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="">
+            <Label htmlFor="items-per-page" className=" mb-2">
+              Filter Orders:
+            </Label>
+            <Select
+              onValueChange={(value) => setSpecialFilter(value)}
+              defaultValue="new"
+            >
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Select New or Old Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="new">New Orders</SelectItem>
+                  <SelectItem value="old">Old Orders</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 text-sm">

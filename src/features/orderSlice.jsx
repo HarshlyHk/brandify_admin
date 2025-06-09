@@ -49,10 +49,14 @@ export const getAllOrders = createAsyncThunk(
 // Get All Orders (Admin)
 export const getAllOrdersAdmin = createAsyncThunk(
   "order/getAllOrdersAdmin",
-  async ({ page, items }, { rejectWithValue }) => {
+  async ({ page, items, specialFilter }, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get(
-        "/orders/admin/get-order?page=" + page + "&limit=" + items
+        "/orders/admin/get-order?page=" +
+          page +
+          "&limit=" +
+          items +
+          (specialFilter ? `&specialFilter=${specialFilter}` : "")
       );
       return data;
     } catch (err) {
