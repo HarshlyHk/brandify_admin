@@ -40,6 +40,7 @@ import { Label } from "@/components/ui/label";
 import ReactPaginate from "react-paginate";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { toast } from "sonner";
+import SearchOrder from "./SearchOrder";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -55,7 +56,9 @@ const Orders = () => {
   const [specialFilter, setSpecialFilter] = useState("new");
 
   useEffect(() => {
-    dispatch(getAllOrdersAdmin({ page: page, items: itemsPerPage , specialFilter}));
+    dispatch(
+      getAllOrdersAdmin({ page: page, items: itemsPerPage, specialFilter })
+    );
   }, [dispatch, itemsPerPage, page, specialFilter]);
 
   const updateDeliveryStatus = (orderId) => {
@@ -80,6 +83,9 @@ const Orders = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Orders</h2>
+        <div className="fixed top-5 left-[55%] transform -translate-x-1/2 z-10">
+          <SearchOrder />
+        </div>
         <div className="flex gap-4 items-center">
           <Link to="/failed-orders/1">
             <Button className="bg-red-500 text-white hover:bg-red-700">
