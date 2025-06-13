@@ -61,7 +61,7 @@ const SortableRow = ({ product, index, handleNavigate }) => {
         // onClick={() => handleNavigate(product._id)}
       >
         <img
-          src={product?.images[0]}
+          src={product?.thumbnails[0]}
           alt={product.name}
           className="w-20 h-20 object-cover rounded-md"
         />

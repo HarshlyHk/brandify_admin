@@ -297,37 +297,35 @@ const Products = () => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell colSpan={9}>
+              <ReactPaginate
+                pageCount={totalPages}
+                forcePage={Number(page) - 1}
+                onPageChange={(selectedItem) =>
+                  navigate(`/products/${selectedItem.selected + 1}`)
+                }
+                marginPagesDisplayed={1} // pages at start/end
+                pageRangeDisplayed={10} // pages around current
+                previousLabel="Previous"
+                nextLabel="Next"
+                previousClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
+                  page == 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                } `}
+                nextClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
+                  page == totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                } `}
+                containerClassName="flex gap-4 justify-center items-center "
+                activeClassName=" bg-black text-white hover:text-white text-white  rounded"
+                pageClassName=" text-black "
+                pageLinkClassName="hover:bg-black transition-all duration-300  hover:text-white px-4 py-2  cursor-pointer rounded"
+                activeLinkClassName="bg-black text-white hover:text-white px-4 py-2 rounded"
+              />
+            </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
-
-      <div className=" mt-4 md:mt-2">
-        <ReactPaginate
-          pageCount={totalPages}
-          forcePage={Number(page) - 1}
-          onPageChange={(selectedItem) =>
-            navigate(`/products/${selectedItem.selected + 1}`)
-          }
-          marginPagesDisplayed={1} // pages at start/end
-          pageRangeDisplayed={10} // pages around current
-          previousLabel="Previous"
-          nextLabel="Next"
-          previousClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
-            page == 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-          } `}
-          nextClassName={`text-white bg-black px-4 py-2 rounded transition-all duration-300  ${
-            page == totalPages
-              ? "opacity-50 cursor-not-allowed"
-              : "cursor-pointer"
-          } `}
-          containerClassName="flex gap-4 justify-center items-center "
-          activeClassName=" bg-black text-white hover:text-white text-white  rounded"
-          pageClassName=" text-black "
-          pageLinkClassName="hover:bg-black transition-all duration-300  hover:text-white px-4 py-2  cursor-pointer rounded"
-          activeLinkClassName="bg-black text-white hover:text-white px-4 py-2 rounded"
-        />
-      </div>
     </div>
   );
 };

@@ -83,10 +83,10 @@ const SearchOrder = () => {
   };
 
   return (
-    <div className="relative mx-auto ">
-      <form className="flex gap-2">
-        <div className="relative flex-1">
-          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden px-2 w-[400px]">
+    <div className="relative ">
+      <form className="">
+        <div className="relative">
+          <div className="flex items-center bg-white border border-gray-300 rounded-lg overflow-hidden px-2 md:w-[400px] w-[300px]">
             <div className="pointer-events-none text-gray-400">
               <IoSearch size={18} />
             </div>
@@ -131,13 +131,7 @@ const SearchOrder = () => {
         </div>
       </form>
 
-      {loading && (
-        <div className="mt-3 space-y-2">
-          {[...Array(3)].map((_, i) => (
-            <Skeleton key={i} className="h-14 w-full rounded-lg" />
-          ))}
-        </div>
-      )}
+
 
       {showDropdown && (
         <div className="absolute w-full z-10 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
@@ -174,7 +168,7 @@ const SearchOrder = () => {
             </div>
           ) : (
             <div className="px-4 py-6 text-center">
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 No orders found. Try a different search.
               </p>
             </div>

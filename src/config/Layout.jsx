@@ -8,7 +8,7 @@ const Layout = () => {
   return (
     <div>
       <div className=" max-h-screen flex justify-between">
-        <div className=" md:static fixed md:w-[240px]">
+        <div className=" md:static fixed md:w-[240px] top-4 left-2">
           <Navbar />
         </div>
         <div className="flex-1 p-4 overflow-auto">

@@ -80,13 +80,13 @@ const Orders = () => {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="md:px-6 px-2">
+      <div className="flex flex-col gap-4 md:gap-0 md:flex-row justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Orders</h2>
-        <div className="fixed top-5 left-[55%] transform -translate-x-1/2 z-10">
+        <div className="">
           <SearchOrder />
         </div>
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-col gap-4 items-center">
           <Link to="/failed-orders/1">
             <Button className="bg-red-500 text-white hover:bg-red-700">
               Failed Orders
@@ -100,7 +100,7 @@ const Orders = () => {
         </div>
       </div>
       <div className="mb-4 flex justify-between items-center">
-        <div className=" flex gap-10">
+        <div className=" flex md:gap-10 gap-4">
           <div className=" ">
             <Label htmlFor="items-per-page" className=" mb-2">
               Items per page:
@@ -141,7 +141,7 @@ const Orders = () => {
             </Select>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="md:flex hidden items-center gap-2 ">
           <div className="flex items-center gap-2 text-sm">
             <IoCheckmarkCircle className="text-red-500" size={20} />
             <p>Not Shipped</p>
