@@ -50,10 +50,13 @@ const ManageUsers = () => {
 
   const handleDownloadEmails = async () => {
     try {
-      const response = await axiosInstance.get("/user/admin/get-all-user-emails", {
-        responseType: "blob", // Ensure the response is treated as a binary file
-      });
-  
+      const response = await axiosInstance.get(
+        "/user/admin/get-all-user-emails",
+        {
+          responseType: "blob", // Ensure the response is treated as a binary file
+        }
+      );
+
       // Create a URL for the blob and trigger a download
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -67,6 +70,27 @@ const ManageUsers = () => {
     }
   };
 
+  const handleDownloadPhone = async () => {
+    try {
+      const response = await axiosInstance.get(
+        "/user/admin/get-all-order-details",
+        {
+          responseType: "blob", // Ensure the response is treated as a binary file
+        }
+      );
+
+      // Create a URL for the blob and trigger a download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "user_phone.vcf"); // Updated file name to .xlsx
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to download user emails:", error);
+    }
+  };
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -75,8 +99,17 @@ const ManageUsers = () => {
           <h4>
             <span className="text-sm text-gray-700">Total Users: {total}</span>
           </h4>
-          <Button onClick={handleDownloadEmails} className="bg-blue-500 text-white">
+          <Button
+            onClick={handleDownloadEmails}
+            className="bg-blue-500 text-white"
+          >
             Download User Emails
+          </Button>
+          <Button
+            onClick={handleDownloadPhone}
+            className="bg-green-500 text-white"
+          >
+            Download User Phone
           </Button>
         </div>
       </div>
