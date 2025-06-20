@@ -91,11 +91,6 @@ const LookBook = () => {
         formData.append("file", editLookBook.preview.url);
       }
       formData.append("isActive", editLookBook.isActive);
-      if (!formData.get("file")) {
-        alert("Image/Video is required");
-        return;
-      }
-
       const res = await dispatch(
         updateLookBook({ id: editLookBook._id, lookBookData: formData })
       );
