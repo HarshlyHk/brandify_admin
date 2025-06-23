@@ -209,9 +209,52 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
 
         <div className="w-48">
           <label className="block text-xs font-bold uppercase  mb-1">
+            Special Sale
+          </label>
+          {formik?.values?.specialSale != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("specialSale", value == "true")
+              }
+              value={formik?.values?.specialSale ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
+        <div className="">
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Special Sale Discount %
+          </label>
+          <Input
+            type="number"
+            name="specialSaleDiscount"
+            value={formik.values.specialSaleDiscount}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.specialSaleDiscount &&
+            formik.errors.specialSaleDiscount && (
+              <p className="text-red-500 text-sm">
+                {formik.errors.specialSaleDiscount}
+              </p>
+            )}
+        </div>
+
+        <div className="w-48">
+          <label className="block text-xs font-bold uppercase  mb-1">
             Gender
           </label>
-          {formik?.values?.gender !== "" && (
+          {formik?.values?.gender != null && (
             <Select
               value={formik?.values?.gender}
               onValueChange={(value) => formik.setFieldValue("gender", value)}

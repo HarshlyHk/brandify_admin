@@ -47,6 +47,8 @@ import { Skeleton } from "../ui/skeleton";
 import { CiStar } from "react-icons/ci";
 import { FaStar } from "react-icons/fa6";
 import ReactPaginate from "react-paginate";
+import axiosInstance from "@/config/axiosInstance";
+import { CiSearch as AiOutlineSearch } from "react-icons/ci";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -59,6 +61,11 @@ const Products = () => {
 
   const { page } = useParams();
   const [itemsPerPage, setItemsPerPage] = useState("12");
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchType, setSearchType] = useState("name");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
     if (category != "All") {
@@ -96,26 +103,210 @@ const Products = () => {
     await dispatch(updateToggleSpecial(product._id));
   };
 
+  const handleSearch = async () => {
+    setSearchLoading(true);
+    try {
+      const response = await axiosInstance.get(
+        `product/admin/search?query=${searchQuery}&searchType=${searchType}`
+      );
+      console.log("Search Response:", response.data);
+      setSearchResults(response.data.data.products);
+    } catch (error) {
+      console.error("Error searching products:", error);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
         <h2 className="underline underline-offset-4 font-bold uppercase text-center sm:text-left">
           Products
         </h2>
-        <h4 className="mt-2 sm:mt-0">
-          <span className="text-sm text-gray-500">
-            Total Products: {totalProducts}
-          </span>
-        </h4>
-        <div className="flex flex-col sm:flex-row gap-4 mt-2 sm:mt-0">
-          <Link to="/products/priority">
-            <Button className="w-full sm:w-auto">Update Priority</Button>
-          </Link>
+        <div className="flex items-center gap-4">
+          <AiOutlineSearch
+            size={24}
+            className="cursor-pointer"
+            onClick={() => setSearchDialogOpen(true)}
+          />
           <Link to="/products/add">
             <Button className="w-full sm:w-auto">Add Product</Button>
           </Link>
         </div>
       </div>
+
+      {/* Search Dialog */}
+      <Dialog
+        open={searchDialogOpen}
+        onOpenChange={() => {
+          setSearchDialogOpen(false); // Correctly call the function with a value
+          setSearchQuery("");
+          setSearchType("name");
+          setSearchResults([]);
+          setSearchLoading(false);
+        }}
+      >
+        <DialogContent className="max-w-2xl p-6 bg-white rounded-xl shadow-md">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-lg font-semibold text-gray-800">
+              Search Products
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-4">
+              <Select onValueChange={setSearchType} defaultValue={searchType}>
+                <SelectTrigger className="w-full border border-gray-200 focus:ring-1 focus:ring-black rounded-md">
+                  <SelectValue placeholder="Search by" />
+                </SelectTrigger>
+                <SelectContent className="border border-gray-200">
+                  <SelectGroup>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="productId">Product ID</SelectItem>
+                    <SelectItem value="discountedPrice">
+                      Discounted Price
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="col-span-6">
+              <input
+                type="text"
+                placeholder="Enter search term"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <Button
+                onClick={handleSearch}
+                disabled={searchLoading}
+                className="w-full bg-black text-white hover:bg-gray-800 text-sm font-medium rounded-md"
+              >
+                {searchLoading ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <svg
+                      className="animate-spin h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4zm2 5.3A8 8 0 014 12H0c0 3.1 1.1 5.8 3 7.9l3-2.6z"
+                      />
+                    </svg>
+                    Searching
+                  </span>
+                ) : (
+                  "Search"
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            {searchResults?.length > 0 ? (
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <Table>
+                  <TableHeader className="bg-gray-50">
+                    <TableRow>
+                      <TableHead className="w-20 text-gray-600 text-sm">
+                        Image
+                      </TableHead>
+                      <TableHead className="text-gray-600 text-sm">
+                        Name
+                      </TableHead>
+                      <TableHead className="text-gray-600 text-sm">
+                        Price
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {searchResults.map((product) => (
+                      <TableRow
+                        key={product._id}
+                        onClick={() =>
+                          navigate(`/products/edit/${product._id}`)
+                        }
+                        className="hover:bg-gray-50 cursor-pointer"
+                      >
+                        <TableCell>
+                          <div className="w-14 h-14 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                            {product.images?.[0] ? (
+                              <img
+                                src={product.images[0]}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-xs text-gray-400">
+                                No Image
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-800">
+                          {product.name}
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-700">
+                          ₹{product.discountedPrice || product.originalPrice}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <div className="py-10 text-center">
+                <p className="text-sm text-gray-500">
+                  {searchLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg
+                        className="animate-spin h-4 w-4 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4zm2 5.3A8 8 0 014 12H0c0 3.1 1.1 5.8 3 7.9l3-2.6z"
+                        />
+                      </svg>
+                      Searching...
+                    </span>
+                  ) : (
+                    "No results found. Try a different search term."
+                  )}
+                </p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <div className="mb-4 w-full sm:w-auto">

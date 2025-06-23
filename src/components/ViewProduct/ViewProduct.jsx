@@ -51,6 +51,8 @@ const ViewProduct = () => {
       careGuide: product?.careGuide,
       isSpecial: product?.isSpecial,
       preeBook: product?.preeBook,
+      specialSale: product?.specialSale,
+      specialSaleDiscount: product?.specialSaleDiscount || 0,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -76,8 +78,8 @@ const ViewProduct = () => {
       formData.append("coreFeatures", values.coreFeatures);
       formData.append("isSpecial", values.isSpecial);
       formData.append("preeBook", values.preeBook);
-
-      // Convert arrays to JSON format
+      formData.append("specialSale", values.specialSale);
+      formData.append("specialSaleDiscount", values.specialSaleDiscount);
       values.category.forEach((cat) => formData.append("category[]", cat));
       values.tags.forEach((tag) => formData.append("tags[]", tag));
       formData.append("sizeVariations", JSON.stringify(values.sizeVariations));
@@ -118,28 +120,27 @@ const ViewProduct = () => {
     formik.setFieldValue("thumbnails", thumbnails);
   };
 
-const handleDeleteImage = (index) => {
-  console.log("Formik Images Before Deletion:", formik.values.images); // ← this matters
-  console.log("Deleting index:", index);
+  const handleDeleteImage = (index) => {
+    console.log("Formik Images Before Deletion:", formik.values.images); // ← this matters
+    console.log("Deleting index:", index);
 
-  const images = [...formik.values.images];
-  const thumbnails = [...formik.values.thumbnails];
+    const images = [...formik.values.images];
+    const thumbnails = [...formik.values.thumbnails];
 
-  const imageToDelete = images[index];
-  if (!imageToDelete) {
-    console.warn("No image found at index", index);
-    return;
-  }
+    const imageToDelete = images[index];
+    if (!imageToDelete) {
+      console.warn("No image found at index", index);
+      return;
+    }
 
-  images.splice(index, 1);
-  thumbnails.splice(index, 1);
+    images.splice(index, 1);
+    thumbnails.splice(index, 1);
 
-  formik.setFieldValue("images", images);
-  formik.setFieldValue("thumbnails", thumbnails);
+    formik.setFieldValue("images", images);
+    formik.setFieldValue("thumbnails", thumbnails);
 
-  setImagesToDelete((prev) => [...prev, imageToDelete]);
-};
-
+    setImagesToDelete((prev) => [...prev, imageToDelete]);
+  };
 
   const handleNewImageUpload = (event) => {
     const files = Array.from(event.target.files);
