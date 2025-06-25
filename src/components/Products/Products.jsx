@@ -130,6 +130,9 @@ const Products = () => {
             className="cursor-pointer"
             onClick={() => setSearchDialogOpen(true)}
           />
+          <Link to="/products/priority">
+            <Button className="w-full sm:w-auto">Update Priority</Button>
+          </Link>
           <Link to="/products/add">
             <Button className="w-full sm:w-auto">Add Product</Button>
           </Link>
