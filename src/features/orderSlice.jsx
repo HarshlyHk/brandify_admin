@@ -56,7 +56,7 @@ export const getAllOrdersAdmin = createAsyncThunk(
           page +
           "&limit=" +
           items +
-          (specialFilter ? `&specialFilter=${specialFilter}` : "")
+          (specialFilter ? `&filterType=${specialFilter}` : "")
       );
       return data;
     } catch (err) {

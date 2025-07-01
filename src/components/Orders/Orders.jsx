@@ -127,15 +127,16 @@ const Orders = () => {
             </Label>
             <Select
               onValueChange={(value) => setSpecialFilter(value)}
-              defaultValue="new"
+              defaultValue="all"
             >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Select New or Old Order" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="new">New Orders</SelectItem>
-                  <SelectItem value="old">Old Orders</SelectItem>
+                  <SelectItem value="all">All Orders</SelectItem>
+                  <SelectItem value="newPixel">New Pixel</SelectItem>
+                  <SelectItem value="oldPixel">Old Pixel</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
