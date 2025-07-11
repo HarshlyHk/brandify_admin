@@ -139,10 +139,10 @@ const Collabos = () => {
                 }
               />
               <Input
-                placeholder="Name"
+                placeholder="Product ID"
                 value={newCollabo.product}
                 onChange={(e) =>
-                  setNewCollabo({ ...newCollabo, name: e.target.value })
+                  setNewCollabo({ ...newCollabo, product: e.target.value })
                 }
               />
               <Textarea
