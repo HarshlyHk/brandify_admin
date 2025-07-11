@@ -68,8 +68,12 @@ const Collabos = () => {
     if (image) {
       formData.append("file", image);
     }
+    if(!newCollabo.product) {
+      alert("Product ID is required");
+      return;
+    }
     dispatch(createCollabo(formData));
-    setNewCollabo({ name: "", description: "" });
+    setNewCollabo({ name: "", description: "" , product: ""});
     setImage(null);
     setPreview(null);
   };
