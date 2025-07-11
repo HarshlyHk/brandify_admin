@@ -273,7 +273,7 @@ const Collabos = () => {
                         />
                         <Input
                           placeholder="Product ID"
-                          value={editCollabo?.product?._id || ""}
+                          value={editCollabo?.product || ""}
                           onChange={(e) =>
                             setEditCollabo({
                               ...editCollabo,
