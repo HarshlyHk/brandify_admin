@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "../ui/textarea";
 import { Link } from "react-router";
+import { Label } from "../ui/label";
 
 const Collabos = () => {
   const dispatch = useDispatch();
@@ -271,6 +272,12 @@ const Collabos = () => {
                             })
                           }
                         />
+                        <Label className="mt-2">
+                          Product ID{" "}
+                          {editCollabo?.product
+                            ? `(${editCollabo.product.name})`
+                            : ""}
+                        </Label>
                         <Input
                           placeholder="Product ID"
                           value={editCollabo?.product || ""}
@@ -281,6 +288,7 @@ const Collabos = () => {
                             })
                           }
                         />
+
                         <Textarea
                           placeholder="Description"
                           value={editCollabo?.description || ""}
