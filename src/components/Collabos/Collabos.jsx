@@ -35,7 +35,11 @@ const Collabos = () => {
   const dispatch = useDispatch();
   const { collabos, loading } = useSelector((state) => state.collabo);
 
-  const [newCollabo, setNewCollabo] = useState({ name: "", description: "" });
+  const [newCollabo, setNewCollabo] = useState({
+    name: "",
+    description: "",
+    product: "",
+  });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [editCollabo, setEditCollabo] = useState(null);
@@ -59,6 +63,7 @@ const Collabos = () => {
 
     formData.append("name", newCollabo.name);
     formData.append("description", newCollabo.description);
+    formData.append("product", newCollabo.product);
     if (image) {
       formData.append("file", image);
     }
@@ -73,14 +78,15 @@ const Collabos = () => {
       const formData = new FormData();
       formData.append("name", editCollabo.name);
       formData.append("description", editCollabo.description);
+      formData.append("product", editCollabo.product);
       if (editCollabo.file) {
         formData.append("file", editCollabo.file);
       }
       const res = await dispatch(
         updateCollabo({ id: editCollabo._id, collaboData: formData })
       );
-      if (res){
-        console.log(res)
+      if (res) {
+        console.log(res);
         // setEditCollabo(null);
         // setImage(null);
         // setPreview(null);
@@ -127,6 +133,13 @@ const Collabos = () => {
               <Input
                 placeholder="Name"
                 value={newCollabo.name}
+                onChange={(e) =>
+                  setNewCollabo({ ...newCollabo, name: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Name"
+                value={newCollabo.product}
                 onChange={(e) =>
                   setNewCollabo({ ...newCollabo, name: e.target.value })
                 }
@@ -255,6 +268,16 @@ const Collabos = () => {
                             setEditCollabo({
                               ...editCollabo,
                               name: e.target.value,
+                            })
+                          }
+                        />
+                        <Input
+                          placeholder="Product ID"
+                          value={editCollabo?.product?._id || ""}
+                          onChange={(e) =>
+                            setEditCollabo({
+                              ...editCollabo,
+                              product: e.target.value,
                             })
                           }
                         />
