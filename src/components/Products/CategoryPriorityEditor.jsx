@@ -170,6 +170,7 @@ const CategoryPriorityEditor = () => {
               <SelectItem value="blanks">Blanks</SelectItem>
               <SelectItem value="featured">Featured</SelectItem>
               <SelectItem value="all-products">All products</SelectItem>
+              <SelectItem value="steal-the-drip">DRIP UNDER ₹1199</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
