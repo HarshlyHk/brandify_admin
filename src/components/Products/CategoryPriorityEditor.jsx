@@ -171,7 +171,7 @@ const CategoryPriorityEditor = () => {
               <SelectItem value="featured">Featured</SelectItem>
               <SelectItem value="all-products">All products</SelectItem>
               <SelectItem value="steal-the-drip">DRIP UNDER ₹1199</SelectItem>
-              <SelectItem value="blind-drop	">Blind Drop</SelectItem>
+              <SelectItem value="blind-drop">Blind Drop</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
