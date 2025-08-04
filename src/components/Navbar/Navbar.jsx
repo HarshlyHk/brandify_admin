@@ -38,6 +38,7 @@ const Sidebar = () => {
     { name: "Categories", path: "/category", icon: Package },
     { name: "Collabos", path: "/collabos", icon: Users },
     { name: "LookBook", path: "/lookbook", icon: TbMoodLookUp },
+    { name: "Special Frames", path: "/specialframe", icon: Package },
     { name: "Return/Refund", path: "/return-refund/1", icon: TbTruckReturn },
     { name: "Contact Us", path: "/contact-us/1", icon: FaUsers },
     { name: "Combos", path: "/combos", icon: Package },

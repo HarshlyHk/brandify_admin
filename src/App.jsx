@@ -29,6 +29,8 @@ import PaymentQuery from "./components/Support/PaymentQuery";
 import Combos from "./components/Combo/Combo";
 import ChangePass from "./components/ForgetPass/ChangePass";
 import RequestEmail from "./components/ForgetPass/RequestEmail";
+import SpecialFrames from "./components/SpecialFrames/SpecialFrames";
+import SpecialFramesOrderUpdate from "./components/SpecialFrames/SpecialFramesOrder";
 function App() {
   return (
     <>
@@ -61,6 +63,11 @@ function App() {
               <Route path="collabo-order" element={<CollabosOrderUpdate />} />
               <Route path="/lookbook" element={<LookBook />} />
               <Route path="/lookbook-order" element={<LookBookOrderUpdate />} />
+              <Route path="/specialframe" element={<SpecialFrames />} />
+              <Route
+                path="/specialframe-order"
+                element={<SpecialFramesOrderUpdate />}
+              />
               <Route path="/return-refund/:page" element={<ReturnRefund />} />
               <Route path="/contact-us/:page" element={<ContactUs />} />
               <Route path="/payment-query/:page" element={<PaymentQuery />} />
