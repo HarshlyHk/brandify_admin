@@ -51,6 +51,39 @@ export const addFakeReview = createAsyncThunk(
   }
 );
 
+// Admin edit review thunk
+export const adminEditReview = createAsyncThunk(
+  "review/adminEditReview",
+  async ({ productId, reviewId, rating, comment, name, title, certifiedBuyer }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.put(
+        `/review/admin/${productId}/${reviewId}`,
+        { rating, comment, name, title, certifiedBuyer }
+      );
+      toast.success("Review updated!");
+      return { reviewId, review: data.review };
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update review.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
+// Admin delete review thunk
+export const adminDeleteReview = createAsyncThunk(
+  "review/adminDeleteReview",
+  async ({ productId, reviewId }, { rejectWithValue }) => {
+    try {
+      await axiosInstance.delete(`/review/admin/${productId}/${reviewId}`);
+      toast.success("Review deleted!");
+      return reviewId;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete review.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const reviewSlice = createSlice({
   name: "review",
   initialState,
@@ -87,6 +120,17 @@ const reviewSlice = createSlice({
       .addCase(addFakeReview.fulfilled, (state, action) => {
         state.reviews = [action.payload, ...state.reviews];
         state.total += 1;
+      })
+      // Admin edit review: update review in state
+      .addCase(adminEditReview.fulfilled, (state, action) => {
+        state.reviews = state.reviews.map(r =>
+          r._id === action.payload.reviewId ? action.payload.review : r
+        );
+      })
+      // Admin delete review: remove from state
+      .addCase(adminDeleteReview.fulfilled, (state, action) => {
+        state.reviews = state.reviews.filter(r => r._id !== action.payload);
+        state.total = Math.max(0, state.total - 1);
       });
   },
 });

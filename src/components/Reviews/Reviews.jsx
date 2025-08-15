@@ -348,7 +348,7 @@ const Reviews = () => {
               <TableRow key={product._id}>
                 <TableCell
                   className="min-w-20 md:min-w-28 min-h-20 md:min-h-28 cursor-pointer"
-                  onClick={() => navigate(`/products/edit/${product._id}`)}
+                  onClick={() => navigate(`/review/${product._id}`)}
                 >
                   <img
                     src={product?.thumbnails[0]}
@@ -357,7 +357,7 @@ const Reviews = () => {
                   />
                 </TableCell>
                 <TableCell
-                  onClick={() => navigate(`/products/edit/${product._id}`)}
+                  onClick={() => navigate(`/review/${product._id}`)}
                   className="cursor-pointer hover:underline max-w-[100px] md:max-w-[150px] lg:max-w-[200px] truncate text-gray-700 hover:text-gray-900 "
                 >
                   {product.name}

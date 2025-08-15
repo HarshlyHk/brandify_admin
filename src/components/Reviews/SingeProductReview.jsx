@@ -7,6 +7,8 @@ import {
   setLimit,
   setSort,
   addFakeReview,
+  adminEditReview,
+  adminDeleteReview,
 } from "@/features/reviewSlice";
 import {
   Table,
@@ -71,6 +73,11 @@ const SingeProductReview = () => {
   const [fakeTitle, setFakeTitle] = useState("");
   const [fakeRating, setFakeRating] = useState(0);
   const [fakeLoading, setFakeLoading] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editReviewData, setEditReviewData] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [deleteReviewId, setDeleteReviewId] = useState(null);
 
   useEffect(() => {
     dispatch(getProductReviews({ productId, page, limit, sort }));
@@ -100,6 +107,7 @@ const SingeProductReview = () => {
         })
       ).unwrap();
       setFakeDialogOpen(false);
+      setFakeTitle("");
       setFakeName("");
       setFakeComment("");
       setFakeRating(0);
@@ -108,6 +116,61 @@ const SingeProductReview = () => {
       // Error toast already handled in slice
     } finally {
       setFakeLoading(false);
+    }
+  };
+
+  // Open edit dialog
+  const handleEditClick = (review) => {
+    setEditReviewData({
+      ...review,
+      certifiedBuyer: !!review.certifiedBuyer,
+    });
+    setEditDialogOpen(true);
+  };
+
+  // Submit edit
+  const handleEditSubmit = async () => {
+    setEditLoading(true);
+    try {
+      await dispatch(
+        adminEditReview({
+          productId,
+          reviewId: editReviewData._id,
+          rating: editReviewData.rating,
+          comment: editReviewData.comment,
+          name: editReviewData.name,
+          title: editReviewData.title,
+          certifiedBuyer: editReviewData.certifiedBuyer,
+        })
+      ).unwrap();
+      setEditDialogOpen(false);
+      setEditReviewData(null);
+    } catch (err) {
+      // error toast handled in slice
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  // Open delete dialog
+  const handleDeleteClick = (reviewId) => {
+    setDeleteReviewId(reviewId);
+    setDeleteDialogOpen(true);
+  };
+
+  // Confirm delete
+  const handleDeleteConfirm = async () => {
+    setEditLoading(true);
+    try {
+      await dispatch(
+        adminDeleteReview({ productId, reviewId: deleteReviewId })
+      ).unwrap();
+      setDeleteDialogOpen(false);
+      setDeleteReviewId(null);
+    } catch (err) {
+      // error toast handled in slice
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -180,8 +243,12 @@ const SingeProductReview = () => {
               Add Fake Review
             </Button>
           </div>
-          <div className=" text-sm mt-4 text-end">Total Reviews: {total}</div>
-          <div className=" text-sm mt-4 text-end">Average Rating: {productDetail?.averageRating}</div>
+          <div className=" text-sm mt-4 text-end">
+            Total Reviews: {total}
+          </div>
+          <div className=" text-sm mt-4 text-end">
+            Average Rating: {productDetail?.averageRating}
+          </div>
         </div>
       </div>
 
@@ -214,7 +281,9 @@ const SingeProductReview = () => {
                 <TableCell>
                   {review.name || review.user?.name || "User"}
                 </TableCell>
-                <TableCell className="">{renderStars(review.rating)}</TableCell>
+                <TableCell className="">
+                  {renderStars(review.rating)}
+                </TableCell>
                 <TableCell className="truncate max-w-[200px]">
                   {review.comment}
                 </TableCell>
@@ -226,10 +295,22 @@ const SingeProductReview = () => {
                 </TableCell>
                 <TableCell>
                   <Button
-                    className="bg-blue-500 text-white hover:bg-blue-700"
+                    className="bg-blue-500 text-white hover:bg-blue-700 mr-2"
                     onClick={() => setSelectedReview(review)}
                   >
                     View
+                  </Button>
+                  <Button
+                    className="bg-yellow-500 text-white hover:bg-yellow-700 mr-2"
+                    onClick={() => handleEditClick(review)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    className="bg-red-600 text-white hover:bg-red-800"
+                    onClick={() => handleDeleteClick(review._id)}
+                  >
+                    Delete
                   </Button>
                 </TableCell>
               </TableRow>
@@ -412,6 +493,144 @@ const SingeProductReview = () => {
                 disabled={fakeLoading}
               >
                 {fakeLoading ? "Adding..." : "Add Review"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Review Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={() => setEditDialogOpen(false)}>
+        <DialogContent className="max-w-lg p-6 bg-white rounded-xl shadow-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-gray-800">
+              Edit Review
+            </DialogTitle>
+          </DialogHeader>
+          {editReviewData && (
+            <div className="space-y-4">
+              <div>
+                <Label className="block mb-1">Title</Label>
+                <Input
+                  type="text"
+                  value={editReviewData.title || ""}
+                  onChange={(e) =>
+                    setEditReviewData({ ...editReviewData, title: e.target.value })
+                  }
+                  maxLength={100}
+                  className="w-full"
+                  placeholder="Title"
+                />
+              </div>
+              <div>
+                <Label className="block mb-1">Name</Label>
+                <Input
+                  type="text"
+                  value={editReviewData.name || ""}
+                  onChange={(e) =>
+                    setEditReviewData({ ...editReviewData, name: e.target.value })
+                  }
+                  maxLength={100}
+                  className="w-full"
+                  placeholder="Name"
+                />
+              </div>
+              <div>
+                <Label className="block mb-1">Comment</Label>
+                <Textarea
+                  value={editReviewData.comment || ""}
+                  onChange={(e) =>
+                    setEditReviewData({
+                      ...editReviewData,
+                      comment: e.target.value.slice(0, 500),
+                    })
+                  }
+                  maxLength={500}
+                  className="w-full"
+                  placeholder="Comment"
+                />
+                <p className="text-muted-foreground text-xs text-end w-full mt-2">
+                  {(editReviewData.comment || "").length}/500
+                </p>
+              </div>
+              <div>
+                <Label className="block mb-1">Rating</Label>
+                <div className="flex gap-2">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className="focus:outline-none cursor-pointer"
+                      onClick={() =>
+                        setEditReviewData({ ...editReviewData, rating: i + 1 })
+                      }
+                    >
+                      {i < editReviewData.rating ? (
+                        <FaStar className="text-yellow-500 text-xl" />
+                      ) : (
+                        <FaRegStar className="text-gray-300 text-xl" />
+                      )}
+                    </button>
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600">
+                    {editReviewData.rating}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <Label className="block mb-1">Certified Buyer</Label>
+                <select
+                  value={editReviewData.certifiedBuyer ? "true" : "false"}
+                  onChange={(e) =>
+                    setEditReviewData({
+                      ...editReviewData,
+                      certifiedBuyer: e.target.value === "true",
+                    })
+                  }
+                  className="border rounded px-2 py-1"
+                >
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  className="bg-yellow-600 text-white hover:bg-yellow-800"
+                  onClick={handleEditSubmit}
+                  disabled={editLoading}
+                >
+                  {editLoading ? "Updating..." : "Update Review"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={() => setDeleteDialogOpen(false)}>
+        <DialogContent className="max-w-md p-6 bg-white rounded-xl shadow-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-gray-800">
+              Confirm Delete
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>Are you sure you want to delete this review? This action cannot be undone.</p>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+                disabled={editLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-red-600 text-white hover:bg-red-800"
+                onClick={handleDeleteConfirm}
+                disabled={editLoading}
+              >
+                {editLoading ? "Deleting..." : "Delete"}
               </Button>
             </div>
           </div>
