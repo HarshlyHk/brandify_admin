@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Mozilla+Headline:wght@200..700&display=swap");
 @font-face {
   font-family: "Eurostile";
   src: url("../src/assets/fonts/Eurostile.TTF");
@@ -36,12 +37,14 @@
   src: url("../src/assets/fonts/Poppins-Light.ttf");
 }
 
+
 .def-text-color {
   color: #ffffff;
 }
 
-body{
+body {
   overflow: hidden;
+  font-family: "Inter", sans-serif;
 }
 
 .font-eurostile {
@@ -93,7 +96,7 @@ body{
 }
 
 ::placeholder {
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /*//! calendar style */
@@ -114,12 +117,10 @@ body{
   border-radius: 0px !important;
 }
 
-
 .rbc-day-bg:hover {
   background-color: #8000ff !important;
   border-radius: 10px !important;
   border: 2px #8000ff !important;
-
 }
 
 .rbc-today {
@@ -141,11 +142,11 @@ body{
   left: 20px;
 }
 
-.rbc-off-range-bg, .rbc-off-range{
+.rbc-off-range-bg,
+.rbc-off-range {
   opacity: 0 !important;
 }
 
 .navbar-scrollbar::-webkit-scrollbar {
-display: none;
+  display: none;
 }
-

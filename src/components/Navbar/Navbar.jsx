@@ -15,6 +15,8 @@ import { getCategories } from "@/features/categorySlics";
 import { getTags } from "@/features/tagSlice";
 import { FaUsers } from "react-icons/fa";
 import { TbTruckReturn } from "react-icons/tb";
+import { MdRateReview } from "react-icons/md";
+
 import {
   Sheet,
   SheetContent,
@@ -35,6 +37,7 @@ const Sidebar = () => {
     { name: "Settings", path: "/settings", icon: Settings },
     { name: "Products", path: "/products/1", icon: Package },
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
+    { name: "Reviews", path: "/reviews/1", icon: MdRateReview },
     { name: "Categories", path: "/category", icon: Package },
     { name: "Collabos", path: "/collabos", icon: Users },
     { name: "LookBook", path: "/lookbook", icon: TbMoodLookUp },

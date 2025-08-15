@@ -31,6 +31,8 @@ import ChangePass from "./components/ForgetPass/ChangePass";
 import RequestEmail from "./components/ForgetPass/RequestEmail";
 import SpecialFrames from "./components/SpecialFrames/SpecialFrames";
 import SpecialFramesOrderUpdate from "./components/SpecialFrames/SpecialFramesOrder";
+import Reviews from "./components/Reviews/Reviews";
+import SingeProductReview from "./components/Reviews/SingeProductReview";
 function App() {
   return (
     <>
@@ -43,11 +45,14 @@ function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/manage-users/" element={<ManageUsers />} />
               <Route path="/products/:page" element={<ProductPage />} />
+              <Route path="/reviews/:page" element={<Reviews />} />
               <Route path="/order/:page" element={<OrderPage />} />
               <Route path="/orders/:id" element={<EditOrder />} />
               <Route path="/failed-orders/:page" element={<FailedOrders />} />
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/products/edit/:id" element={<ViewProduct />} />
+              <Route path="/review/:id" element={<SingeProductReview />} />
+
               <Route
                 path="/products/priority"
                 element={<CategoryPriorityEditor />}

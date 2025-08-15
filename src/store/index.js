@@ -14,6 +14,7 @@ import contactUs from "../features/contactSlice";
 import paymentQuery from "../features/paymentQuerySlice";
 import combo from "../features/comboSlice";
 import specialFrames from "../features/specialFramesSlice";
+import reviewReducer from "../features/reviewSlice";
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -31,6 +32,7 @@ const store = configureStore({
     paymentQuery: paymentQuery,
     combo : combo,
     specialFrames: specialFrames,
+    review: reviewReducer,
   },
 });
 
