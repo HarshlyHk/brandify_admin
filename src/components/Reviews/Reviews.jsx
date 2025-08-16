@@ -374,6 +374,12 @@ const Reviews = () => {
                     >
                       View
                     </Button>
+                    <Button
+                      className="cursor-pointer md:block hidden hover:bg-green-700 bg-green-500 text-white"
+                      onClick={() => navigate(`/reviews/bulk/${product._id}`)}
+                    >
+                      Add Bulk Review
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>

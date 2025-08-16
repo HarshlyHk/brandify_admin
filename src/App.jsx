@@ -33,6 +33,7 @@ import SpecialFrames from "./components/SpecialFrames/SpecialFrames";
 import SpecialFramesOrderUpdate from "./components/SpecialFrames/SpecialFramesOrder";
 import Reviews from "./components/Reviews/Reviews";
 import SingeProductReview from "./components/Reviews/SingeProductReview";
+import BulkFakeReview from "./components/Reviews/BulkFakeReview";
 function App() {
   return (
     <>
@@ -52,7 +53,7 @@ function App() {
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/products/edit/:id" element={<ViewProduct />} />
               <Route path="/review/:id" element={<SingeProductReview />} />
-
+              <Route path="/reviews/bulk/:productId" element={<BulkFakeReview />} />
               <Route
                 path="/products/priority"
                 element={<CategoryPriorityEditor />}
