@@ -57,7 +57,7 @@ const Reviews = () => {
 
   useEffect(() => {
     if (category != "All") {
-      navigate(`/products/1`);
+      navigate(`/reviews/1`);
       dispatch(
         getProducts({
           page,
