@@ -20,10 +20,10 @@ TASK:
 STYLE & DIVERSITY RULES:
 - Sound like real people. Vary tone and vocabulary. Keep it casual, occasionally Hinglish (e.g., "mast hai", "thoda late aaya").
 - Include use cases: daily wear, gifting, parties, college, office, styling tips.
-- Ensure 1-2 reviews have a 2-star rating explicitly for late delivery or shipping delays.
+- Ensure 1-2 reviews have a 3-star rating explicitly for late delivery or shipping delays.
 - Include a few neutral/constructive points (e.g., runs big/small, thick fabric feels warm in summer).
 - Avoid repeating names, phrases, or identical sentence structures.
-- Ratings distribution should feel organic (mostly 4-5, a couple 3, and 1-2 at 2 stars for delivery issues).
+- Ratings distribution should feel organic (mostly 4-5, and 1-2 at 3 stars for delivery issues).
 
 Product Name - ${productDetails?.name || ""}
 
