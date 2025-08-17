@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getProductReviews,
@@ -78,6 +78,7 @@ const SingeProductReview = () => {
   const [editReviewData, setEditReviewData] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
   const [deleteReviewId, setDeleteReviewId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getProductReviews({ productId, page, limit, sort }));
@@ -241,6 +242,12 @@ const SingeProductReview = () => {
               onClick={() => setFakeDialogOpen(true)}
             >
               Add Fake Review
+            </Button>
+               <Button
+              className="bg-blue-600 text-white hover:bg-blue-800"
+              onClick={() => navigate("/reviews/bulk/"+ productId)}
+            >
+              Add Bulk Review
             </Button>
           </div>
           <div className=" text-sm mt-4 text-end">
