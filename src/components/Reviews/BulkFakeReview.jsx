@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "@/config/axiosInstance";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import { Textarea } from "../ui/textarea";
 import { getSingleProduct } from "@/features/productSlice";
 import { useDispatch } from "react-redux";
@@ -11,6 +11,8 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { toast } from "sonner";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import CopyPromptBlock from "./CopyPromptBlock";
 const BulkFakeReview = () => {
   const { productId } = useParams();
   const [reviewsData, setReviewsData] = useState("");
@@ -56,10 +58,26 @@ const BulkFakeReview = () => {
     },
   ];
 
+  const exampleData = [
+    {
+      title: "Premium feel!",
+      name: "Nikhil Arora",
+      comment:
+        "The embroidery looks super clean and neat. Doesn’t look like a cheap print at all. Totally worth the price!",
+      rating: 5,
+    },
+    {
+      title: "Delivery issue",
+      name: "Sameer Joshi",
+      comment:
+        "The t-shirt quality is great but my order came almost 10 days late. Was planning to wear it at a concert but missed it.",
+      rating: 2,
+    },
+  ];
+
   useEffect(() => {
     const getProductDetails = async () => {
       const res = await dispatch(getSingleProduct(productId));
-      console.log(res.payload.data.product);
       setProductDetails(res.payload.data.product);
     };
     getProductDetails();
@@ -80,7 +98,6 @@ const BulkFakeReview = () => {
         `/review/bulk/${productId}`,
         parsedData
       );
-      console.log("Bulk fake reviews added:", response.data);
       toast.success(
         `Successfully added ${response.data.reviewsAdded} reviews!`
       );
@@ -102,56 +119,127 @@ const BulkFakeReview = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Bulk Fake Reviews</h1>
-
-      {/* Product Details */}
-      {productDetails && (
-        <div className="bg-white p-6 mb-6">
-          <div className="flex items-center gap-4">
-            {productDetails.images && productDetails.images[0] && (
-              <img
-                src={productDetails.images[0]}
-                alt={productDetails.name}
-                className="w-20 h-20 object-cover rounded-sm"
-              />
-            )}
-            <div>
-              <h3 className="font-medium text-gray-900">
-                {productDetails.name}
-              </h3>
-            </div>
-          </div>
+    <div className="p-6  mx-auto">
+      <div className="flex justify-between items-start mb-6">
+        <h1 className="text-2xl font-bold">Add Bulk Reviews</h1>
+        <div className="flex items-center gap-4">
+          <h3 className="font-bold text-xl text-gray-900">
+            {productDetails?.name}
+          </h3>
+          <Link
+            target="_blank"
+            to={`https://drip-next.vercel.app/products-details/${productId}`}
+            className="text-blue-500 hover:underline flex items-center justify-center gap-2 "
+          >
+            <FaExternalLinkAlt className="inline" />
+          </Link>
         </div>
-      )}
+        <div>
+          {productDetails?.images && productDetails?.images[0] && (
+            <img
+              src={productDetails?.images[0]}
+              alt={productDetails?.name}
+              className="w-20 h-20 object-cover rounded-sm"
+            />
+          )}
+        </div>
+      </div>
 
       {/* Form */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Add Bulk Reviews</h2>
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                View Demo Data
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-full w-[80vw] max-h-[80vh] overflow-y-auto">
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-4">Demo Data Format</h3>
-                <pre className="bg-gray-100 p-4 rounded-md text-sm overflow-x-auto">
-                  {JSON.stringify(demoData, null, 2)}
-                </pre>
-                <DialogClose>
-                  <button
-                    onClick={loadDemoData}
-                    className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                  >
-                    Use This Demo Data
-                  </button>
-                </DialogClose>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <div className="flex items-center gap-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 text-sm cursor-pointer">
+                  View AI prompt
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-full w-[90vw] max-h-[100vh] overflow-y-auto">
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Demo Data Format
+                  </h3>
+                  <div className="mx-auto p-6 font-sans">
+                    <h1 className="text-2xl font-bold mb-2">
+                      AI Review Generator Prompt
+                    </h1>
+                    <p className="text-gray-500 mb-6 text-sm">
+                      Use this prompt with any AI agent to generate realistic,
+                      human-sounding reviews for a product based on its
+                      screenshot and specs.
+                    </p>
+                    <CopyPromptBlock productDetails={productDetails} />
+
+                    {/* Product Screenshot */}
+                    <div className="border rounded-xl p-4 mb-6">
+                      <p className="text-xs uppercase text-gray-500 mb-2">
+                        Product Screenshot (optional but recommended)
+                      </p>
+                      {productDetails ? (
+                        <img
+                          src={productDetails?.images[0]}
+                          alt="Product Screenshot"
+                          className="rounded-lg w-[300px]"
+                        />
+                      ) : (
+                        <p className="text-gray-400 italic">
+                          No image provided
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Instructions */}
+                    <div className="border rounded-xl p-4 mt-4">
+                      <p className="text-xs uppercase text-gray-500 mb-2">
+                        How to Use
+                      </p>
+                      <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                        <li>
+                          Replace the image URL and the spec block with your
+                          product details.
+                        </li>
+                        <li>
+                          Paste the “Copy-Ready Prompt” into your AI tool and
+                          attach the screenshot if supported.
+                        </li>
+                        <li>
+                          Ensure the tool returns only the JSON array (no extra
+                          commentary).
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm cursor-pointer">
+                  View Demo Data
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-full w-[80vw] max-h-[80vh] overflow-y-auto">
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Demo Data Format
+                  </h3>
+                  <pre className="bg-gray-100 p-4 rounded-md text-sm overflow-x-auto">
+                    {JSON.stringify(demoData, null, 2)}
+                  </pre>
+                  <DialogClose>
+                    <button
+                      onClick={loadDemoData}
+                      className="mt-4 text-sm px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                    >
+                      Use This Demo Data
+                    </button>
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -176,7 +264,7 @@ const BulkFakeReview = () => {
             <button
               type="submit"
               disabled={loading || !reviewsData.trim()}
-              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-6 py-2 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? "Adding Reviews..." : "Add Bulk Reviews"}
             </button>
@@ -184,7 +272,7 @@ const BulkFakeReview = () => {
             <button
               type="button"
               onClick={loadDemoData}
-              className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+              className="px-6 text-sm py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600"
             >
               Load Demo Data
             </button>
