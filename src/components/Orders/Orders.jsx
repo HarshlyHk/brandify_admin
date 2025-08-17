@@ -380,7 +380,7 @@ const Orders = () => {
         <DialogContent className="sm:max-w-[900px] h-[80vh] overflow-y-scroll p-0  ">
           <DialogHeader className=" sticky top-0 bg-white z-10 p-4">
             <DialogTitle className="text-xl font-semibold">
-              Order Details : {selectedOrder._id}
+              Order Details : {selectedOrder?._id}
             </DialogTitle>
           </DialogHeader>
 
