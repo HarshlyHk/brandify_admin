@@ -41,6 +41,7 @@ import ReactPaginate from "react-paginate";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { toast } from "sonner";
 import SearchOrder from "./SearchOrder";
+import DownloadUserEmails from "./DownloadUserEmails";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -87,11 +88,14 @@ const Orders = () => {
           <SearchOrder />
         </div>
         <div className="flex flex-col gap-4 items-center">
-          <Link to="/failed-orders/1">
-            <Button className="bg-red-500 text-white hover:bg-red-700">
-              Failed Orders
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/failed-orders/1">
+              <Button className="bg-red-500 text-white hover:bg-red-700">
+                Failed Orders
+              </Button>
+            </Link>
+            <DownloadUserEmails />
+          </div>
           <h4>
             <span className="text-sm text-gray-700">
               Total Orders: {totalOrders}
