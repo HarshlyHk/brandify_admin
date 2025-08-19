@@ -208,6 +208,24 @@ export const sendOutForDeliveryEmail = createAsyncThunk(
   }
 );
 
+// Toggle Order Flag
+export const toggleOrderFlag = createAsyncThunk(
+  "order/toggleOrderFlag",
+  async ({ orderId, flag }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.put(
+        `/orders/admin/toggle-flag/${orderId}`,
+        { flag }
+      );
+      toast.success(`${flag} updated!`);
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update flag.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -388,6 +406,24 @@ const orderSlice = createSlice({
         toast.error(
           action.payload?.message || "Failed to send out for delivery email."
         );
+      })
+      // Toggle Order Flag
+      .addCase(toggleOrderFlag.pending, (state) => {
+        state.taskLoading = true;
+        state.error = null;
+      })
+      .addCase(toggleOrderFlag.fulfilled, (state, action) => {
+        state.taskLoading = false;
+        const idx = state.orders.findIndex(
+          (order) => order._id === action.payload.data._id
+        );
+        if (idx !== -1) {
+          state.orders[idx] = action.payload.data;
+        }
+      })
+      .addCase(toggleOrderFlag.rejected, (state, action) => {
+        state.taskLoading = false;
+        state.error = action.payload;
       });
   },
 });
