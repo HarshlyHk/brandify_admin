@@ -137,6 +137,9 @@ const Orders = () => {
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="all">All Orders</SelectItem>
+                  <SelectItem value="listed">Listed</SelectItem>
+                  <SelectItem value="shipped">Shipped</SelectItem>
+                  <SelectItem value="delivered">Delivered</SelectItem>
                   <SelectItem value="newPixel">New Pixel</SelectItem>
                   <SelectItem value="oldPixel">Old Pixel</SelectItem>
                 </SelectGroup>
@@ -163,13 +166,13 @@ const Orders = () => {
         <TableCaption>Manage your orders</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="">Send Mail</TableHead>
+            <TableHead className="text-center">Date</TableHead>
             <TableHead>Customer</TableHead>
             <TableHead>Total Amount</TableHead>
             <TableHead>Payment</TableHead>
             <TableHead>Mode</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-center">Date</TableHead>
+            <TableHead className="">Mail</TableHead>
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -187,62 +190,49 @@ const Orders = () => {
           ) : orders.length > 0 ? (
             sortedOrders.map((order) => (
               <TableRow key={order?._id}>
-                <TableCell className="flex items-center">
-                  <div className="flex items-center h-20">
-                    {order?.status !== "Shipped" &&
-                      order?.status !== "Out for Delivery" &&
-                      order?.status !== "Delivered" && (
-                        <button
-                          onClick={() => {
-                            if (order?.status === "Shipped") {
-                              toast.error(
-                                "Email is already sent, cannot resend."
-                              );
-                              return;
-                            }
-                            sendShippingEmailHandler(order._id);
-                          }}
-                        >
-                          <span className="cursor-pointer">
-                            <IoCheckmarkCircle
-                              className="inline-block mr-1 text-red-500"
-                              size={24}
-                            />
-                            Send Shipped
-                          </span>
-                        </button>
-                      )}
-
-                    {(order?.status === "Shipped" ||
-                      order?.status === "Out for Delivery") && (
-                      <button
-                        onClick={() => {
-                          if (order?.status === "Out for Delivery") {
-                            toast.error(
-                              "Email is already sent, cannot resend."
-                            );
-                            return;
-                          }
-                          sendOutForDeliveryEmailHandler(order._id);
-                        }}
-                      >
-                        <span className="cursor-pointer">
-                          <IoCheckmarkCircle
-                            className={`inline-block mr-1 ${
-                              order?.status === "Out for Delivery"
-                                ? "text-blue-500"
-                                : "text-green-500"
-                            }`}
-                            size={24}
-                          />
-                          {order?.status === "Out for Delivery"
-                            ? "Out for Delivery"
-                            : "Send OFD"}
-                        </span>
-                      </button>
-                    )}
+                <TableCell className=" uppercase text-center">
+                  {new Date(order?.createdAt).toLocaleString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                  <div className="flex justify-center gap-2 mt-1">
+                    <Button
+                      size="sm"
+                      variant={order?.orderListed ? "default" : "outline"}
+                      className="px-2 py-1 text-xs rounded-sm"
+                      onClick={() =>
+                        handleToggleFlag(order?._id, "orderListed")
+                      }
+                    >
+                      L
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={order?.orderShipped ? "default" : "outline"}
+                      className="px-2 py-1 text-xs rounded-sm"
+                      onClick={() =>
+                        handleToggleFlag(order?._id, "orderShipped")
+                      }
+                    >
+                      S
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={order?.orderDelivered ? "default" : "outline"}
+                      className="px-2 py-1 text-xs rounded-sm"
+                      onClick={() =>
+                        handleToggleFlag(order?._id, "orderDelivered")
+                      }
+                    >
+                      D
+                    </Button>
                   </div>
                 </TableCell>
+
                 <TableCell className="cursor-pointer h-20">
                   <button
                     className=" cursor-pointer hover:underline hover:text-blue-500 flex flex-col gap-2 items-start"
@@ -316,46 +306,60 @@ const Orders = () => {
                 >
                   {order?.status}
                 </TableCell>
-                <TableCell className=" uppercase text-center">
-                  {new Date(order?.createdAt).toLocaleString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}
-                  <div className="flex justify-center gap-2 mt-1">
-                    <Button
-                      size="sm"
-                      variant={order?.orderListed ? "default" : "outline"}
-                      className="px-2 py-1 text-xs rounded-sm"
-                      onClick={() =>
-                        handleToggleFlag(order?._id, "orderListed")
-                      }
-                    >
-                      L
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={order?.orderShipped ? "default" : "outline"}
-                      className="px-2 py-1 text-xs rounded-sm"
-                      onClick={() =>
-                        handleToggleFlag(order?._id, "orderShipped")
-                      }
-                    >
-                      S
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={order?.orderDelivered ? "default" : "outline"}
-                      className="px-2 py-1 text-xs rounded-sm"
-                      onClick={() =>
-                        handleToggleFlag(order?._id, "orderDelivered")
-                      }
-                    >
-                      D
-                    </Button>
+                <TableCell className="flex items-center">
+                  <div className="flex items-center h-20">
+                    {order?.status !== "Shipped" &&
+                      order?.status !== "Out for Delivery" &&
+                      order?.status !== "Delivered" && (
+                        <button
+                          onClick={() => {
+                            if (order?.status === "Shipped") {
+                              toast.error(
+                                "Email is already sent, cannot resend."
+                              );
+                              return;
+                            }
+                            sendShippingEmailHandler(order._id);
+                          }}
+                        >
+                          <span className="cursor-pointer">
+                            <IoCheckmarkCircle
+                              className="inline-block mr-1 text-red-500"
+                              size={24}
+                            />
+                            Send Shipped
+                          </span>
+                        </button>
+                      )}
+
+                    {(order?.status === "Shipped" ||
+                      order?.status === "Out for Delivery") && (
+                      <button
+                        onClick={() => {
+                          if (order?.status === "Out for Delivery") {
+                            toast.error(
+                              "Email is already sent, cannot resend."
+                            );
+                            return;
+                          }
+                          sendOutForDeliveryEmailHandler(order._id);
+                        }}
+                      >
+                        <span className="cursor-pointer">
+                          <IoCheckmarkCircle
+                            className={`inline-block mr-1 ${
+                              order?.status === "Out for Delivery"
+                                ? "text-blue-500"
+                                : "text-green-500"
+                            }`}
+                            size={24}
+                          />
+                          {order?.status === "Out for Delivery"
+                            ? "Out for Delivery"
+                            : "Send OFD"}
+                        </span>
+                      </button>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="text-end">
