@@ -174,7 +174,13 @@ const SearchOrder = ({ specialFilter }) => {
           ) : (
             <div className="px-4 py-6 text-center">
               <p className="text-xs text-gray-500">
-                No orders found. Try a different search.
+                {specialFilter ? (
+                  <p>
+                    No orders found for <span className="capitalize">{specialFilter}</span>.
+                  </p>
+                ) : (
+                  "No orders found. Try a different search."
+                )}
               </p>
             </div>
           )}
