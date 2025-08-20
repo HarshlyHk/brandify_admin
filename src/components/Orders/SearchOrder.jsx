@@ -137,6 +137,11 @@ const SearchOrder = ({ specialFilter }) => {
         <div className="absolute w-full z-10 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
           {results.length > 0 ? (
             <div className="divide-y divide-gray-100 max-h-80 overflow-y-auto text-xs">
+              {specialFilter && (
+                <div className="px-4 py-2 text-xs text-red-700">
+                  Showing results for <span className=" capitalize">{specialFilter}</span>
+                </div>
+              )}
               {results.map((order) => (
                 <div
                   key={order._id}
