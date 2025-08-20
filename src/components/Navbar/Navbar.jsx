@@ -103,10 +103,10 @@ const Sidebar = () => {
       </div>
 
       {/* Mobile Sidebar */}
-      <div className="md:hidden">
+      <div className="md:hidden bg-[#1a1e38] backdrop-blur-[5px] w-full flex items-center justify-between px-4 h-16 ">
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger aria-label="Open menu" className="focus:outline-none">
-            <RiMenu2Fill className="w-8 h-8 text-gray-800 hover:text-gray-600 transition-colors duration-200 cursor-pointer" />
+            <RiMenu2Fill className="w-8 h-8 text-white transition-colors duration-200 cursor-pointer" />
           </SheetTrigger>
 
           <SheetContent
@@ -157,6 +157,9 @@ const Sidebar = () => {
             </div>
           </SheetContent>
         </Sheet>
+        <div className="text-center text-white font-bold font-helvetica">
+          DRIP STUDIOS
+        </div>
       </div>
     </div>
   );

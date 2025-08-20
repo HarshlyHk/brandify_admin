@@ -8,17 +8,17 @@ const Home = () => {
   const { user } = useSelector((state) => state.user);
   useAuthHook();
   return (
-    <div className=" w-full h-screen px-40 py-10">
-      <div className=" text-start">
-        <h1 className=" font-helvetica-bold font-bold text-[150px]">
+    <div className="w-full h-screen px-4 md:px-20 lg:px-40 py-40 md:py-10">
+      <div className="text-start">
+        <h1 className="font-helvetica-bold font-bold text-4xl sm:text-6xl md:text-8xl lg:text-9xl xl:text-[150px] leading-tight">
           WELCOME TO
         </h1>
       </div>
-      <div className=" text-end">
-        <h1 className=" font-rawgly font-bold text-[100px]">DRIP ADMIN</h1>
+      <div className="text-end">
+        <h1 className="font-rawgly font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[100px] leading-tight">DRIP ADMIN</h1>
       </div>
 
-      <div className=" flex flex-col gap-10 justify-center items-center mt-20">
+      <div className="flex flex-col gap-6 md:gap-10 justify-center items-center mt-40 md:mt-20">
         {user ? (
           <div
             onClick={() => {

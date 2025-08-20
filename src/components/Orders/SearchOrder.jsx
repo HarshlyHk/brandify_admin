@@ -42,7 +42,7 @@ const SearchOrder = ({ specialFilter }) => {
       const response = await axiosInstance.get(
         "/orders/admin/get-user-orders",
         {
-          params: { [searchType]: searchQuery },
+          params: { [searchType]: searchQuery, filterType: specialFilter },
         }
       );
       setResults(response.data?.data || []);
