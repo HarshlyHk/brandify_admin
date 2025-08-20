@@ -226,6 +226,22 @@ export const toggleOrderFlag = createAsyncThunk(
   }
 );
 
+// Search Orders
+export const searchOrders = createAsyncThunk(
+  "order/searchOrders",
+  async ({ searchTerm, specialFilter }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get(
+        `/orders/admin/search?query=${searchTerm}&filterType=${specialFilter}`
+      );
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to search orders.");
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState,

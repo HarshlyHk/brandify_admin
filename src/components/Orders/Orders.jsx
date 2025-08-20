@@ -83,7 +83,7 @@ const Orders = () => {
       <div className="flex flex-col gap-4 md:gap-0 md:flex-row justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Orders</h2>
         <div className="">
-          <SearchOrder />
+          <SearchOrder specialFilter={specialFilter} />
         </div>
         <div className="flex flex-col gap-4 items-center">
           <div className="flex gap-2">

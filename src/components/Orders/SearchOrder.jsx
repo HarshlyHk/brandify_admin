@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router";
 
-const SearchOrder = () => {
+const SearchOrder = ({ specialFilter }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchType, setSearchType] = useState("name");
   const [loading, setLoading] = useState(false);
