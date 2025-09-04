@@ -250,9 +250,9 @@ const Products = () => {
                       >
                         <TableCell>
                           <div className="w-14 h-14 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                            {product.images?.[0] ? (
+                            {product?.thumbnails?.[0] ? (
                               <img
-                                src={product.images[0]}
+                                src={product?.thumbnails[0]}
                                 alt={product.name}
                                 className="w-full h-full object-cover"
                               />
@@ -264,10 +264,10 @@ const Products = () => {
                           </div>
                         </TableCell>
                         <TableCell className="text-sm text-gray-800">
-                          {product.name}
+                          {product?.name}
                         </TableCell>
                         <TableCell className="text-sm text-gray-700">
-                          ₹{product.discountedPrice || product.originalPrice}
+                          ₹{product?.discountedPrice || product?.originalPrice}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -397,7 +397,7 @@ const Products = () => {
                 </TableCell>
                 <TableCell
                   onClick={() => navigate(`/products/edit/${product._id}`)}
-                  className="cursor-pointer hover:underline max-w-[100px] md:max-w-[150px] lg:max-w-[200px] truncate text-gray-700 hover:text-gray-900 "
+                  className="cursor-pointer hover:underline max-w-[100px] md:max-w-[150px] lg:max-w-[200px] truncate text-gray-700 hover:text-gray-900"
                 >
                   {product.name}
                 </TableCell>

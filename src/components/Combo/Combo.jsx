@@ -14,30 +14,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { FaStar } from "react-icons/fa";
-import { CiStar } from "react-icons/ci";
+import ComboDialog from "./ComboDialog";
+import ComboTable from "./ComboTable";
+
 const Combos = () => {
   const dispatch = useDispatch();
   const { combos, loading, taskLoading } = useSelector((state) => state.combo);
@@ -51,14 +32,22 @@ const Combos = () => {
     comboPrice: [0, 0],
   });
 
+  // Add image state for create combo
+  const [newComboImage, setNewComboImage] = useState(null);
+  const [newComboImagePreview, setNewComboImagePreview] = useState(null);
+
   const [editCombo, setEditCombo] = useState(null);
-  const [selectedCombo, setSelectedCombo] = useState(null); // State for selected combo
+  // Add image state for edit combo
+  const [editComboImage, setEditComboImage] = useState(null);
+  const [editComboImagePreview, setEditComboImagePreview] = useState(null);
+
+  const [selectedCombo, setSelectedCombo] = useState(null);
 
   useEffect(() => {
     dispatch(fetchCombos());
   }, [dispatch]);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (
       !newCombo.title ||
       newCombo.productId.length < 2 ||
@@ -69,7 +58,41 @@ const Combos = () => {
       );
       return;
     }
-    dispatch(createCombo(newCombo));
+
+    // Create FormData to handle file upload
+    const formData = new FormData();
+    formData.append("title", newCombo.title);
+    formData.append("description", newCombo.description);
+    formData.append("isPrepaidOnly", newCombo.isPrepaidOnly);
+    formData.append("isActive", newCombo.isActive);
+
+    // Append arrays as JSON strings
+    formData.append("productId", JSON.stringify(newCombo.productId));
+    formData.append("comboPrice", JSON.stringify(newCombo.comboPrice));
+
+    // Append image if selected
+    if (newComboImage) {
+      formData.append("file", newComboImage);
+    }
+
+    const res = await dispatch(createCombo(formData));
+    if (res.payload) {
+      handleReset();
+      //
+    }
+  };
+
+  const handleReset = () => {
+    setNewCombo({
+      title: "",
+      description: "",
+      isPrepaidOnly: true,
+      isActive: true,
+      productId: ["", ""],
+      comboPrice: [0, 0],
+    });
+    setNewComboImage(null);
+    setNewComboImagePreview(null);
   };
 
   const handleUpdate = () => {
@@ -78,8 +101,26 @@ const Combos = () => {
       editCombo.productId.length >= 2 &&
       editCombo.comboPrice.length >= 2
     ) {
-      dispatch(updateCombo({ id: editCombo._id, comboData: editCombo }));
+      // Create FormData to handle file upload
+      const formData = new FormData();
+      formData.append("title", editCombo.title);
+      formData.append("description", editCombo.description);
+      formData.append("isPrepaidOnly", editCombo.isPrepaidOnly);
+      formData.append("isActive", editCombo.isActive);
+
+      // Append arrays as JSON strings
+      formData.append("productId", JSON.stringify(editCombo.productId));
+      formData.append("comboPrice", JSON.stringify(editCombo.comboPrice));
+
+      // Append image if selected
+      if (editComboImage) {
+        formData.append("file", editComboImage);
+      }
+
+      dispatch(updateCombo({ id: editCombo._id, comboData: formData }));
       setEditCombo(null);
+      setEditComboImage(null);
+      setEditComboImagePreview(null);
     } else {
       alert(
         "At least two product IDs and their respective combo prices are required"
@@ -95,352 +136,74 @@ const Combos = () => {
     await dispatch(updateToggleStarredCombo(combo._id));
   };
 
+  const handleNewComboImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewComboImage(file);
+      const reader = new FileReader();
+      reader.onload = () => setNewComboImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle image selection for edit combo
+  const handleEditComboImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditComboImage(file);
+      const reader = new FileReader();
+      reader.onload = () => setEditComboImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="mb-4 flex justify-between items-center">
         <h2 className="text-xl font-bold">Combos</h2>
-        <Dialog>
-          <DialogTrigger asChild>
+        <ComboDialog
+          type="create"
+          combo={newCombo}
+          setCombo={setNewCombo}
+          image={newComboImage}
+          setImage={setNewComboImage}
+          imagePreview={newComboImagePreview}
+          setImagePreview={setNewComboImagePreview}
+          onSubmit={handleCreate}
+          onReset={handleReset}
+          taskLoading={taskLoading}
+          trigger={
             <Button className="bg-green-500 hover:bg-green-600">
               Create Combo
             </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Combo</DialogTitle>
-            </DialogHeader>
-            <Input
-              placeholder="Title"
-              value={newCombo.title}
-              onChange={(e) =>
-                setNewCombo({ ...newCombo, title: e.target.value })
-              }
-            />
-            <Textarea
-              placeholder="Description"
-              value={newCombo.description}
-              onChange={(e) =>
-                setNewCombo({ ...newCombo, description: e.target.value })
-              }
-            />
-
-            <div className="mt-4">
-              <h4 className="font-medium mb-2">Products and Prices</h4>
-              {newCombo.productId.map((id, index) => (
-                <div key={index} className="flex gap-2 items-center mb-2">
-                  <Input
-                    placeholder={`Product ID ${index + 1}`}
-                    value={id}
-                    onChange={(e) => {
-                      const updated = [...newCombo.productId];
-                      updated[index] = e.target.value;
-                      setNewCombo({ ...newCombo, productId: updated });
-                    }}
-                  />
-                  <Input
-                    placeholder={`Combo Price ${index + 1}`}
-                    type="number"
-                    value={newCombo.comboPrice[index] || ""}
-                    onChange={(e) => {
-                      const updated = [...newCombo.comboPrice];
-                      updated[index] = Number(e.target.value);
-                      setNewCombo({ ...newCombo, comboPrice: updated });
-                    }}
-                  />
-                  {newCombo.productId.length > 2 && (
-                    <Button
-                      variant="outline"
-                      className="text-red-500"
-                      onClick={() => {
-                        const updatedIds = [...newCombo.productId];
-                        const updatedPrices = [...newCombo.comboPrice];
-                        updatedIds.splice(index, 1);
-                        updatedPrices.splice(index, 1);
-                        setNewCombo({
-                          ...newCombo,
-                          productId: updatedIds,
-                          comboPrice: updatedPrices,
-                        });
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button
-                variant="outline"
-                className="mt-2"
-                onClick={() => {
-                  setNewCombo({
-                    ...newCombo,
-                    productId: [...newCombo.productId, ""],
-                    comboPrice: [...newCombo.comboPrice, 0],
-                  });
-                }}
-              >
-                + Add Product
-              </Button>
-            </div>
-
-            <div className="mt-4">
-              <Select
-                value={newCombo.isPrepaidOnly ? "prepaid" : "all"}
-                onValueChange={(value) =>
-                  setNewCombo({
-                    ...newCombo,
-                    isPrepaidOnly: value === "prepaid",
-                  })
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Payment Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Payment Type</SelectLabel>
-                    <SelectItem value="prepaid">Prepaid Only</SelectItem>
-                    <SelectItem value="all">All Payments</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <DialogFooter className="mt-4">
-              <Button
-                className="bg-red-500 hover:bg-red-600"
-                onClick={() =>
-                  setNewCombo({
-                    title: "",
-                    description: "",
-                    isPrepaidOnly: false,
-                    isActive: true,
-                    productId: ["", ""],
-                    comboPrice: [0, 0],
-                  })
-                }
-              >
-                Reset
-              </Button>
-              <Button
-                onClick={handleCreate}
-                className="bg-green-500 hover:bg-green-600"
-                disabled={taskLoading}
-              >
-                Create
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          }
+        />
       </div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Star</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {combos.map((combo) => (
-              <TableRow key={combo._id}>
-                <TableCell>
-                  <button
-                    className="text-blue-500 underline cursor-pointer"
-                    onClick={() => setSelectedCombo(combo)}
-                  >
-                    {combo.title}
-                  </button>
-                </TableCell>
-                <TableCell className=" max-w-60 truncate">
-                  {combo.description}
-                </TableCell>
-                <TableCell>{combo.isActive ? "Active" : "Inactive"}</TableCell>
-                <TableCell className="text-center">
-                  {" "}
-                  <button onClick={() => handleToggleStarred(combo)}>
-                    {combo.isStarred ? (
-                      <FaStar size={20} />
-                    ) : (
-                      <CiStar size={20} />
-                    )}
-                  </button>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          onClick={() =>
-                            setEditCombo({
-                              ...combo,
-                              productId: combo.products.map(
-                                (product) => product.productId
-                              ),
-                              comboPrice: combo.products.map(
-                                (product) => product.comboPrice
-                              ),
-                            })
-                          }
-                        >
-                          Edit
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Edit Combo</DialogTitle>
-                        </DialogHeader>
-                        <Input
-                          placeholder="Title"
-                          value={editCombo?.title || ""}
-                          onChange={(e) =>
-                            setEditCombo({
-                              ...editCombo,
-                              title: e.target.value,
-                            })
-                          }
-                        />
-                        <Textarea
-                          placeholder="Description"
-                          value={editCombo?.description || ""}
-                          onChange={(e) =>
-                            setEditCombo({
-                              ...editCombo,
-                              description: e.target.value,
-                            })
-                          }
-                        />
-                        <div className="mt-4">
-                          <h4 className="font-medium mb-2">
-                            Products and Prices
-                          </h4>
-                          {editCombo?.productId.map((id, index) => (
-                            <div
-                              key={index}
-                              className="flex gap-2 items-center mb-2"
-                            >
-                              <Input
-                                placeholder={`Product ID ${index + 1}`}
-                                value={id}
-                                onChange={(e) => {
-                                  const updatedIds = [...editCombo.productId];
-                                  updatedIds[index] = e.target.value;
-                                  setEditCombo({
-                                    ...editCombo,
-                                    productId: updatedIds,
-                                  });
-                                }}
-                              />
-                              <Input
-                                placeholder={`Combo Price ${index + 1}`}
-                                type="number"
-                                value={editCombo.comboPrice[index] || ""}
-                                onChange={(e) => {
-                                  const updatedPrices = [
-                                    ...editCombo.comboPrice,
-                                  ];
-                                  updatedPrices[index] = Number(e.target.value);
-                                  setEditCombo({
-                                    ...editCombo,
-                                    comboPrice: updatedPrices,
-                                  });
-                                }}
-                              />
-                              {editCombo.productId.length > 2 && (
-                                <Button
-                                  variant="outline"
-                                  className="text-red-500"
-                                  onClick={() => {
-                                    const updatedIds = [...editCombo.productId];
-                                    const updatedPrices = [
-                                      ...editCombo.comboPrice,
-                                    ];
-                                    updatedIds.splice(index, 1);
-                                    updatedPrices.splice(index, 1);
-                                    setEditCombo({
-                                      ...editCombo,
-                                      productId: updatedIds,
-                                      comboPrice: updatedPrices,
-                                    });
-                                  }}
-                                >
-                                  Remove
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                          <Button
-                            variant="outline"
-                            className="mt-2"
-                            onClick={() => {
-                              setEditCombo({
-                                ...editCombo,
-                                productId: [...editCombo.productId, ""],
-                                comboPrice: [...editCombo.comboPrice, 0],
-                              });
-                            }}
-                          >
-                            + Add Product
-                          </Button>
-                        </div>
 
-                        <div className="mt-4">
-                          <Select
-                            value={editCombo?.isPrepaidOnly ? "prepaid" : "all"}
-                            onValueChange={(value) =>
-                              setEditCombo({
-                                ...editCombo,
-                                isPrepaidOnly: value === "prepaid",
-                              })
-                            }
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Payment Type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Payment Type</SelectLabel>
-                                <SelectItem value="prepaid">
-                                  Prepaid Only
-                                </SelectItem>
-                                <SelectItem value="all">
-                                  All Payments
-                                </SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <DialogFooter>
-                          <Button
-                            onClick={handleUpdate}
-                            className="bg-green-500 hover:bg-green-600"
-                            disabled={taskLoading}
-                          >
-                            Save
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                    <Button
-                      onClick={() => handleDelete(combo._id)}
-                      className="bg-red-500"
-                      disabled={taskLoading}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
+      <ComboTable
+        combos={combos}
+        loading={loading}
+        taskLoading={taskLoading}
+        onEdit={(combo) => {
+          setEditCombo({
+            ...combo,
+            productId: combo.products.map((product) => product.productId),
+            comboPrice: combo.products.map((product) => product.comboPrice),
+          });
+          setEditComboImagePreview(combo.imageUrl || null);
+        }}
+        onDelete={handleDelete}
+        onToggleStarred={handleToggleStarred}
+        onViewDetails={setSelectedCombo}
+        editCombo={editCombo}
+        setEditCombo={setEditCombo}
+        editComboImage={editComboImage}
+        setEditComboImage={setEditComboImage}
+        editComboImagePreview={editComboImagePreview}
+        setEditComboImagePreview={setEditComboImagePreview}
+        handleUpdate={handleUpdate}
+        handleEditComboImageChange={handleEditComboImageChange}
+      />
 
       {/* Modal for Combo Details */}
       {selectedCombo && (
@@ -448,32 +211,46 @@ const Combos = () => {
           open={!!selectedCombo}
           onOpenChange={() => setSelectedCombo(null)}
         >
-          <DialogContent>
+          <DialogContent className="!max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{selectedCombo.title}</DialogTitle>
               <DialogDescription>
                 {selectedCombo?.description}
               </DialogDescription>
             </DialogHeader>
-            <div>
-              {selectedCombo.products.map((product, index) => (
-                <div key={index} className="mb-2 text-sm flex items-center">
+
+            <div className="flex justify-between items-center gap-10">
+              {/* Display combo image in details modal */}
+              {selectedCombo.imageUrl && (
+                <div className="mb-4">
                   <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-24 h-24 object-cover mb-2"
+                    src={selectedCombo.imageUrl}
+                    alt={selectedCombo.title}
+                    className="w-[300px] h-[300px] object-cover rounded"
                   />
-                  <div className="ml-4 flex flex-col gap-4">
-                    <p>
-                      <strong className=" pr-2">Name:</strong> {product.name}
-                    </p>
-                    <p>
-                      <strong className=" pr-2">Combo Price:</strong> ₹
-                      {product.comboPrice}
-                    </p>
-                  </div>
                 </div>
-              ))}
+              )}
+
+              <div>
+                {selectedCombo.products.map((product, index) => (
+                  <div key={index} className="mb-2 text-sm flex items-center">
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-24 h-24 object-cover mb-2"
+                    />
+                    <div className="ml-4 flex flex-col gap-4">
+                      <p>
+                        <strong className="pr-2">Name:</strong> {product.name}
+                      </p>
+                      <p>
+                        <strong className="pr-2">Combo Price:</strong> ₹
+                        {product.comboPrice}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
             <DialogFooter>
               <Button onClick={() => setSelectedCombo(null)}>Close</Button>
