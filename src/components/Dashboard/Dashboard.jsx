@@ -14,6 +14,7 @@ import GeographicChart from "./GeographicChart";
 import RevenueChart from "./RevenueChart";
 import AbandonedCheckoutCard from "./AbandonedCheckoutCard";
 import DashboardSkeleton from "./DashboardSkeleton";
+import Traffic from "../Traffic/Traffic";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -106,7 +107,6 @@ const Dashboard = () => {
           isLoading={loading}
           lastUpdated={lastRefresh}
         />
-
         {/* Loading Overlay for Refreshes */}
         {loading && dashboardAnalytics && (
           <div className="fixed top-4 right-3 sm:right-4 bg-blue-600 text-white px-3 py-1.5 rounded-lg shadow-lg z-50">
@@ -116,13 +116,10 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-
         {/* Main Stats Cards */}
         <StatsCards analytics={dashboardAnalytics} />
-
         {/* Revenue and Trends */}
         <RevenueChart analytics={dashboardAnalytics} />
-
         {/* Charts Grid - Responsive Layout */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4">
           {/* Top Products - Full width on mobile, 2 columns on xl+ */}
@@ -135,7 +132,6 @@ const Dashboard = () => {
             <AbandonedCheckoutCard analytics={dashboardAnalytics} />
           </div>
         </div>
-
         {/* Geographic Data and Insights - Responsive Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           <GeographicChart analytics={dashboardAnalytics} />
@@ -192,7 +188,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
+        <div className="w-full h-full">
+          <Traffic showChangeChartType={false} defaultChartType="area" />
+        </div>
         {/* Footer - Mobile Optimized */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
           <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500">
