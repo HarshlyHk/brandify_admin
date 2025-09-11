@@ -59,7 +59,7 @@ const FailedOrders = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Orders</h2>
+        <h2 className="text-2xl font-bold">Abandoned Checkout</h2>
         <h4>
           <span className="text-sm text-gray-700">
             Total Orders: {totalOrders}

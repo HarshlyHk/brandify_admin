@@ -1,18 +1,47 @@
-import React from 'react';
-import { TrendingUp, TrendingDown, Users, ShoppingCart, DollarSign, ShoppingBag, Eye, MapPin } from 'lucide-react';
+import React from "react";
+import {
+  TrendingUp,
+  TrendingDown,
+  Users,
+  ShoppingCart,
+  DollarSign,
+  ShoppingBag,
+  Eye,
+  MapPin,
+} from "lucide-react";
+import { useNavigate, useNavigation } from "react-router";
 
-const StatsCard = ({ title, value, change, changeType, icon: Icon, formatValue }) => {
+const StatsCard = ({
+  title,
+  value,
+  change,
+  changeType,
+  icon: Icon,
+  formatValue,
+  link,
+}) => {
+  const navigation = useNavigate();
+
+  const handleNavigate = (url) => {
+    if (!url) return;
+    navigation(url);
+  };
+
   const formatters = {
-    currency: (val) => `₹${Number(val).toLocaleString('en-IN')}`,
-    number: (val) => Number(val).toLocaleString('en-IN'),
+    currency: (val) => `₹${Number(val).toLocaleString("en-IN")}`,
+    number: (val) => Number(val).toLocaleString("en-IN"),
     percentage: (val) => `${Number(val).toFixed(1)}%`,
-    default: (val) => val
+    default: (val) => val,
   };
 
   const formatter = formatters[formatValue] || formatters.default;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div
+      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+      style={{ cursor: link ? "pointer" : "default" }}
+      onClick={() => link && handleNavigate(link)}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="p-2 bg-blue-50 rounded-lg">
@@ -20,16 +49,23 @@ const StatsCard = ({ title, value, change, changeType, icon: Icon, formatValue }
           </div>
           <div className="flex flex-col">
             <p className="text-sm font-medium text-gray-600">{title}</p>
-            <p className="text-xl font-bold text-gray-900">{formatter(value)}</p>
+            <p className="text-xl font-bold text-gray-900">
+              {formatter(value)}
+            </p>
           </div>
         </div>
         {change !== undefined && (
-          <div className={`flex items-center space-x-1 ${
-            changeType === 'up' ? 'text-green-600' : 
-            changeType === 'down' ? 'text-red-600' : 'text-gray-600'
-          }`}>
-            {changeType === 'up' && <TrendingUp className="h-4 w-4" />}
-            {changeType === 'down' && <TrendingDown className="h-4 w-4" />}
+          <div
+            className={`flex items-center space-x-1 ${
+              changeType === "up"
+                ? "text-green-600"
+                : changeType === "down"
+                ? "text-red-600"
+                : "text-gray-600"
+            }`}
+          >
+            {changeType === "up" && <TrendingUp className="h-4 w-4" />}
+            {changeType === "down" && <TrendingDown className="h-4 w-4" />}
             <span className="text-sm font-medium">{change}%</span>
           </div>
         )}
@@ -43,52 +79,53 @@ const StatsCards = ({ analytics }) => {
 
   const stats = [
     {
-      title: 'Total Sessions',
+      title: "Total Sessions",
       value: analytics.totalSessions || 0,
       icon: Eye,
-      formatValue: 'number',
+      formatValue: "number",
     },
     {
-      title: 'Landing Page Views',
-      value: analytics.landingPageViews || 0,
+      title: "Unique Visitors",
+      value: analytics.uniqueVisitors || 0,
       icon: Eye,
-      formatValue: 'number',
+      formatValue: "number",
     },
     {
-      title: 'Total Orders',
+      title: "Total Orders",
       value: analytics.totalOrders || 0,
       icon: ShoppingCart,
-      formatValue: 'number',
+      formatValue: "number",
     },
     {
-      title: 'Total Revenue',
+      title: "Total Revenue",
       value: analytics.totalRevenue || 0,
       icon: DollarSign,
-      formatValue: 'currency',
+      formatValue: "currency",
     },
     {
-      title: 'Average Order Value',
+      title: "Average Order Value",
       value: analytics.averageOrderValue || 0,
       icon: ShoppingBag,
-      formatValue: 'currency',
+      formatValue: "currency",
     },
     {
-      title: 'Conversion Rate',
+      title: "Conversion Rate",
       value: analytics.conversionRate || 0,
       icon: TrendingUp,
-      formatValue: 'percentage',
+      formatValue: "percentage",
     },
     {
-      title: 'Abandoned Checkouts',
+      title: "Abandoned Checkouts",
       value: analytics.abandonedCheckouts?.count || 0,
       icon: ShoppingCart,
-      formatValue: 'number',
+      formatValue: "number",
+      link: "/failed-orders/1",
     },
     {
-      title: 'Abandoned Value',
+      title: "Abandoned Value",
       value: analytics.abandonedCheckouts?.value || 0,
       icon: DollarSign,
-      formatValue: 'currency',
+      formatValue: "currency",
     },
   ];
 
