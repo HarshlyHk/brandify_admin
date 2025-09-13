@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "../ui/skeleton";
 import ReactPaginate from "react-paginate";
+import axiosInstance from "@/config/axiosInstance";
+import { toast } from "sonner";
 
 const FailedOrders = () => {
   const dispatch = useDispatch();
@@ -39,6 +41,28 @@ const FailedOrders = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [earliestOrderDate, setEarliestOrderDate] = useState("");
+  // Fetch earliest order date for min validation
+  useEffect(() => {
+    const fetchEarliestOrderDate = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "/orders/admin/earliest-order-date"
+        );
+        if (response.data && response.data.date) {
+          setEarliestOrderDate(response.data.date.split("T")[0]);
+        }
+      } catch (error) {
+        // fallback: allow any date
+        setEarliestOrderDate("");
+      }
+    };
+    fetchEarliestOrderDate();
+  }, []);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     dispatch(getAllFailedOrdersAdmin({ page: page, items: itemsPerPage }));
@@ -56,6 +80,42 @@ const FailedOrders = () => {
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
+  const handleDownload = async () => {
+    if (!startDate || !endDate) return;
+    setDownloading(true);
+    try {
+      toast.loading("Downloading contact details");
+      const response = await axiosInstance.get(
+        `orders/admin/download-failed-order-contacts?startDate=${startDate}&endDate=${endDate}`,
+        { responseType: "blob" }
+      );
+      // Create a link to download the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      // Try to get filename from response headers, fallback to default
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "failed-order-contacts.csv";
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="(.+)"/);
+        if (match) fileName = match[1];
+      }
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      setDownloadDialogOpen(false);
+      setStartDate("");
+      setEndDate("");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to download. Please try again.");
+    }
+    setDownloading(false);
+    toast.dismiss();
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -65,6 +125,13 @@ const FailedOrders = () => {
             Total Orders: {totalOrders}
           </span>
         </h4>
+
+        <Button
+          className="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded shadow"
+          onClick={() => setDownloadDialogOpen(true)}
+        >
+          Download Contacts
+        </Button>
       </div>
 
       <Table>
@@ -192,6 +259,66 @@ const FailedOrders = () => {
         </TableFooter>
       </Table>
 
+      {/* download dialog */}
+
+      <Dialog open={downloadDialogOpen} onOpenChange={setDownloadDialogOpen}>
+        <DialogContent className="max-w-md mx-auto p-6 rounded-lg shadow-lg bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold mb-2">
+              Download Failed Order Contacts
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-gray-700">
+                Start Date
+              </span>
+              <input
+                type="date"
+                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                min={earliestOrderDate || undefined}
+                max={endDate || new Date().toISOString().split("T")[0]}
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-gray-700">
+                End Date
+              </span>
+              <input
+                type="date"
+                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                min={startDate || earliestOrderDate || undefined}
+                max={(() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  return tomorrow.toISOString().split("T")[0];
+                })()}
+              />
+            </label>
+          </div>
+          <DialogFooter className="flex gap-2 justify-end mt-4">
+            <Button
+              className="bg-blue-600 text-white border-2 border-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+              onClick={handleDownload}
+              disabled={downloading || !startDate || !endDate}
+            >
+              {downloading ? "Downloading..." : "Download"}
+            </Button>
+            <Button
+              className="border-2 px-4 py-2 rounded"
+              onClick={() => setDownloadDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* delete dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="">
           <DialogHeader className=" ">
