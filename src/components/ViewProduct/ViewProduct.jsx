@@ -53,6 +53,7 @@ const ViewProduct = () => {
       preeBook: product?.preeBook,
       specialSale: product?.specialSale,
       specialSaleDiscount: product?.specialSaleDiscount || 0,
+      isFastDelivery: product?.isFastDelivery,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -80,6 +81,7 @@ const ViewProduct = () => {
       formData.append("preeBook", values.preeBook);
       formData.append("specialSale", values.specialSale);
       formData.append("specialSaleDiscount", values.specialSaleDiscount);
+      formData.append("isFastDelivery", values.isFastDelivery);
       values.category.forEach((cat) => formData.append("category[]", cat));
       values.tags.forEach((tag) => formData.append("tags[]", tag));
       formData.append("sizeVariations", JSON.stringify(values.sizeVariations));

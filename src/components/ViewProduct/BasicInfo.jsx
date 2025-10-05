@@ -295,6 +295,29 @@ const BasicInfo = ({ formik, tags, categories, id }) => {
             </Select>
           )}
         </div>
+        <div className="w-48">
+          <label className="block text-xs font-bold uppercase  mb-1">
+            Fast Delivery
+          </label>
+          {formik?.values?.isFastDelivery != null && (
+            <Select
+              onValueChange={(value) =>
+                formik.setFieldValue("isFastDelivery", value == "true")
+              }
+              value={formik?.values?.isFastDelivery ? "true" : "false"}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="true">Yes</SelectItem>
+                  <SelectItem value="false">No</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
       </div>
 
       <div className="mb-10 flex flex-row-reverse gap-4">
