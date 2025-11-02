@@ -12,28 +12,15 @@ import Category from "./components/Category/Category";
 import Tag from "./components/Category/Tags";
 import OrderPage from "./pages/OrderPage";
 import EditOrder from "./components/Orders/ViewOrder";
-import AbandonedCartPage from "./pages/AbandonedCartPage";
-import Traffic from "./components/Traffic/Traffic";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./utils/ThemeProvider";
-import Collabos from "./components/Collabos/Collabos";
-import CollabosOrderUpdate from "./components/Collabos/CollaboOrder";
-import LookBook from "./components/LookBook/LookBook";
-import LookBookOrderUpdate from "./components/LookBook/LookBookOrder";
 import CategoryPriorityEditor from "./components/Products/CategoryPriorityEditor";
 import FailedOrders from "./components/FailedOrders/FailedOrders";
-import ReturnRefund from "./components/Support/ReturnRefund";
 import ManageUsers from "./components/ManageUsers/ManageUsers";
 import ContactUs from "./components/Support/ContactUs";
 import PaymentQuery from "./components/Support/PaymentQuery";
-import Combos from "./components/Combo/Combo";
 import ChangePass from "./components/ForgetPass/ChangePass";
 import RequestEmail from "./components/ForgetPass/RequestEmail";
-import SpecialFrames from "./components/SpecialFrames/SpecialFrames";
-import SpecialFramesOrderUpdate from "./components/SpecialFrames/SpecialFramesOrder";
-import Reviews from "./components/Reviews/Reviews";
-import SingeProductReview from "./components/Reviews/SingeProductReview";
-import BulkFakeReview from "./components/Reviews/BulkFakeReview";
 function App() {
   return (
     <>
@@ -46,38 +33,20 @@ function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/manage-users/" element={<ManageUsers />} />
               <Route path="/products/:page" element={<ProductPage />} />
-              <Route path="/reviews/:page" element={<Reviews />} />
               <Route path="/order/:page" element={<OrderPage />} />
               <Route path="/orders/:id" element={<EditOrder />} />
               <Route path="/failed-orders/:page" element={<FailedOrders />} />
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/products/edit/:id" element={<ViewProduct />} />
-              <Route path="/review/:id" element={<SingeProductReview />} />
-              <Route path="/reviews/bulk/:productId" element={<BulkFakeReview />} />
               <Route
                 path="/products/priority"
                 element={<CategoryPriorityEditor />}
               />
-              <Route
-                path="/abandoned-cart/:page"
-                element={<AbandonedCartPage />}
-              />
+
               <Route path="/category" element={<Category />} />
               <Route path="/tag" element={<Tag />} />
-              <Route path="/traffic" element={<Traffic />} />
-              <Route path="/collabos" element={<Collabos />} />
-              <Route path="collabo-order" element={<CollabosOrderUpdate />} />
-              <Route path="/lookbook" element={<LookBook />} />
-              <Route path="/lookbook-order" element={<LookBookOrderUpdate />} />
-              <Route path="/specialframe" element={<SpecialFrames />} />
-              <Route
-                path="/specialframe-order"
-                element={<SpecialFramesOrderUpdate />}
-              />
-              <Route path="/return-refund/:page" element={<ReturnRefund />} />
               <Route path="/contact-us/:page" element={<ContactUs />} />
               <Route path="/payment-query/:page" element={<PaymentQuery />} />
-              <Route path="/combos" element={<Combos />} />
             </Route>
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

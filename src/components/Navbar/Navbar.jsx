@@ -36,17 +36,10 @@ const Sidebar = () => {
   const navLinks = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
     { name: "Users", path: "/manage-users", icon: Users },
-    { name: "Settings", path: "/settings", icon: Settings },
     { name: "Products", path: "/products/1", icon: Package },
     { name: "Orders", path: "/order/1", icon: ShoppingBag },
-    { name: "Reviews", path: "/reviews/1", icon: MdRateReview },
     { name: "Categories", path: "/category", icon: Package },
-    { name: "Collabos", path: "/collabos", icon: Users },
-    { name: "LookBook", path: "/lookbook", icon: TbMoodLookUp },
-    { name: "Special Frames", path: "/specialframe", icon: Package },
-    { name: "Return/Refund", path: "/return-refund/1", icon: TbTruckReturn },
     { name: "Contact Us", path: "/contact-us/1", icon: FaUsers },
-    { name: "Combos", path: "/combos", icon: Package },
     { name: "Payment Query", path: "/payment-query/1", icon: FaUsers },
   ];
 
